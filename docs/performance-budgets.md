@@ -7,12 +7,12 @@ Build and runtime performance limits. Values are enforced by code in
 
 Measured on `npm run build` output (gzip sizes):
 
-| Metric | Budget | Rationale |
-|---|---|---|
-| Initial JS | 200 KB | Under 3s load on 3G |
-| Initial total | 500 KB | Includes CSS, fonts, HTML |
-| Any single asset | 200 KB | Avoids one big chunk |
-| Initial chunks | 5 | Fewer HTTP requests |
+| Metric           | Budget | Rationale                 |
+| ---------------- | ------ | ------------------------- |
+| Initial JS       | 200 KB | Under 3s load on 3G       |
+| Initial total    | 500 KB | Includes CSS, fonts, HTML |
+| Any single asset | 200 KB | Avoids one big chunk      |
+| Initial chunks   | 5      | Fewer HTTP requests       |
 
 If a build exceeds any budget, it must be optimized before commit. The
 validator `scripts/tasks/performance/validate-bundle-size.ts` (planned)
@@ -22,12 +22,12 @@ blocks the build when exceeded.
 
 Measured in real user browsers via `platform/performance/web-vitals.ts`:
 
-| Metric | Good | Needs improvement | Poor |
-|---|---|---|---|
-| LCP | < 2.5s | 2.5-4.0s | > 4.0s |
-| CLS | < 0.1 | 0.1-0.25 | > 0.25 |
-| INP | < 200ms | 200-500ms | > 500ms |
-| TTFB | < 800ms | 800-1800ms | > 1800ms |
+| Metric | Good    | Needs improvement | Poor     |
+| ------ | ------- | ----------------- | -------- |
+| LCP    | < 2.5s  | 2.5-4.0s          | > 4.0s   |
+| CLS    | < 0.1   | 0.1-0.25          | > 0.25   |
+| INP    | < 200ms | 200-500ms         | > 500ms  |
+| TTFB   | < 800ms | 800-1800ms        | > 1800ms |
 
 Ratings are computed in `src/platform/performance/web-vitals.ts` and
 reported via `performance-monitor.ts`.

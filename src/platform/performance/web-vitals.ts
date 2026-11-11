@@ -44,7 +44,9 @@ export function observeWebVitals(onReport: ReportHandler): () => void {
           const shift = (entry as PerformanceEntry & { value: number }).value;
           onReport({ name: 'CLS', value: shift, rating: rate('CLS', shift) });
         } else if (entry.entryType === 'first-input') {
-          const delay = (entry as PerformanceEntry & { processingStart: number }).processingStart - entry.startTime;
+          const delay =
+            (entry as PerformanceEntry & { processingStart: number }).processingStart -
+            entry.startTime;
           onReport({ name: 'FID', value: delay, rating: rate('FID', delay) });
         }
       }

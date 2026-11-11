@@ -16,8 +16,8 @@ export default function Contact() {
       </p>
       <h2>About your data</h2>
       <p>
-        {site.name} does not accept file uploads. If you send a message,
-        include only the information you wish to share.
+        {site.name} does not accept file uploads. If you send a message, include only the
+        information you wish to share.
       </p>
     </main>
   );

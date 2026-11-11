@@ -72,10 +72,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
         onClick={onClose}
         className="absolute inset-0 bg-black/40"
       />
-      <div
-        ref={dialogRef}
-        className="relative z-10 w-full max-w-md rounded-lg bg-white shadow-xl"
-      >
+      <div ref={dialogRef} className="relative z-10 w-full max-w-md rounded-lg bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
           <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
           <button
@@ -85,7 +82,12 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
             className="rounded p-2 text-gray-600 hover:bg-gray-100"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path
+                d="M5 5l10 10M15 5L5 15"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
         </div>

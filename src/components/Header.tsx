@@ -24,11 +24,7 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
 
-          <Link
-            to="/"
-            aria-label={`${site.name} home`}
-            className="flex items-center gap-2"
-          >
+          <Link to="/" aria-label={`${site.name} home`} className="flex items-center gap-2">
             <img src="/images/logo.png" alt="" width={40} height={40} className="rounded" />
             <span className="rgb-text whitespace-nowrap text-[35px] font-extrabold leading-none tracking-tight">
               {site.name}

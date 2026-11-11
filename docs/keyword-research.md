@@ -10,62 +10,62 @@ the tool name; secondary keywords expand the privacy and offline angles.
 
 ### Image Compressor
 
-| Type | Keyword |
-|---|---|
-| Primary | image compressor |
-| Secondary | compress image online, free image compressor |
-| Privacy | private image compressor, offline image compressor |
+| Type      | Keyword                                                      |
+| --------- | ------------------------------------------------------------ |
+| Primary   | image compressor                                             |
+| Secondary | compress image online, free image compressor                 |
+| Privacy   | private image compressor, offline image compressor           |
 | Long-tail | compress png without uploading, compress jpeg without server |
-| Long-tail | bulk image compressor no signup |
+| Long-tail | bulk image compressor no signup                              |
 
 ### Image Resizer
 
-| Type | Keyword |
-|---|---|
-| Primary | image resizer |
-| Secondary | resize image online, change image dimensions |
-| Privacy | private image resizer, offline image resizer |
+| Type      | Keyword                                                     |
+| --------- | ----------------------------------------------------------- |
+| Primary   | image resizer                                               |
+| Secondary | resize image online, change image dimensions                |
+| Privacy   | private image resizer, offline image resizer                |
 | Long-tail | resize image without uploading, resize photo without signup |
-| Long-tail | resize image for instagram without uploading |
+| Long-tail | resize image for instagram without uploading                |
 
 ### Merge PDF
 
-| Type | Keyword |
-|---|---|
-| Primary | merge pdf |
-| Secondary | combine pdf files, join pdf online |
-| Privacy | private pdf merger, offline pdf merge |
+| Type      | Keyword                                        |
+| --------- | ---------------------------------------------- |
+| Primary   | merge pdf                                      |
+| Secondary | combine pdf files, join pdf online             |
+| Privacy   | private pdf merger, offline pdf merge          |
 | Long-tail | merge pdf without uploading, merge pdf offline |
-| Long-tail | combine pdf files without adobe |
+| Long-tail | combine pdf files without adobe                |
 
 ### Split PDF
 
-| Type | Keyword |
-|---|---|
-| Primary | split pdf |
-| Secondary | split pdf online, separate pdf pages |
-| Privacy | private pdf splitter, offline pdf split |
+| Type      | Keyword                                                          |
+| --------- | ---------------------------------------------------------------- |
+| Primary   | split pdf                                                        |
+| Secondary | split pdf online, separate pdf pages                             |
+| Privacy   | private pdf splitter, offline pdf split                          |
 | Long-tail | split pdf into separate files, split pdf pages without uploading |
 
 ### PDF Compressor
 
-| Type | Keyword |
-|---|---|
-| Primary | pdf compressor |
-| Secondary | compress pdf online, reduce pdf size |
-| Privacy | private pdf compressor, offline pdf compressor |
+| Type      | Keyword                                                       |
+| --------- | ------------------------------------------------------------- |
+| Primary   | pdf compressor                                                |
+| Secondary | compress pdf online, reduce pdf size                          |
+| Privacy   | private pdf compressor, offline pdf compressor                |
 | Long-tail | compress pdf without uploading, compress pdf to specific size |
-| Long-tail | compress scanned pdf without losing quality |
+| Long-tail | compress scanned pdf without losing quality                   |
 
 ## Content keywords
 
 These support the tool pages but are not tied to a specific tool.
 
-| Topic | Keywords |
-|---|---|
-| Privacy-first tools | free private online tools, browser-based tools |
-| Offline support | tools that work offline, offline file tools |
-| No upload | process files without uploading, file tools no upload |
+| Topic               | Keywords                                              |
+| ------------------- | ----------------------------------------------------- |
+| Privacy-first tools | free private online tools, browser-based tools        |
+| Offline support     | tools that work offline, offline file tools           |
+| No upload           | process files without uploading, file tools no upload |
 
 ## Search intent
 

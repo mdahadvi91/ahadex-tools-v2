@@ -43,10 +43,7 @@ export interface WalkOptions {
 
 const DEFAULT_SKIP = ['node_modules', '.git', 'dist', 'coverage', '.vite'];
 
-export async function walkFiles(
-  root: string,
-  options: WalkOptions = {},
-): Promise<string[]> {
+export async function walkFiles(root: string, options: WalkOptions = {}): Promise<string[]> {
   const skip = new Set(options.skipDirs ?? DEFAULT_SKIP);
   const extensions = options.extensions;
   const maxDepth = options.maxDepth ?? 20;

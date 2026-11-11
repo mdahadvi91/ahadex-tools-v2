@@ -33,8 +33,7 @@ function shouldLog(level: LogLevel): boolean {
 function emit(level: LogLevel, message: string, context?: LogContext): void {
   if (!shouldLog(level)) return;
   const payload = context ? { message, ...context } : { message };
-  const method =
-    level === 'error' ? 'error' : level === 'warn' ? 'warn' : 'log';
+  const method = level === 'error' ? 'error' : level === 'warn' ? 'warn' : 'log';
   console[method](`[${level}]`, payload);
 }
 

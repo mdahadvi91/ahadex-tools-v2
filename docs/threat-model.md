@@ -12,13 +12,13 @@ the mitigations in place. Companion to `security-policy.md`.
 
 ## Assets
 
-| Asset | Sensitivity | Where it lives |
-|---|---|---|
-| User files | High (user-owned content) | Browser memory only |
-| Consent preference | Low | First-party cookie |
-| Analytics events | Low (aggregated) | Third-party (GA4, opt-in) |
-| Error reports | Low (no file content) | Third-party (opt-in) |
-| Site integrity | Medium | Cloudflare Pages |
+| Asset              | Sensitivity               | Where it lives            |
+| ------------------ | ------------------------- | ------------------------- |
+| User files         | High (user-owned content) | Browser memory only       |
+| Consent preference | Low                       | First-party cookie        |
+| Analytics events   | Low (aggregated)          | Third-party (GA4, opt-in) |
+| Error reports      | Low (no file content)     | Third-party (opt-in)      |
+| Site integrity     | Medium                    | Cloudflare Pages          |
 
 ## Threat actors
 

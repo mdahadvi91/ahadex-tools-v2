@@ -93,8 +93,7 @@ export function assertValidEnvironment(): void {
   if (env.isProduction) {
     if (env.siteUrl === '') {
       throw new Error(
-        'VITE_SITE_URL is required in production builds. ' +
-          'See .env.example for format.',
+        'VITE_SITE_URL is required in production builds. ' + 'See .env.example for format.',
       );
     }
     if (!isValidHttpsUrl(env.siteUrl)) {

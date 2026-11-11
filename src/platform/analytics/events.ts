@@ -15,8 +15,7 @@ export const ANALYTICS_EVENTS = Object.freeze({
   adImpression: 'ad_impression',
 } as const);
 
-export type AnalyticsEventName =
-  (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
+export type AnalyticsEventName = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
 
 export interface PageViewPayload {
   path: string;

@@ -22,27 +22,27 @@ Every event has a fixed schema. Adding a field or event requires an ADR.
 
 Fires when the user navigates to a route.
 
-| Field | Type | Example |
-|---|---|---|
-| path | string | "/tools/image-compressor" |
-| title | string | "Image Compressor" |
+| Field | Type   | Example                   |
+| ----- | ------ | ------------------------- |
+| path  | string | "/tools/image-compressor" |
+| title | string | "Image Compressor"        |
 
 ### `tool_open`
 
 Fires when a tool page mounts.
 
-| Field | Type | Example |
-|---|---|---|
+| Field  | Type   | Example            |
+| ------ | ------ | ------------------ |
 | toolId | string | "image-compressor" |
 
 ### `file_selected`
 
 Fires when a user adds a file to a tool.
 
-| Field | Type | Example |
-|---|---|---|
-| toolId | string | "image-compressor" |
-| fileType | string | "png" |
+| Field          | Type   | Example                    |
+| -------------- | ------ | -------------------------- |
+| toolId         | string | "image-compressor"         |
+| fileType       | string | "png"                      |
 | fileSizeBucket | string | "small", "medium", "large" |
 
 **Never** include filename, file content, or exact size (a fingerprinting risk). Size is bucketed:
@@ -55,27 +55,27 @@ Fires when a user adds a file to a tool.
 
 Fires when the tool begins processing.
 
-| Field | Type | Example |
-|---|---|---|
-| toolId | string | "image-compressor" |
-| fileCount | number | 3 |
+| Field     | Type   | Example            |
+| --------- | ------ | ------------------ |
+| toolId    | string | "image-compressor" |
+| fileCount | number | 3                  |
 
 ### `processing_success`
 
 Fires when processing completes successfully.
 
-| Field | Type | Example |
-|---|---|---|
-| toolId | string | "image-compressor" |
-| durationMs | number | 1200 |
+| Field      | Type   | Example            |
+| ---------- | ------ | ------------------ |
+| toolId     | string | "image-compressor" |
+| durationMs | number | 1200               |
 
 ### `processing_error`
 
 Fires when processing fails.
 
-| Field | Type | Example |
-|---|---|---|
-| toolId | string | "image-compressor" |
+| Field  | Type   | Example              |
+| ------ | ------ | -------------------- |
+| toolId | string | "image-compressor"   |
 | reason | string | "unsupported-format" |
 
 **Never** include file content or filename in the error reason.
@@ -84,26 +84,26 @@ Fires when processing fails.
 
 Fires when the user clicks the download button.
 
-| Field | Type | Example |
-|---|---|---|
+| Field  | Type   | Example            |
+| ------ | ------ | ------------------ |
 | toolId | string | "image-compressor" |
 
 ### `consent_update`
 
 Fires when the user updates consent.
 
-| Field | Type | Example |
-|---|---|---|
+| Field     | Type   | Example   |
+| --------- | ------ | --------- |
 | analytics | string | "granted" |
-| ads | string | "denied" |
+| ads       | string | "denied"  |
 
 ### `ad_impression`
 
 Fires when an ad slot becomes visible.
 
-| Field | Type | Example |
-|---|---|---|
-| slot | string | "top", "middle", "bottom" |
+| Field | Type   | Example                   |
+| ----- | ------ | ------------------------- |
+| slot  | string | "top", "middle", "bottom" |
 
 ## Forbidden fields
 

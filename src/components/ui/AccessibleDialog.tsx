@@ -67,10 +67,7 @@ export default function AccessibleDialog({
   const descriptionId = description ? 'dialog-description' : undefined;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      role="presentation"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="presentation">
       <button
         type="button"
         aria-label="Close dialog"

@@ -15,13 +15,13 @@ Removing them would degrade architecture or break functionality.
 Add the following files to the baseline. All are treated as frozen
 once committed.
 
-| File | Reason |
-|---|---|
-| `src/components/ui/IconButton.tsx` | Accessible icon button. Header menu/settings need it. |
-| `src/components/ui/Sidebar.tsx` | Slide-in drawer with Escape close. |
-| `src/components/ui/icons.tsx` | Centralized inline SVG icons. |
-| `src/pages/Tools.tsx` | `/tools` route needs its own page component. |
-| `src/platform/analytics/adapter.ts` | Provider abstraction. Prevents vendor lock and enables Noop in tests. |
+| File                                     | Reason                                                                                                                   |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `src/components/ui/IconButton.tsx`       | Accessible icon button. Header menu/settings need it.                                                                    |
+| `src/components/ui/Sidebar.tsx`          | Slide-in drawer with Escape close.                                                                                       |
+| `src/components/ui/icons.tsx`            | Centralized inline SVG icons.                                                                                            |
+| `src/pages/Tools.tsx`                    | `/tools` route needs its own page component.                                                                             |
+| `src/platform/analytics/adapter.ts`      | Provider abstraction. Prevents vendor lock and enables Noop in tests.                                                    |
 | `scripts/orchestrators/_group-runner.ts` | Shared runner for 17 group orchestrators. Without it, 17 identical 20-line files would need to be maintained separately. |
 
 ## Consequences

@@ -4,7 +4,8 @@
  * lists.
  */
 
-const PII_KEY_PATTERN = /^(email|phone|name|fullname|firstname|lastname|address|ip|userid|sessionid|token|password|ssn|dob)$/i;
+const PII_KEY_PATTERN =
+  /^(email|phone|name|fullname|firstname|lastname|address|ip|userid|sessionid|token|password|ssn|dob)$/i;
 const MAX_STRING_LENGTH = 200;
 
 export function isPiiKey(key: string): boolean {

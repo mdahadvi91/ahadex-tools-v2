@@ -73,9 +73,7 @@ export default function Dropzone({
       onDragLeave={onDragLeave}
       onDrop={onDrop}
       className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors ${
-        dragging
-          ? 'border-blue-500 bg-blue-50'
-          : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+        dragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
       } ${disabled ? 'cursor-not-allowed opacity-60' : ''} ${className}`}
     >
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">

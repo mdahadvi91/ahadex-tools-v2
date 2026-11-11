@@ -3,10 +3,7 @@
  * config/performance-budgets to keep one source of truth.
  */
 
-import {
-  INITIAL_SCRIPT_BYTES,
-  INITIAL_TOTAL_BYTES,
-} from '../../config/performance-budgets';
+import { INITIAL_SCRIPT_BYTES, INITIAL_TOTAL_BYTES } from '../../config/performance-budgets';
 
 export interface ResourceBudget {
   /** Maximum script bytes (compressed) for the initial load. */
@@ -46,7 +43,6 @@ export function isWithinBudget(
   budget: ResourceBudget = DEFAULT_BUDGET,
 ): boolean {
   return (
-    usage.scriptBytes <= budget.initialScriptBytes &&
-    usage.totalBytes <= budget.initialTotalBytes
+    usage.scriptBytes <= budget.initialScriptBytes && usage.totalBytes <= budget.initialTotalBytes
   );
 }

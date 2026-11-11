@@ -16,7 +16,25 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:quality": "tsx scripts/orchestrators/quality.orchestrator.ts",
+    "check:seo": "tsx scripts/orchestrators/seo.orchestrator.ts",
+    "check:content": "tsx scripts/orchestrators/content.orchestrator.ts",
+    "check:geo": "tsx scripts/orchestrators/geo.orchestrator.ts",
+    "check:schema": "tsx scripts/orchestrators/schema.orchestrator.ts",
+    "check:assets": "tsx scripts/orchestrators/assets.orchestrator.ts",
+    "check:indexing": "tsx scripts/orchestrators/indexing.orchestrator.ts",
+    "check:growth": "tsx scripts/orchestrators/growth.orchestrator.ts",
+    "check:architecture": "tsx scripts/orchestrators/architecture.orchestrator.ts",
+    "check:security": "tsx scripts/orchestrators/security.orchestrator.ts",
+    "check:privacy": "tsx scripts/orchestrators/privacy.orchestrator.ts",
+    "check:accessibility": "tsx scripts/orchestrators/accessibility.orchestrator.ts",
+    "check:performance": "tsx scripts/orchestrators/performance.orchestrator.ts",
+    "check:analytics": "tsx scripts/orchestrators/analytics.orchestrator.ts",
+    "check:i18n": "tsx scripts/orchestrators/i18n.orchestrator.ts",
+    "check:adsense": "tsx scripts/orchestrators/adsense.orchestrator.ts",
+    "check:production": "tsx scripts/orchestrators/production.orchestrator.ts",
+    "check:all": "tsx scripts/orchestrators/all.orchestrator.ts"
   },
   "dependencies": {
     "react": "19.3.1",
@@ -36,9 +54,14 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.14.0",
     "postcss": "8.5.32",
+    "prettier": "3.10.0",
     "tailwindcss": "4.3.5",
+    "tsx": "4.23.15",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.2",
     "vite": "8.3.8"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }

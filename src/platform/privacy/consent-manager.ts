@@ -31,12 +31,11 @@ function loadFromCookie(): ConsentState {
   try {
     const parsed = JSON.parse(raw) as Partial<ConsentState>;
     return {
-      analytics: parsed.analytics === 'granted' || parsed.analytics === 'denied'
-        ? parsed.analytics
-        : 'unknown',
-      ads: parsed.ads === 'granted' || parsed.ads === 'denied'
-        ? parsed.ads
-        : 'unknown',
+      analytics:
+        parsed.analytics === 'granted' || parsed.analytics === 'denied'
+          ? parsed.analytics
+          : 'unknown',
+      ads: parsed.ads === 'granted' || parsed.ads === 'denied' ? parsed.ads : 'unknown',
     };
   } catch {
     return { ...DEFAULT_STATE };

@@ -5,9 +5,9 @@ Every structural change to this project requires a numbered ADR in
 
 ## Decision log
 
-| # | Title | Status | Date |
-|---|---|---|---|
-| 001 | Toolchain version policy | Accepted | 2026-11-11 |
+| #   | Title                                                            | Status   | Date       |
+| --- | ---------------------------------------------------------------- | -------- | ---------- |
+| 001 | Toolchain version policy                                         | Accepted | 2026-11-11 |
 | 002 | Baseline extensions (IconButton, Sidebar, icons, Tools, adapter) | Accepted | 2026-11-11 |
 
 ## ADR format
@@ -33,7 +33,7 @@ Each ADR has:
 
 ## Purpose of this process
 
-The purpose is to record *why* a structural decision was made, so that
+The purpose is to record _why_ a structural decision was made, so that
 a future reader does not have to reverse-engineer intent from code.
 It also prevents ad-hoc restructuring: any future structural change
 that contradicts a frozen baseline must come with a new ADR.

@@ -14,17 +14,9 @@ const SIZES = {
   lg: 'h-10 w-10 border-3',
 };
 
-export default function Spinner({
-  size = 'md',
-  label = 'Loading',
-  className = '',
-}: SpinnerProps) {
+export default function Spinner({ size = 'md', label = 'Loading', className = '' }: SpinnerProps) {
   return (
-    <span
-      role="status"
-      aria-label={label}
-      className={`inline-block ${className}`}
-    >
+    <span role="status" aria-label={label} className={`inline-block ${className}`}>
       <span
         className={`block animate-spin rounded-full border-gray-200 border-t-blue-600 ${SIZES[size]}`}
         aria-hidden="true"

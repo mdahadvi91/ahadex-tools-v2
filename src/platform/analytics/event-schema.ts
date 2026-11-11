@@ -26,10 +26,7 @@ export interface ValidationResult {
   reason?: string;
 }
 
-export function validateEvent(
-  name: string,
-  payload: Record<string, unknown>,
-): ValidationResult {
+export function validateEvent(name: string, payload: Record<string, unknown>): ValidationResult {
   if (!KNOWN_EVENTS.has(name)) {
     return { ok: false, reason: `Unknown event name: ${name}` };
   }

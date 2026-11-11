@@ -91,9 +91,7 @@ export async function discoverTools(): Promise<DiscoveryResult> {
       continue;
     }
     if (manifest.slug !== entry.name) {
-      errors.push(
-        `Manifest slug "${manifest.slug}" does not match folder name "${entry.name}"`,
-      );
+      errors.push(`Manifest slug "${manifest.slug}" does not match folder name "${entry.name}"`);
       continue;
     }
 

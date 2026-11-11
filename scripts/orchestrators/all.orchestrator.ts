@@ -79,15 +79,14 @@ async function main(): Promise<void> {
   const totalTasks = outcomes.reduce((sum, o) => sum + o.reports.length, 0);
   const totalErrors = outcomes.reduce(
     (sum, o) =>
-      sum + o.reports.reduce(
-        (s, r) => s + r.violations.filter((v) => v.severity === 'error').length,
-        0,
-      ),
+      sum +
+      o.reports.reduce((s, r) => s + r.violations.filter((v) => v.severity === 'error').length, 0),
     0,
   );
   const totalWarnings = outcomes.reduce(
     (sum, o) =>
-      sum + o.reports.reduce(
+      sum +
+      o.reports.reduce(
         (s, r) => s + r.violations.filter((v) => v.severity === 'warning').length,
         0,
       ),
@@ -96,11 +95,7 @@ async function main(): Promise<void> {
   const failed = outcomes.filter((o) => !o.ok);
   const durationMs = Date.now() - startMs;
 
-  const summary = createReport(
-    { name: 'all', group: 'production' },
-    [],
-    startedAt,
-  );
+  const summary = createReport({ name: 'all', group: 'production' }, [], startedAt);
   summary.durationMs = durationMs;
   summary.ok = failed.length === 0;
   await writeReport(summary);

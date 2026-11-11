@@ -15,10 +15,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link
-              to="/"
-              className="flex items-center gap-2 text-lg font-bold text-gray-900"
-            >
+            <Link to="/" className="flex items-center gap-2 text-lg font-bold text-gray-900">
               <img src="/images/logo.png" alt="" width={32} height={32} className="rounded" />
               <span>{site.name}</span>
             </Link>
@@ -26,16 +23,11 @@ export default function Footer() {
           </div>
           {FOOTER_SECTIONS.map((section) => (
             <div key={section.title}>
-              <h3 className="text-sm font-semibold text-gray-900">
-                {section.title}
-              </h3>
+              <h3 className="text-sm font-semibold text-gray-900">{section.title}</h3>
               <ul className="mt-3 space-y-2">
                 {section.items.map((item) => (
                   <li key={item.href}>
-                    <Link
-                      to={item.href}
-                      className="text-sm text-gray-600 hover:text-gray-900"
-                    >
+                    <Link to={item.href} className="text-sm text-gray-600 hover:text-gray-900">
                       {item.label}
                     </Link>
                   </li>

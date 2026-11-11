@@ -28,10 +28,7 @@ export interface RunOptions {
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(
-      () => reject(new Error(`Task timed out after ${ms}ms`)),
-      ms,
-    );
+    const timer = setTimeout(() => reject(new Error(`Task timed out after ${ms}ms`)), ms);
     promise
       .then((value) => {
         clearTimeout(timer);
@@ -78,9 +75,7 @@ export async function runTask(
     if (report.ok) {
       log.success(`${task.name} (${report.durationMs}ms)`);
     } else {
-      log.error(
-        `${task.name} - ${errors.length} error(s), ${warnings.length} warning(s)`,
-      );
+      log.error(`${task.name} - ${errors.length} error(s), ${warnings.length} warning(s)`);
       for (const v of errors) {
         log.error(`  ${v.code}: ${v.message}`);
       }

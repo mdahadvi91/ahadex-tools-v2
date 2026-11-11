@@ -71,26 +71,17 @@ export function checkDependency(input: PolicyCheckInput): PolicyCheckResult {
     if (blocked.name === input.name) {
       const allowed = blocked.allowedVersions?.includes(input.version);
       if (!allowed) {
-        violations.push(
-          `Blocked package "${input.name}": ${blocked.reason ?? 'no reason'}`,
-        );
+        violations.push(`Blocked package "${input.name}": ${blocked.reason ?? 'no reason'}`);
       }
     }
   }
 
   if (input.license && !DEPENDENCY_POLICY.allowedLicenses.includes(input.license)) {
-    violations.push(
-      `License "${input.license}" of "${input.name}" is not in allowed list.`,
-    );
+    violations.push(`License "${input.license}" of "${input.name}" is not in allowed list.`);
   }
 
-  if (
-    input.severity &&
-    DEPENDENCY_POLICY.blockingSeverities.includes(input.severity)
-  ) {
-    violations.push(
-      `"${input.name}" has ${input.severity} severity advisory.`,
-    );
+  if (input.severity && DEPENDENCY_POLICY.blockingSeverities.includes(input.severity)) {
+    violations.push(`"${input.name}" has ${input.severity} severity advisory.`);
   }
 
   return { ok: violations.length === 0, violations };

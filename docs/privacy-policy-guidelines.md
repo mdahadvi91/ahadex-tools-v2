@@ -18,12 +18,12 @@ user data anywhere in the app.
 
 See `src/platform/security/privacy-policy.ts` for the canonical list.
 
-| Category | Collected? | Retention | Purpose |
-|---|---|---|---|
-| File content | Never | None | N/A |
-| Consent choice | Yes | 365 days | Remember your preference |
-| Analytics events | Opt-in | 90 days | Measure usage |
-| Error reports | Opt-in | 30 days | Diagnose crashes |
+| Category         | Collected? | Retention | Purpose                  |
+| ---------------- | ---------- | --------- | ------------------------ |
+| File content     | Never      | None      | N/A                      |
+| Consent choice   | Yes        | 365 days  | Remember your preference |
+| Analytics events | Opt-in     | 90 days   | Measure usage            |
+| Error reports    | Opt-in     | 30 days   | Diagnose crashes         |
 
 ## What the policy must say
 

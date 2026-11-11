@@ -1,14 +1,15 @@
 /**
  * Task registry. Maps each validation group to its ordered list of
- * validators. Validators are imported lazily so that `npm run check:*`
- * for one group does not load others.
- *
- * Empty groups are intentional during early development. A group
- * becomes active as its validators are implemented. The orchestrator
- * skips empty groups cleanly.
+ * validators.
  */
 
 import type { GroupName, GroupRegistry, TaskRegistry } from './task-types';
+import { run as typeCheckRun } from '../tasks/quality/type-check';
+import { run as lintRun } from '../tasks/quality/lint';
+import { run as formatCheckRun } from '../tasks/quality/format-check';
+import { run as unusedExportsRun } from '../tasks/quality/validate-unused-exports';
+import { run as dependencyDriftRun } from '../tasks/quality/validate-dependency-drift';
+import { run as unitTestsRun } from '../tasks/quality/unit-tests';
 
 const NO_TASKS: readonly never[] = [];
 
@@ -20,8 +21,15 @@ export const TASKS: TaskRegistry = Object.freeze({
   },
   quality: {
     name: 'quality',
-    description: 'Type check, lint, format, unused exports, dependency drift.',
-    tasks: NO_TASKS,
+    description: 'Type check, lint, format, unused exports, dependency drift, tests.',
+    tasks: [
+      { name: 'type-check', group: 'quality', run: typeCheckRun },
+      { name: 'lint', group: 'quality', run: lintRun },
+      { name: 'format-check', group: 'quality', run: formatCheckRun },
+      { name: 'validate-unused-exports', group: 'quality', run: unusedExportsRun },
+      { name: 'validate-dependency-drift', group: 'quality', run: dependencyDriftRun },
+      { name: 'unit-tests', group: 'quality', run: unitTestsRun },
+    ],
   },
   security: {
     name: 'security',

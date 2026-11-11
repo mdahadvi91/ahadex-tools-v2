@@ -30,9 +30,18 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="hero-orb hero-orb-a" style={{ width: 320, height: 320, top: '10%', left: '8%' }} />
-          <div className="hero-orb hero-orb-b" style={{ width: 380, height: 380, top: '20%', right: '6%' }} />
-          <div className="hero-orb hero-orb-c" style={{ width: 260, height: 260, bottom: '8%', left: '40%' }} />
+          <div
+            className="hero-orb hero-orb-a"
+            style={{ width: 320, height: 320, top: '10%', left: '8%' }}
+          />
+          <div
+            className="hero-orb hero-orb-b"
+            style={{ width: 380, height: 380, top: '20%', right: '6%' }}
+          />
+          <div
+            className="hero-orb hero-orb-c"
+            style={{ width: 260, height: 260, bottom: '8%', left: '40%' }}
+          />
         </div>
 
         <div className="relative mx-auto max-w-3xl text-center">
@@ -52,19 +61,37 @@ export default function Home() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
             <span className="inline-flex items-center gap-1.5">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 13l4 4L19 7" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M5 13l4 4L19 7"
+                  stroke="#16a34a"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
               Files stay on your device
             </span>
             <span className="inline-flex items-center gap-1.5">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 13l4 4L19 7" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M5 13l4 4L19 7"
+                  stroke="#16a34a"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
               0 KB sent to a server
             </span>
             <span className="inline-flex items-center gap-1.5">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 13l4 4L19 7" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M5 13l4 4L19 7"
+                  stroke="#16a34a"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
               Works offline after first load
             </span>
@@ -78,9 +105,7 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-gray-900">Available tools</h2>
         </div>
         {tools.length === 0 ? (
-          <p className="mt-6 text-gray-500">
-            No tools are live yet. Check back soon.
-          </p>
+          <p className="mt-6 text-gray-500">No tools are live yet. Check back soon.</p>
         ) : (
           <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tools.map((tool) => (
@@ -113,17 +138,17 @@ export default function Home() {
       {/* Trust */}
       <section className="rounded-2xl bg-gray-50 p-8 sm:p-12">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Your files never leave your device
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900">Your files never leave your device</h2>
           <p className="mt-3 text-gray-600">
-            All processing runs in your browser. No file is uploaded to any
-            server. When you close the tab, the file is gone from memory.
+            All processing runs in your browser. No file is uploaded to any server. When you close
+            the tab, the file is gone from memory.
           </p>
           <ul className="mt-8 grid gap-4 text-left sm:grid-cols-3">
             <li className="rounded-lg bg-white p-4 shadow-sm">
               <p className="font-semibold text-gray-900">0 KB sent to a server</p>
-              <p className="mt-1 text-sm text-gray-600">Your file is loaded into browser memory only.</p>
+              <p className="mt-1 text-sm text-gray-600">
+                Your file is loaded into browser memory only.
+              </p>
             </li>
             <li className="rounded-lg bg-white p-4 shadow-sm">
               <p className="font-semibold text-gray-900">Works offline</p>
@@ -131,7 +156,9 @@ export default function Home() {
             </li>
             <li className="rounded-lg bg-white p-4 shadow-sm">
               <p className="font-semibold text-gray-900">No account required</p>
-              <p className="mt-1 text-sm text-gray-600">No signup, no email, no tracking of file contents.</p>
+              <p className="mt-1 text-sm text-gray-600">
+                No signup, no email, no tracking of file contents.
+              </p>
             </li>
           </ul>
         </div>

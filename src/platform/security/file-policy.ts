@@ -97,8 +97,7 @@ export function validateBatch(files: readonly File[], kind: FileKind): PolicyRes
     totalBytes += file.size;
   }
 
-  const batchMax =
-    kind === 'pdf' ? FILE_LIMITS.mergeTotalMaxBytes : FILE_LIMITS.image.maxSizeBytes;
+  const batchMax = kind === 'pdf' ? FILE_LIMITS.mergeTotalMaxBytes : FILE_LIMITS.image.maxSizeBytes;
   if (totalBytes > batchMax) {
     violations.push(
       violation(

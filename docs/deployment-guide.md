@@ -11,13 +11,13 @@ How to deploy AHADEX Tools to Cloudflare Pages.
 
 ## Build settings (Cloudflare Pages)
 
-| Setting | Value |
-|---|---|
-| Framework preset | None |
-| Build command | `npm run build` |
-| Build output directory | `dist` |
-| Node version | 24 |
-| Environment variables | `VITE_SITE_URL=https://ahadex.online` |
+| Setting                | Value                                 |
+| ---------------------- | ------------------------------------- |
+| Framework preset       | None                                  |
+| Build command          | `npm run build`                       |
+| Build output directory | `dist`                                |
+| Node version           | 24                                    |
+| Environment variables  | `VITE_SITE_URL=https://ahadex.online` |
 
 ## Deployment pipeline
 

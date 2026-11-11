@@ -19,17 +19,17 @@ install, build and type-check this project.
 
 Pin the following versions in `package.json`:
 
-| Tool | Version | Rationale |
-|---|---|---|
-| Node.js | 24.x LTS | `.nvmrc` + `engine-strict=true` |
-| npm | 11.x | Bundled with Node 24 |
-| TypeScript | 6.0.3 | Termux-compatible; TS 7 has no Android ARM64 binary |
-| React | 19.x | Latest stable |
-| Vite | latest stable major | Latest security patches |
-| ESLint | 9.x | Flat config format |
-| Prettier | 3.x | Stable |
-| Vitest | latest stable | Latest |
-| Playwright | latest stable | Latest |
+| Tool       | Version             | Rationale                                           |
+| ---------- | ------------------- | --------------------------------------------------- |
+| Node.js    | 24.x LTS            | `.nvmrc` + `engine-strict=true`                     |
+| npm        | 11.x                | Bundled with Node 24                                |
+| TypeScript | 6.0.3               | Termux-compatible; TS 7 has no Android ARM64 binary |
+| React      | 19.x                | Latest stable                                       |
+| Vite       | latest stable major | Latest security patches                             |
+| ESLint     | 9.x                 | Flat config format                                  |
+| Prettier   | 3.x                 | Stable                                              |
+| Vitest     | latest stable       | Latest                                              |
+| Playwright | latest stable       | Latest                                              |
 
 Patch and minor versions within a pinned major are allowed via `^` or
 `~` ranges in `package.json`. Major version upgrades require a new ADR.
