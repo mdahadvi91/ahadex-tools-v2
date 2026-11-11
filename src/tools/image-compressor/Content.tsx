@@ -1,9 +1,9 @@
 /**
- * Long-form SEO content sections for the Image Compressor page.
- * Renders SECTIONS, HOW_IT_WORKS, USE_CASES, PRIVACY, LIMITATIONS,
- * and REFERENCES from content.ts.
+ * Long-form SEO content for the Image Compressor page. Renders
+ * every section declared in content.ts.
  */
 
+import { Link } from 'react-router-dom';
 import {
   SECTIONS,
   HOW_IT_WORKS,
@@ -14,7 +14,6 @@ import {
   REFERENCES,
   INTERNAL_LINKS,
 } from './content';
-import { Link } from 'react-router-dom';
 import FAQ from './FAQ';
 
 export default function Content() {
