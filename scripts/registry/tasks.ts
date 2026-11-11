@@ -45,6 +45,12 @@ import { run as validateEventPrivacyRun } from '../tasks/analytics/validate-even
 import { run as validateConsentTrackingRun } from '../tasks/analytics/validate-consent-tracking';
 import { run as validateAnalyticsConfigRun } from '../tasks/analytics/validate-analytics-config';
 
+import { run as validateBundleSizeRun } from '../tasks/performance/validate-bundle-size';
+import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
+import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
+import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
+import { run as validateLazyLoadingRun } from '../tasks/performance/validate-lazy-loading';
+
 const NO_TASKS: readonly never[] = [];
 
 export const TASKS: TaskRegistry = Object.freeze({
@@ -147,7 +153,13 @@ export const TASKS: TaskRegistry = Object.freeze({
   performance: {
     name: 'performance',
     description: 'Bundle size, Web Vitals, resource and third-party budgets.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-bundle-size', group: 'performance', run: validateBundleSizeRun },
+      { name: 'validate-web-vitals', group: 'performance', run: validateWebVitalsRun },
+      { name: 'validate-resource-budget', group: 'performance', run: validateResourceBudgetRun },
+      { name: 'validate-third-party-budget', group: 'performance', run: validateThirdPartyBudgetRun },
+      { name: 'validate-lazy-loading', group: 'performance', run: validateLazyLoadingRun },
+    ],
   },
   analytics: {
     name: 'analytics',
