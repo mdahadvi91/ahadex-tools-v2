@@ -95,7 +95,49 @@ interface ImportSpec {
  *   import('spec')
  *   require('spec')
  */
+/** Strips line and block comments before scanning for imports. */
+function stripComments(source: string): string {
+  let out = '';
+  let i = 0;
+  let inString: string | null = null;
+  while (i < source.length) {
+    const c = source[i];
+    const next = source[i + 1];
+    if (inString !== null) {
+      out += c;
+      if (c === '\\' && i + 1 < source.length) {
+        out += source[i + 1];
+        i += 2;
+        continue;
+      }
+      if (c === inString) inString = null;
+      i++;
+      continue;
+    }
+    if (c === '"' || c === '\'' || c === '`') {
+      inString = c;
+      out += c;
+      i++;
+      continue;
+    }
+    if (c === '/' && next === '/') {
+      while (i < source.length && source[i] !== '\n') i++;
+      continue;
+    }
+    if (c === '/' && next === '*') {
+      i += 2;
+      while (i < source.length && !(source[i] === '*' && source[i + 1] === '/')) i++;
+      i += 2;
+      continue;
+    }
+    out += c;
+    i++;
+  }
+  return out;
+}
+
 function extractImports(source: string): ImportSpec[] {
+  const clean = stripComments(source);
   const imports: ImportSpec[] = [];
   const patterns: RegExp[] = [
     /\bimport\s+(?:type\s+)?[^'"]*?from\s+['"]([^'"]+)['"]/g,
@@ -107,7 +149,7 @@ function extractImports(source: string): ImportSpec[] {
   for (const re of patterns) {
     let match: RegExpExecArray | null;
     while ((match = re.exec(source)) !== null) {
-      imports.push({ specifier: match[1], line: lineNumberAt(source, match.index) });
+      imports.push({ specifier: match[1], line: lineNumberAt(clean, match.index) });
       if (match.index === re.lastIndex) re.lastIndex += 1;
     }
   }
