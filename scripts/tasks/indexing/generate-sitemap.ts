@@ -4,6 +4,15 @@
  *   tsx scripts/tasks/indexing/generate-sitemap.ts
  */
 
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+// Load .env from project root if present (tsx does not auto-load).
+const ENV_PATH = join(process.cwd(), '.env');
+if (existsSync(ENV_PATH) && typeof process.loadEnvFile === 'function') {
+  process.loadEnvFile(ENV_PATH);
+}
+
 import { writeText } from '../../utils/file-system';
 import { PATHS } from '../../utils/constants';
 import { discoverTools } from '../../utils/route-discovery';

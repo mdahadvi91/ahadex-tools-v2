@@ -34,7 +34,9 @@
     "check:i18n": "tsx scripts/orchestrators/i18n.orchestrator.ts",
     "check:adsense": "tsx scripts/orchestrators/adsense.orchestrator.ts",
     "check:production": "tsx scripts/orchestrators/production.orchestrator.ts",
-    "check:all": "tsx scripts/orchestrators/all.orchestrator.ts"
+    "check:all": "tsx scripts/orchestrators/all.orchestrator.ts",
+    "generate:sitemap": "tsx scripts/tasks/indexing/generate-sitemap.ts",
+    "prebuild": "tsx scripts/tasks/indexing/generate-sitemap.ts"
   },
   "dependencies": {
     "react": "19.3.1",
