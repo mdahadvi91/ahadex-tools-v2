@@ -1,5 +1,5 @@
 /**
- * Site header: Menu, Logo, Title (RGB animated), Search, Settings.
+ * Site header: Menu, Logo, Title, Search, Settings.
  */
 
 import { useState } from 'react';
@@ -24,9 +24,13 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
 
-          <Link to="/" aria-label={`${site.name} home`} className="flex items-center gap-2">
-            <img src="/images/logo.png" alt="" width={40} height={40} className="rounded" />
-            <span className="rgb-text whitespace-nowrap text-[35px] font-extrabold leading-none tracking-tight">
+          <Link
+            to="/"
+            aria-label={`${site.name} home`}
+            className="flex items-center gap-2.5"
+          >
+            <img src="/images/logo.png" alt="" width={40} height={40} className="rounded-md" />
+            <span className="brand-title whitespace-nowrap text-[32px] font-extrabold leading-none tracking-tight">
               {site.name}
             </span>
           </Link>
