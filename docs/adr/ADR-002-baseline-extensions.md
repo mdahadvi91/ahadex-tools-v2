@@ -7,34 +7,38 @@
 ## Context
 
 Freeze Baseline v1.0 (2026-11-11) declared a fixed file tree. During
-implementation, five files were added that the baseline did not name.
+implementation, files were added that the baseline did not name.
 Removing them would degrade architecture or break functionality.
 
 ## Decision
 
-Add the following files to the baseline. All must be treated as frozen
+Add the following files to the baseline. All are treated as frozen
 once committed.
 
 | File | Reason |
 |---|---|
-| `src/components/ui/IconButton.tsx` | Reusable accessible icon-only button. Header menu/settings buttons require it. |
-| `src/components/ui/Sidebar.tsx` | Slide-in drawer with Escape close and backdrop. Replaces Modal for navigation menus; single responsibility. |
-| `src/components/ui/icons.tsx` | Centralized inline SVG icons. Keeps Header free of hand-rolled SVG. |
-| `src/pages/Tools.tsx` | `/tools` route needs its own page component; the baseline listed only `/tools` navigation but no page file. |
-| `src/platform/analytics/adapter.ts` | Provider abstraction. Without it analytics.ts is hard-locked to GA4. Needed for Noop provider in tests and for future provider swaps. |
+| `src/components/ui/IconButton.tsx` | Accessible icon button. Header menu/settings need it. |
+| `src/components/ui/Sidebar.tsx` | Slide-in drawer with Escape close. |
+| `src/components/ui/icons.tsx` | Centralized inline SVG icons. |
+| `src/pages/Tools.tsx` | `/tools` route needs its own page component. |
+| `src/platform/analytics/adapter.ts` | Provider abstraction. Prevents vendor lock and enables Noop in tests. |
+| `scripts/orchestrators/_group-runner.ts` | Shared runner for 17 group orchestrators. Without it, 17 identical 20-line files would need to be maintained separately. |
 
 ## Consequences
 
-- Baseline v1.1 includes these five files. Future ADRs may add more,
-  but each must be justified by a concrete functional need.
-- Shared UI boundaries remain: IconButton, Sidebar, icons are generic;
-  no tool-specific logic enters them (see ADR-008).
+- Baseline v1.2 includes these files.
+- Future ADRs may add more, but each must be justified by a concrete
+  functional need.
+- Shared UI boundaries remain: IconButton, Sidebar, icons stay generic.
 - The analytics adapter keeps consent, filtering and events in
-  analytics.ts; adapters only implement `init`, `track` and `pageView`.
+  analytics.ts; adapters only implement `init`, `track`, `pageView`.
+- The group runner keeps every orchestrator to a 5-line wrapper and
+  centralizes log, report, and exit-code logic.
 
 ## Alternatives Considered
 
 - **Remove extras to match baseline literally:** rejected because
-  Header navigation would break and analytics would be vendor-locked.
+  Header navigation would break, analytics would be vendor-locked, and
+  group orchestrators would duplicate logic 17 times.
 - **Edit baseline document without an ADR:** rejected; violates the
   freeze protocol.
