@@ -1,5 +1,53 @@
 /**
- * Global styles. Tailwind v4 CSS-first config.
+ * Global styles and shared animations.
  */
 
 @import "tailwindcss";
+
+@layer base {
+  html {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* RGB light flowing across text. GPU-friendly: animates background-position only. */
+@keyframes rgb-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.rgb-text {
+  background: linear-gradient(
+    90deg,
+    #ff3d3d 0%,
+    #ff9a3d 12.5%,
+    #ffe63d 25%,
+    #6dff3d 37.5%,
+    #3ddcff 50%,
+    #3d6dff 62.5%,
+    #b43dff 75%,
+    #ff3ddc 87.5%,
+    #ff3d3d 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: rgb-flow 4s linear infinite;
+  will-change: background-position;
+}
+
+/* Respect reduced-motion: freeze to a solid readable color. */
+@media (prefers-reduced-motion: reduce) {
+  .rgb-text {
+    animation: none;
+    background: none;
+    color: #111827;
+    -webkit-text-fill-color: #111827;
+  }
+}
