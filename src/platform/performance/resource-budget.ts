@@ -1,7 +1,12 @@
 /**
- * Client-side resource budget checks. Compares resource timing
- * against predefined budgets.
+ * Client-side resource budget checks. Reads budget values from
+ * config/performance-budgets to keep one source of truth.
  */
+
+import {
+  INITIAL_SCRIPT_BYTES,
+  INITIAL_TOTAL_BYTES,
+} from '../../config/performance-budgets';
 
 export interface ResourceBudget {
   /** Maximum script bytes (compressed) for the initial load. */
@@ -11,8 +16,8 @@ export interface ResourceBudget {
 }
 
 export const DEFAULT_BUDGET: Readonly<ResourceBudget> = Object.freeze({
-  initialScriptBytes: 200 * 1024,
-  initialTotalBytes: 500 * 1024,
+  initialScriptBytes: INITIAL_SCRIPT_BYTES,
+  initialTotalBytes: INITIAL_TOTAL_BYTES,
 });
 
 export interface BudgetUsage {
@@ -36,6 +41,12 @@ export function measureUsage(): BudgetUsage {
   return { scriptBytes, totalBytes };
 }
 
-export function isWithinBudget(usage: BudgetUsage, budget: ResourceBudget = DEFAULT_BUDGET): boolean {
-  return usage.scriptBytes <= budget.initialScriptBytes && usage.totalBytes <= budget.initialTotalBytes;
+export function isWithinBudget(
+  usage: BudgetUsage,
+  budget: ResourceBudget = DEFAULT_BUDGET,
+): boolean {
+  return (
+    usage.scriptBytes <= budget.initialScriptBytes &&
+    usage.totalBytes <= budget.initialTotalBytes
+  );
 }
