@@ -43,7 +43,7 @@ function extractEventValues(src: string): string[] {
 /** Extracts keys of EventPayloadMap. */
 function extractPayloadMapKeys(src: string): string[] {
   const keys: string[] = [];
-  const block = src.match(/interface\s+EventPayloadMap\s*\{([\s\S]*?)\}/);
+  const block = src.match(/interface\s+EventPayloadMap\s*\{([\s\S]*?)\n\}/);
   if (!block) return keys;
   const keyRe = /^\s*(?:['"]([^'"]+)['"]|([a-zA-Z_][\w]*))\s*:/gm;
   let m: RegExpExecArray | null;
@@ -58,10 +58,10 @@ function extractRequiredFields(src: string): string[] {
   const keys: string[] = [];
   const block = src.match(/REQUIRED_FIELDS\s*:[^=]*=\s*\{([\s\S]*?)\n\};/);
   if (!block) return keys;
-  const keyRe = /^\s*([a-zA-Z_][\w]*)\s*:/gm;
+  const keyRe = /^\s*(?:['"]([^'"]+)['"]|([a-zA-Z_][\w]*))\s*:/gm;
   let m: RegExpExecArray | null;
   while ((m = keyRe.exec(block[1])) !== null) {
-    keys.push(m[1]);
+    keys.push(m[1] ?? m[2]);
   }
   return keys;
 }
