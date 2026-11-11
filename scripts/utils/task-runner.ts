@@ -19,6 +19,8 @@ export interface TaskDefinition {
   group: string;
   /** Implementation. Must return violations; may throw. */
   run: () => Promise<Violation[]>;
+  /** Override the default FULL_TASK_MS timeout. */
+  timeoutMs?: number;
 }
 
 export interface RunOptions {
@@ -55,7 +57,7 @@ export async function runTask(
 
   let violations: Violation[];
   try {
-    violations = await withTimeout(task.run(), TIMEOUTS.FULL_TASK_MS);
+    violations = await withTimeout(task.run(), task.timeoutMs ?? TIMEOUTS.FULL_TASK_MS);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     violations = [

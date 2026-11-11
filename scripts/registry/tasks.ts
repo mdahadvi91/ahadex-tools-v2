@@ -11,6 +11,15 @@ import { run as unusedExportsRun } from '../tasks/quality/validate-unused-export
 import { run as dependencyDriftRun } from '../tasks/quality/validate-dependency-drift';
 import { run as unitTestsRun } from '../tasks/quality/unit-tests';
 
+import { run as dependencyAuditRun } from '../tasks/security/dependency-audit';
+import { run as secretScanRun } from '../tasks/security/secret-scan';
+import { run as fileUploadSecurityRun } from '../tasks/security/file-upload-security';
+import { run as securityHeadersRun } from '../tasks/security/security-headers';
+import { run as validateCspRun } from '../tasks/security/validate-csp';
+import { run as prototypePollutionRun } from '../tasks/security/validate-prototype-pollution';
+import { run as resourceExhaustionRun } from '../tasks/security/validate-resource-exhaustion';
+import { run as sensitiveDataLeaksRun } from '../tasks/security/validate-sensitive-data-leaks';
+
 const NO_TASKS: readonly never[] = [];
 
 export const TASKS: TaskRegistry = Object.freeze({
@@ -34,7 +43,16 @@ export const TASKS: TaskRegistry = Object.freeze({
   security: {
     name: 'security',
     description: 'Dependency audit, secret scan, CSP, prototype pollution.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'dependency-audit', group: 'security', run: dependencyAuditRun, timeoutMs: 300000 },
+      { name: 'secret-scan', group: 'security', run: secretScanRun },
+      { name: 'file-upload-security', group: 'security', run: fileUploadSecurityRun },
+      { name: 'security-headers', group: 'security', run: securityHeadersRun },
+      { name: 'validate-csp', group: 'security', run: validateCspRun },
+      { name: 'validate-prototype-pollution', group: 'security', run: prototypePollutionRun },
+      { name: 'validate-resource-exhaustion', group: 'security', run: resourceExhaustionRun },
+      { name: 'validate-sensitive-data-leaks', group: 'security', run: sensitiveDataLeaksRun },
+    ],
   },
   seo: {
     name: 'seo',
