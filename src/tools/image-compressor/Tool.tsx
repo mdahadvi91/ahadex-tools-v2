@@ -16,12 +16,7 @@ import Spinner from '../../components/ui/Spinner';
 import { showToast } from '../../components/ui/Toast';
 import { validateSingleFile } from '../../platform/security/file-policy';
 import { createEngine, type ImageCompressorEngine } from './engine';
-import type {
-  CompressionPreset,
-  CompressionResult,
-  OutputFormat,
-  SupportedMime,
-} from './types';
+import type { CompressionPreset, CompressionResult, OutputFormat, SupportedMime } from './types';
 import { formatBytes, presetToOptions, savingsPercent } from './types';
 import { OUTPUT_FORMATS } from './content';
 
@@ -134,7 +129,10 @@ export default function Tool() {
     setResults(newResults);
     setProcessing(false);
     if (newResults.length > 0) {
-      showToast(`Compressed ${newResults.length} file${newResults.length === 1 ? '' : 's'}.`, 'success');
+      showToast(
+        `Compressed ${newResults.length} file${newResults.length === 1 ? '' : 's'}.`,
+        'success',
+      );
     }
   }, [files, format, quality, resizeMax]);
 
@@ -188,9 +186,7 @@ export default function Tool() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-900">
-                  Preset
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Preset</label>
                 <div className="mt-2 flex gap-2">
                   {(['balanced', 'smaller', 'higher-quality'] as const).map((p) => (
                     <Button
@@ -206,16 +202,18 @@ export default function Tool() {
                       }}
                       disabled={processing}
                     >
-                      {p === 'balanced' ? 'Balanced' : p === 'smaller' ? 'Smaller' : 'Higher quality'}
+                      {p === 'balanced'
+                        ? 'Balanced'
+                        : p === 'smaller'
+                          ? 'Smaller'
+                          : 'Higher quality'}
                     </Button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900">
-                  Output format
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Output format</label>
                 <select
                   value={format}
                   onChange={(e) => setFormat(e.target.value as OutputFormat)}

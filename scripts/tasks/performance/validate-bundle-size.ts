@@ -78,11 +78,9 @@ export async function run(): Promise<Violation[]> {
 
   if (!(await pathExists(PATHS.dist))) {
     return [
-      warning(
-        'dist-missing',
-        'dist/ directory does not exist. Run `npm run build` first.',
-        { hint: 'Bundle size cannot be validated without a production build.' },
-      ),
+      warning('dist-missing', 'dist/ directory does not exist. Run `npm run build` first.', {
+        hint: 'Bundle size cannot be validated without a production build.',
+      }),
     ];
   }
 
@@ -130,7 +128,7 @@ export async function run(): Promise<Violation[]> {
     violations.push(
       info(
         'bundle-js-ok',
-        `Initial JS: ${initialJsKb.toFixed(1)} KB / ${budgets.initialJsKb} KB (${(initialJsKb / budgets.initialJsKb * 100).toFixed(0)}%).`,
+        `Initial JS: ${initialJsKb.toFixed(1)} KB / ${budgets.initialJsKb} KB (${((initialJsKb / budgets.initialJsKb) * 100).toFixed(0)}%).`,
       ),
     );
   }
@@ -147,7 +145,7 @@ export async function run(): Promise<Violation[]> {
     violations.push(
       info(
         'bundle-total-ok',
-        `Initial total: ${initialTotalKb.toFixed(1)} KB / ${budgets.initialTotalKb} KB (${(initialTotalKb / budgets.initialTotalKb * 100).toFixed(0)}%).`,
+        `Initial total: ${initialTotalKb.toFixed(1)} KB / ${budgets.initialTotalKb} KB (${((initialTotalKb / budgets.initialTotalKb) * 100).toFixed(0)}%).`,
       ),
     );
   }

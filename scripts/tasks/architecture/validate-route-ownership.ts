@@ -84,13 +84,9 @@ export async function run(): Promise<Violation[]> {
     for (const expected of EXPECTED_PAGE_COMPONENTS) {
       if (!pageBasenames.has(expected)) {
         violations.push(
-          error(
-            'page-missing',
-            `Expected page component "${expected}.tsx" is missing.`,
-            {
-              file: `src/pages/${expected}.tsx`,
-            },
-          ),
+          error('page-missing', `Expected page component "${expected}.tsx" is missing.`, {
+            file: `src/pages/${expected}.tsx`,
+          }),
         );
       }
     }
@@ -100,14 +96,10 @@ export async function run(): Promise<Violation[]> {
   for (const page of EXPECTED_PAGE_COMPONENTS) {
     if (!importedPages.includes(page)) {
       violations.push(
-        error(
-          'route-not-wired',
-          `Page "${page}" is not imported by routes.tsx.`,
-          {
-            file: 'src/router/routes.tsx',
-            hint: `Add: import ${page} from '../pages/${page}';`,
-          },
-        ),
+        error('route-not-wired', `Page "${page}" is not imported by routes.tsx.`, {
+          file: 'src/router/routes.tsx',
+          hint: `Add: import ${page} from '../pages/${page}';`,
+        }),
       );
     }
   }
@@ -116,13 +108,9 @@ export async function run(): Promise<Violation[]> {
   for (const path of STATIC_PATHS) {
     if (!declaredPaths.includes(path)) {
       violations.push(
-        warning(
-          'static-route-missing',
-          `Static route "${path}" is not declared in routes.tsx.`,
-          {
-            file: 'src/router/routes.tsx',
-          },
-        ),
+        warning('static-route-missing', `Static route "${path}" is not declared in routes.tsx.`, {
+          file: 'src/router/routes.tsx',
+        }),
       );
     }
   }
@@ -153,13 +141,9 @@ export async function run(): Promise<Violation[]> {
   for (const [p, count] of pathCounts) {
     if (count > 1) {
       violations.push(
-        error(
-          'duplicate-tool-path',
-          `Path "${p}" is used by ${count} tools.`,
-          {
-            hint: 'Each tool must have a unique path.',
-          },
-        ),
+        error('duplicate-tool-path', `Path "${p}" is used by ${count} tools.`, {
+          hint: 'Each tool must have a unique path.',
+        }),
       );
     }
   }
@@ -170,12 +154,7 @@ export async function run(): Promise<Violation[]> {
   }
   for (const [s, count] of slugCounts) {
     if (count > 1) {
-      violations.push(
-        error(
-          'duplicate-tool-slug',
-          `Slug "${s}" is used by ${count} tools.`,
-        ),
-      );
+      violations.push(error('duplicate-tool-slug', `Slug "${s}" is used by ${count} tools.`));
     }
   }
 

@@ -57,11 +57,9 @@ export async function run(): Promise<Violation[]> {
     const colon = line.indexOf(':');
     if (colon === -1) {
       violations.push(
-        warning(
-          'robots-malformed-line',
-          `Line is not in "directive: value" format: "${line}"`,
-          { file: 'public/robots.txt' },
-        ),
+        warning('robots-malformed-line', `Line is not in "directive: value" format: "${line}"`, {
+          file: 'public/robots.txt',
+        }),
       );
       continue;
     }
@@ -70,11 +68,9 @@ export async function run(): Promise<Violation[]> {
 
     if (!VALID_DIRECTIVES.has(directive)) {
       violations.push(
-        warning(
-          'robots-unknown-directive',
-          `Unknown directive "${directive}".`,
-          { file: 'public/robots.txt' },
-        ),
+        warning('robots-unknown-directive', `Unknown directive "${directive}".`, {
+          file: 'public/robots.txt',
+        }),
       );
     }
 
@@ -93,24 +89,18 @@ export async function run(): Promise<Violation[]> {
 
   if (!hasSitemap) {
     violations.push(
-      warning(
-        'robots-no-sitemap',
-        'robots.txt does not reference a Sitemap.',
-        { file: 'public/robots.txt' },
-      ),
+      warning('robots-no-sitemap', 'robots.txt does not reference a Sitemap.', {
+        file: 'public/robots.txt',
+      }),
     );
   }
 
   if (disallowAll) {
     violations.push(
-      error(
-        'robots-disallow-all',
-        'robots.txt disallows the entire site (Disallow: /).',
-        {
-          file: 'public/robots.txt',
-          hint: 'This blocks all search engines. Remove unless intentional.',
-        },
-      ),
+      error('robots-disallow-all', 'robots.txt disallows the entire site (Disallow: /).', {
+        file: 'public/robots.txt',
+        hint: 'This blocks all search engines. Remove unless intentional.',
+      }),
     );
   }
 
@@ -121,14 +111,10 @@ export async function run(): Promise<Violation[]> {
       const sitemapUrl = sitemapLine.slice(sitemapLine.indexOf(':') + 1).trim();
       if (!sitemapUrl.startsWith(siteUrl)) {
         violations.push(
-          warning(
-            'robots-sitemap-mismatch',
-            `Sitemap URL does not match VITE_SITE_URL.`,
-            {
-              file: 'public/robots.txt',
-              hint: `Expected prefix: ${siteUrl}`,
-            },
-          ),
+          warning('robots-sitemap-mismatch', `Sitemap URL does not match VITE_SITE_URL.`, {
+            file: 'public/robots.txt',
+            hint: `Expected prefix: ${siteUrl}`,
+          }),
         );
       }
     }

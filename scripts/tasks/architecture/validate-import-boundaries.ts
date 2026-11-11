@@ -17,7 +17,8 @@ import { readText, walkFiles } from '../../utils/file-system';
 import { PATHS } from '../../utils/constants';
 import { error, type Violation } from '../../utils/validation-result';
 
-type Layer = 'tools' | 'components' | 'pages' | 'router' | 'config' | 'platform' | 'scripts' | 'other';
+type Layer =
+  'tools' | 'components' | 'pages' | 'router' | 'config' | 'platform' | 'scripts' | 'other';
 
 interface LayerRule {
   allowed: ReadonlySet<Layer>;
@@ -50,7 +51,15 @@ const RULES: Record<Layer, LayerRule> = {
     reason: 'Shared components must not depend on tools, pages, router, or scripts.',
   },
   pages: {
-    allowed: new Set<Layer>(['pages', 'components', 'tools', 'config', 'platform', 'router', 'other']),
+    allowed: new Set<Layer>([
+      'pages',
+      'components',
+      'tools',
+      'config',
+      'platform',
+      'router',
+      'other',
+    ]),
     forbidden: new Set<Layer>(['scripts']),
     reason: 'Pages must not depend on scripts.',
   },
@@ -75,7 +84,15 @@ const RULES: Record<Layer, LayerRule> = {
     reason: 'Scripts must not depend on UI, tools, pages, or router.',
   },
   other: {
-    allowed: new Set<Layer>(['other', 'config', 'platform', 'components', 'pages', 'router', 'tools']),
+    allowed: new Set<Layer>([
+      'other',
+      'config',
+      'platform',
+      'components',
+      'pages',
+      'router',
+      'tools',
+    ]),
     forbidden: new Set<Layer>(['scripts']),
     reason: 'Other src files must not depend on scripts.',
   },
@@ -114,7 +131,7 @@ function stripComments(source: string): string {
       i++;
       continue;
     }
-    if (c === '"' || c === '\'' || c === '`') {
+    if (c === '"' || c === "'" || c === '`') {
       inString = c;
       out += c;
       i++;

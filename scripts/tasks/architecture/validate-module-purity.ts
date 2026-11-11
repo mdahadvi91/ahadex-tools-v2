@@ -18,6 +18,48 @@ import { error, warning, type Violation } from '../../utils/validation-result';
 
 const STRICT_MODULE_PREFIXES = ['src/config/', 'src/platform/utilities/', 'src/platform/seo/'];
 
+/** Strips function bodies so we only match top-level statements. */
+function stripFunctionBodies(source: string): string {
+  let out = '';
+  let i = 0;
+  let depth = 0;
+  let inString: string | null = null;
+  while (i < source.length) {
+    const c = source[i];
+
+    if (inString !== null) {
+      if (depth === 0) out += c;
+      if (c === '\\\\' && i + 1 < source.length) {
+        i++;
+        if (depth === 0) out += source[i];
+        continue;
+      }
+      if (c === inString) inString = null;
+      i++;
+      continue;
+    }
+
+    if (c === '"' || c === "'" || c === '`') {
+      inString = c;
+      if (depth === 0) out += c;
+      i++;
+      continue;
+    }
+
+    if (c === '{') depth++;
+    else if (c === '}') {
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) out += '\n';
+      i++;
+      continue;
+    }
+
+    if (depth === 0) out += c;
+    i++;
+  }
+  return out;
+}
+
 function isStrictModule(relPath: string): boolean {
   return STRICT_MODULE_PREFIXES.some((p) => relPath.startsWith(p));
 }
@@ -104,7 +146,8 @@ export async function run(): Promise<Violation[]> {
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
     if (relPath === 'src/main.tsx') continue;
 
-    const source = await readText(file);
+    const rawSource = await readText(file);
+    const source = stripFunctionBodies(rawSource);
     const strict = isStrictModule(relPath);
 
     for (const pattern of PATTERNS) {
@@ -112,7 +155,7 @@ export async function run(): Promise<Violation[]> {
       const re = new RegExp(pattern.regex.source, pattern.regex.flags);
       let match: RegExpExecArray | null;
       while ((match = re.exec(source)) !== null) {
-        const line = lineNumberAt(source, match.index);
+        const line = lineNumberAt(rawSource, match.index);
         if (pattern.severity === 'error') {
           violations.push(
             error('impure-module', pattern.message, {

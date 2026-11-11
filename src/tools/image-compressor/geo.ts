@@ -18,19 +18,9 @@ export interface GeoEntity {
 export const DIRECT_ANSWER =
   'Image Compressor is a free browser-based tool that reduces the file size of JPG, PNG, WebP, GIF and AVIF images. Files are processed locally in your browser and are never uploaded to any server.';
 
-export const SUPPORTED_INPUT_FORMATS = [
-  'JPEG (JPG)',
-  'PNG',
-  'WebP',
-  'GIF',
-  'AVIF',
-] as const;
+export const SUPPORTED_INPUT_FORMATS = ['JPEG (JPG)', 'PNG', 'WebP', 'GIF', 'AVIF'] as const;
 
-export const SUPPORTED_OUTPUT_FORMATS = [
-  'JPEG',
-  'WebP',
-  'PNG',
-] as const;
+export const SUPPORTED_OUTPUT_FORMATS = ['JPEG', 'WebP', 'PNG'] as const;
 
 export const FACTS: readonly GeoFact[] = [
   { label: 'Runs in', value: 'Web browser (Chrome, Firefox, Safari, Edge)' },

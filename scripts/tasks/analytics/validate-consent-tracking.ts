@@ -58,7 +58,10 @@ export async function run(): Promise<Violation[]> {
   }
 
   for (const fn of trackFns) {
-    const body = src.slice(fn.line === 0 ? 0 : src.indexOf('function', Math.max(0, fn.bodyEnd - 500)), fn.bodyEnd);
+    const body = src.slice(
+      fn.line === 0 ? 0 : src.indexOf('function', Math.max(0, fn.bodyEnd - 500)),
+      fn.bodyEnd,
+    );
     // Better: re-slice body from function start to bodyEnd.
     const fnStart = src.indexOf(`function ${fn.name}`, Math.max(0, fn.bodyEnd - 2000));
     const actualBody = fnStart >= 0 ? src.slice(fnStart, fn.bodyEnd) : body;
@@ -80,14 +83,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: analytics.ts subscribes to consent changes.
   if (!/subscribeConsent\(/.test(src)) {
     violations.push(
-      error(
-        'no-consent-subscription',
-        'analytics.ts does not subscribe to consent changes.',
-        {
-          file: 'src/platform/analytics/analytics.ts',
-          hint: 'Without subscribeConsent, revoking consent does not stop tracking.',
-        },
-      ),
+      error('no-consent-subscription', 'analytics.ts does not subscribe to consent changes.', {
+        file: 'src/platform/analytics/analytics.ts',
+        hint: 'Without subscribeConsent, revoking consent does not stop tracking.',
+      }),
     );
   }
 
@@ -96,14 +95,10 @@ export async function run(): Promise<Violation[]> {
     const eventsSrc = await readText(EVENTS_FILE);
     if (!/consent_update/.test(eventsSrc)) {
       violations.push(
-        warning(
-          'missing-consent-event',
-          'No consent_update event is declared in events.ts.',
-          {
-            file: 'src/platform/analytics/events.ts',
-            hint: 'Track consent changes for auditing.',
-          },
-        ),
+        warning('missing-consent-event', 'No consent_update event is declared in events.ts.', {
+          file: 'src/platform/analytics/events.ts',
+          hint: 'Track consent changes for auditing.',
+        }),
       );
     }
   }
@@ -113,11 +108,9 @@ export async function run(): Promise<Violation[]> {
     const cmSrc = await readText(CONSENT_MANAGER);
     if (!/export\s+function\s+subscribeConsent/.test(cmSrc)) {
       violations.push(
-        error(
-          'consent-no-subscribe',
-          'consent-manager.ts does not export subscribeConsent.',
-          { file: 'src/platform/privacy/consent-manager.ts' },
-        ),
+        error('consent-no-subscribe', 'consent-manager.ts does not export subscribeConsent.', {
+          file: 'src/platform/privacy/consent-manager.ts',
+        }),
       );
     }
   }

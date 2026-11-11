@@ -35,8 +35,7 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(ANALYTICS_ENTRY);
     const exportsTrack = /export\s+function\s+track(?:Event|PageView)/.test(src);
     const hasConsentCheck =
-      /isGranted\(\s*['"]analytics['"]\s*\)/.test(src) &&
-      /subscribeConsent/.test(src);
+      /isGranted\(\s*['"]analytics['"]\s*\)/.test(src) && /subscribeConsent/.test(src);
 
     if (!exportsTrack) {
       violations.push(
@@ -78,7 +77,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 2: no third-party scripts loaded outside consent.
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of files) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -93,8 +95,7 @@ export async function run(): Promise<Violation[]> {
       if (pattern.test(src)) {
         const idx = src.search(pattern);
         const hasGating =
-          /isGranted\(/.test(src) &&
-          (/consent/i.test(src) || /getConsent\(/.test(src));
+          /isGranted\(/.test(src) && (/consent/i.test(src) || /getConsent\(/.test(src));
         if (!hasGating) {
           violations.push(
             error(

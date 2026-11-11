@@ -4,11 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  presetToOptions,
-  formatBytes,
-  savingsPercent,
-} from '../types';
+import { presetToOptions, formatBytes, savingsPercent } from '../types';
 import {
   validateInput,
   isMimeSupported,

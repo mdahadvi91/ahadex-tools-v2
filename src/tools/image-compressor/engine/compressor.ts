@@ -16,11 +16,7 @@ import type {
 import { MAX_PIXEL_COUNT, validateInput } from './validation';
 
 type CompressionErrorCode =
-  | 'decode-failed'
-  | 'encode-failed'
-  | 'canvas-unavailable'
-  | 'unsupported-format'
-  | 'internal';
+  'decode-failed' | 'encode-failed' | 'canvas-unavailable' | 'unsupported-format' | 'internal';
 
 class CompressionError extends Error {
   readonly code: CompressionErrorCode;
@@ -159,10 +155,7 @@ export async function compressImage(input: CompressionInput): Promise<Compressio
   }
 
   const decoded = await decode(input.bytes, input.inputMime);
-  const outputDims = computeOutputDimensions(
-    decoded.original,
-    input.options.resizeToMaxDimension,
-  );
+  const outputDims = computeOutputDimensions(decoded.original, input.options.resizeToMaxDimension);
 
   const canvasInfo = makeCanvas(outputDims.width, outputDims.height);
   try {

@@ -17,12 +17,7 @@ export default defineConfig({
       'tests/security/**/*.test.ts',
       'tests/performance/**/*.test.ts',
     ],
-    exclude: [
-      'node_modules',
-      'dist',
-      'tests/e2e/**',
-      'tests/accessibility/**',
-    ],
+    exclude: ['node_modules', 'dist', 'tests/e2e/**', 'tests/accessibility/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],

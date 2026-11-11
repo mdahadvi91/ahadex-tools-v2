@@ -32,11 +32,7 @@ const PII_KEYS = [
 ];
 
 /** Allowed keys in localStorage. Extend deliberately. */
-const ALLOWED_STORAGE_KEYS = new Set([
-  'ahx_consent',
-  'ahx_theme',
-  'ahx_lang',
-]);
+const ALLOWED_STORAGE_KEYS = new Set(['ahx_consent', 'ahx_theme', 'ahx_lang']);
 
 function lineNumberAt(source: string, index: number): number {
   let count = 1;
@@ -60,11 +56,9 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(DATA_MIN);
     if (!/export\s+function\s+minimize\b/.test(src)) {
       violations.push(
-        error(
-          'data-min-missing-minimize',
-          'data-minimization.ts must export "minimize".',
-          { file: 'src/platform/privacy/data-minimization.ts' },
-        ),
+        error('data-min-missing-minimize', 'data-minimization.ts must export "minimize".', {
+          file: 'src/platform/privacy/data-minimization.ts',
+        }),
       );
     }
     if (!/export\s+function\s+truncateString\b/.test(src)) {
@@ -113,7 +107,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 4: no source file may log PII keys to analytics.
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of files) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
     if (relPath.startsWith('src/platform/analytics/')) continue;
 
@@ -129,15 +126,11 @@ export async function run(): Promise<Violation[]> {
         const match = pattern.exec(src);
         if (match && /track/i.test(src.slice(Math.max(0, match.index - 200), match.index))) {
           violations.push(
-            error(
-              'analytics-pii-key',
-              `Analytics call includes forbidden PII key "${key}".`,
-              {
-                file: relPath,
-                line: lineNumberAt(src, match.index),
-                hint: 'Remove the PII key from the payload.',
-              },
-            ),
+            error('analytics-pii-key', `Analytics call includes forbidden PII key "${key}".`, {
+              file: relPath,
+              line: lineNumberAt(src, match.index),
+              hint: 'Remove the PII key from the payload.',
+            }),
           );
           break;
         }
@@ -148,7 +141,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 5: localStorage must use only allowed keys.
   const storageFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of storageFiles) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -158,15 +154,11 @@ export async function run(): Promise<Violation[]> {
       const key = match[1];
       if (!ALLOWED_STORAGE_KEYS.has(key)) {
         violations.push(
-          warning(
-            'storage-key-unapproved',
-            `Storage key "${key}" is not in the allowlist.`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, match.index),
-              hint: 'Add the key to ALLOWED_STORAGE_KEYS in the validator if intentional.',
-            },
-          ),
+          warning('storage-key-unapproved', `Storage key "${key}" is not in the allowlist.`, {
+            file: relPath,
+            line: lineNumberAt(src, match.index),
+            hint: 'Add the key to ALLOWED_STORAGE_KEYS in the validator if intentional.',
+          }),
         );
       }
       if (match.index === re.lastIndex) re.lastIndex += 1;

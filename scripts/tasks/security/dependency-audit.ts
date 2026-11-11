@@ -103,9 +103,7 @@ export async function run(): Promise<Violation[]> {
             }),
           );
         } else {
-          violations.push(
-            info('low-vulnerability', message, { file: 'package-lock.json' }),
-          );
+          violations.push(info('low-vulnerability', message, { file: 'package-lock.json' }));
         }
       }
 

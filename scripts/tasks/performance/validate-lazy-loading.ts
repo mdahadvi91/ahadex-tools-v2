@@ -19,10 +19,7 @@ function lineNumberAt(src: string, index: number): number {
 }
 
 /** Files exempt from lazy img checks (above-the-fold logos, etc.). */
-const EAGER_IMG_ALLOW = new Set([
-  'src/components/Header.tsx',
-  'src/components/Footer.tsx',
-]);
+const EAGER_IMG_ALLOW = new Set(['src/components/Header.tsx', 'src/components/Footer.tsx']);
 
 /** Tags below fold. Anything matching is expected to be lazy. */
 const IMG_RE = /<img\b[^>]*>/g;
@@ -32,7 +29,10 @@ export async function run(): Promise<Violation[]> {
 
   const files = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
   for (const file of files) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -48,15 +48,11 @@ export async function run(): Promise<Violation[]> {
         const isSvg = /\.svg["']/.test(tag);
         if (!hasLazy && !hasEager && !isSvg) {
           violations.push(
-            warning(
-              'img-not-lazy',
-              '<img> without loading="lazy". Confirm it is above the fold.',
-              {
-                file: relPath,
-                line: lineNumberAt(src, m.index),
-                hint: 'Add loading="lazy" for below-the-fold images.',
-              },
-            ),
+            warning('img-not-lazy', '<img> without loading="lazy". Confirm it is above the fold.', {
+              file: relPath,
+              line: lineNumberAt(src, m.index),
+              hint: 'Add loading="lazy" for below-the-fold images.',
+            }),
           );
         }
         if (m.index === IMG_RE.lastIndex) IMG_RE.lastIndex += 1;
@@ -69,15 +65,11 @@ export async function run(): Promise<Violation[]> {
       let m: RegExpExecArray | null;
       while ((m = importRe.exec(src)) !== null) {
         violations.push(
-          error(
-            'page-static-tool-import',
-            `Page statically imports tool component "${m[1]}".`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: 'Use React.lazy for tool pages to split bundles.',
-            },
-          ),
+          error('page-static-tool-import', `Page statically imports tool component "${m[1]}".`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: 'Use React.lazy for tool pages to split bundles.',
+          }),
         );
       }
     }
@@ -86,11 +78,9 @@ export async function run(): Promise<Violation[]> {
     if (relPath === 'src/router/routes.tsx') {
       if (!/lazy\(|React\.lazy|useRoutes/.test(src)) {
         violations.push(
-          warning(
-            'routes-no-lazy',
-            'routes.tsx does not use lazy loading for tool routes.',
-            { file: 'src/router/routes.tsx' },
-          ),
+          warning('routes-no-lazy', 'routes.tsx does not use lazy loading for tool routes.', {
+            file: 'src/router/routes.tsx',
+          }),
         );
       }
     }
@@ -99,20 +89,19 @@ export async function run(): Promise<Violation[]> {
   // Rule 4: no sync import of large PDF libraries from pages.
   const pdfLibs = ['pdf-lib', 'pdfjs-dist'];
   for (const file of files) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (!relPath.startsWith('src/pages/')) continue;
     const src = await readText(file);
     for (const lib of pdfLibs) {
       if (new RegExp(`from\\s+['"]${lib}['"]`).test(src)) {
         violations.push(
-          error(
-            'page-sync-pdf-lib',
-            `Page imports heavy "${lib}" synchronously.`,
-            {
-              file: relPath,
-              hint: 'Move PDF processing into a tool engine (worker) and import lazily.',
-            },
-          ),
+          error('page-sync-pdf-lib', `Page imports heavy "${lib}" synchronously.`, {
+            file: relPath,
+            hint: 'Move PDF processing into a tool engine (worker) and import lazily.',
+          }),
         );
       }
     }
@@ -125,16 +114,17 @@ export async function run(): Promise<Violation[]> {
       extensions: ['.ts', '.tsx'],
     });
     for (const file of engineFiles) {
-      const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+      const relPath = file
+        .replace(PATHS.root + '/', '')
+        .split('\\')
+        .join('/');
       if (!relPath.includes('/engine/') || !relPath.endsWith('worker.ts')) continue;
       const src = await readText(file);
       if (!/self\.onmessage|addEventListener\(['"]message/.test(src)) {
         violations.push(
-          warning(
-            'worker-no-handler',
-            'Worker file does not register a message handler.',
-            { file: relPath },
-          ),
+          warning('worker-no-handler', 'Worker file does not register a message handler.', {
+            file: relPath,
+          }),
         );
       }
     }

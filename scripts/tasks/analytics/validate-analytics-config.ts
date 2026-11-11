@@ -32,11 +32,9 @@ export async function run(): Promise<Violation[]> {
     const envSrc = await readText(PATHS.envExample);
     if (!/VITE_GA_MEASUREMENT_ID/.test(envSrc)) {
       violations.push(
-        error(
-          'env-example-missing-ga',
-          '.env.example does not document VITE_GA_MEASUREMENT_ID.',
-          { file: '.env.example' },
-        ),
+        error('env-example-missing-ga', '.env.example does not document VITE_GA_MEASUREMENT_ID.', {
+          file: '.env.example',
+        }),
       );
     }
   }
@@ -52,11 +50,9 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(ENV_FILE);
     if (!/gaMeasurementId/.test(src)) {
       violations.push(
-        error(
-          'environment-no-ga',
-          'environment.ts does not expose gaMeasurementId.',
-          { file: 'src/config/environment.ts' },
-        ),
+        error('environment-no-ga', 'environment.ts does not expose gaMeasurementId.', {
+          file: 'src/config/environment.ts',
+        }),
       );
     }
     // Must be nullable (null when disabled).
@@ -72,11 +68,9 @@ export async function run(): Promise<Violation[]> {
     // Format validation should exist.
     if (!/GA_ID_PATTERN|G-/.test(src)) {
       violations.push(
-        warning(
-          'environment-no-ga-pattern',
-          'environment.ts does not validate GA ID format.',
-          { file: 'src/config/environment.ts' },
-        ),
+        warning('environment-no-ga-pattern', 'environment.ts does not validate GA ID format.', {
+          file: 'src/config/environment.ts',
+        }),
       );
     }
   }
@@ -92,23 +86,17 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(FLAGS_FILE);
     if (!/analytics\s*:/.test(src)) {
       violations.push(
-        error(
-          'flags-no-analytics',
-          'feature-flags.ts does not declare an "analytics" flag.',
-          { file: 'src/config/feature-flags.ts' },
-        ),
+        error('flags-no-analytics', 'feature-flags.ts does not declare an "analytics" flag.', {
+          file: 'src/config/feature-flags.ts',
+        }),
       );
     }
     if (!/gaMeasurementId/.test(src)) {
       violations.push(
-        warning(
-          'flags-no-ga-reference',
-          'feature-flags.ts does not check gaMeasurementId.',
-          {
-            file: 'src/config/feature-flags.ts',
-            hint: 'Analytics should be enabled only when a GA ID is present.',
-          },
-        ),
+        warning('flags-no-ga-reference', 'feature-flags.ts does not check gaMeasurementId.', {
+          file: 'src/config/feature-flags.ts',
+          hint: 'Analytics should be enabled only when a GA ID is present.',
+        }),
       );
     }
   }
@@ -116,7 +104,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 4: no hardcoded GA ID anywhere in src/.
   const sourceFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of sourceFiles) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -128,15 +119,11 @@ export async function run(): Promise<Violation[]> {
       if (/GA_ID_PATTERN|regex|pattern|test\(/i.test(context)) continue;
       if (GA_ID_PATTERN.test(m[0])) {
         violations.push(
-          warning(
-            'hardcoded-ga-id',
-            `Possible hardcoded GA ID: "${m[0]}".`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: 'Use VITE_GA_MEASUREMENT_ID instead.',
-            },
-          ),
+          warning('hardcoded-ga-id', `Possible hardcoded GA ID: "${m[0]}".`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: 'Use VITE_GA_MEASUREMENT_ID instead.',
+          }),
         );
       }
       if (m.index === re.lastIndex) re.lastIndex += 1;

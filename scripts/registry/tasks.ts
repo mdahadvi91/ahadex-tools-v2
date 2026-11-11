@@ -58,12 +58,24 @@ export const TASKS: TaskRegistry = Object.freeze({
     name: 'architecture',
     description: 'Import boundaries, cycles, module purity, registry integrity.',
     tasks: [
-      { name: 'validate-import-boundaries', group: 'architecture', run: validateImportBoundariesRun },
-      { name: 'validate-circular-dependencies', group: 'architecture', run: validateCircularDependenciesRun },
+      {
+        name: 'validate-import-boundaries',
+        group: 'architecture',
+        run: validateImportBoundariesRun,
+      },
+      {
+        name: 'validate-circular-dependencies',
+        group: 'architecture',
+        run: validateCircularDependenciesRun,
+      },
       { name: 'validate-module-purity', group: 'architecture', run: validateModulePurityRun },
       { name: 'validate-tool-isolation', group: 'architecture', run: validateToolIsolationRun },
       { name: 'validate-route-ownership', group: 'architecture', run: validateRouteOwnershipRun },
-      { name: 'validate-registry-integrity', group: 'architecture', run: validateRegistryIntegrityRun },
+      {
+        name: 'validate-registry-integrity',
+        group: 'architecture',
+        run: validateRegistryIntegrityRun,
+      },
       { name: 'validate-dependency-graph', group: 'architecture', run: validateDependencyGraphRun },
     ],
   },
@@ -139,7 +151,11 @@ export const TASKS: TaskRegistry = Object.freeze({
     description: 'Cookie consent, enforcement, privacy links, data minimization.',
     tasks: [
       { name: 'validate-cookie-consent', group: 'privacy', run: validateCookieConsentRun },
-      { name: 'validate-consent-enforcement', group: 'privacy', run: validateConsentEnforcementRun },
+      {
+        name: 'validate-consent-enforcement',
+        group: 'privacy',
+        run: validateConsentEnforcementRun,
+      },
       { name: 'validate-privacy-links', group: 'privacy', run: validatePrivacyLinksRun },
       { name: 'validate-data-minimization', group: 'privacy', run: validateDataMinimizationRun },
       { name: 'validate-tracking-privacy', group: 'privacy', run: validateTrackingPrivacyRun },
@@ -157,7 +173,11 @@ export const TASKS: TaskRegistry = Object.freeze({
       { name: 'validate-bundle-size', group: 'performance', run: validateBundleSizeRun },
       { name: 'validate-web-vitals', group: 'performance', run: validateWebVitalsRun },
       { name: 'validate-resource-budget', group: 'performance', run: validateResourceBudgetRun },
-      { name: 'validate-third-party-budget', group: 'performance', run: validateThirdPartyBudgetRun },
+      {
+        name: 'validate-third-party-budget',
+        group: 'performance',
+        run: validateThirdPartyBudgetRun,
+      },
       { name: 'validate-lazy-loading', group: 'performance', run: validateLazyLoadingRun },
     ],
   },

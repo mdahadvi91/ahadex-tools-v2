@@ -57,11 +57,9 @@ export async function run(): Promise<Violation[]> {
   }
   if (!xml.includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"')) {
     violations.push(
-      error(
-        'sitemap-invalid-ns',
-        'Missing sitemap namespace declaration.',
-        { file: 'public/sitemap.xml' },
-      ),
+      error('sitemap-invalid-ns', 'Missing sitemap namespace declaration.', {
+        file: 'public/sitemap.xml',
+      }),
     );
   }
 
@@ -95,22 +93,18 @@ export async function run(): Promise<Violation[]> {
   const siteUrl = getSiteUrl();
   if (siteUrl === null) {
     violations.push(
-      warning(
-        'sitemap-no-site-url',
-        'VITE_SITE_URL not set; skipping URL prefix validation.',
-        { file: 'public/sitemap.xml' },
-      ),
+      warning('sitemap-no-site-url', 'VITE_SITE_URL not set; skipping URL prefix validation.', {
+        file: 'public/sitemap.xml',
+      }),
     );
   } else {
     for (const path of EXPECTED_STATIC_PATHS) {
       const expected = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
       if (!locs.includes(expected)) {
         violations.push(
-          error(
-            'sitemap-missing-route',
-            `Expected route not found in sitemap: ${expected}`,
-            { file: 'public/sitemap.xml' },
-          ),
+          error('sitemap-missing-route', `Expected route not found in sitemap: ${expected}`, {
+            file: 'public/sitemap.xml',
+          }),
         );
       }
     }

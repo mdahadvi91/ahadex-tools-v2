@@ -19,7 +19,6 @@ export const metadata: PageMetadata = {
   noIndex: false,
 };
 
-export const ogImageAlt =
-  'Image Compressor tool preview showing before and after file sizes';
+export const ogImageAlt = 'Image Compressor tool preview showing before and after file sizes';
 
 export default metadata;

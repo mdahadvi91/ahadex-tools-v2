@@ -8,12 +8,7 @@ import { readText, pathExists } from '../../utils/file-system';
 import { PATHS } from '../../utils/constants';
 import { error, warning, type Violation } from '../../utils/validation-result';
 
-const FORBIDDEN_SCRIPT_SOURCES = [
-  "'unsafe-eval'",
-  "'unsafe-inline'",
-  'http:',
-  'https://*',
-];
+const FORBIDDEN_SCRIPT_SOURCES = ["'unsafe-eval'", "'unsafe-inline'", 'http:', 'https://*'];
 
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
@@ -108,11 +103,9 @@ export async function run(): Promise<Violation[]> {
   // Must include worker-src for Web Workers.
   if (!directives.has('worker-src')) {
     violations.push(
-      warning(
-        'csp-missing-worker-src',
-        'CSP should declare worker-src (Web Workers).',
-        { file: 'public/_headers' },
-      ),
+      warning('csp-missing-worker-src', 'CSP should declare worker-src (Web Workers).', {
+        file: 'public/_headers',
+      }),
     );
   }
 

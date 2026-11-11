@@ -71,11 +71,9 @@ export async function run(): Promise<Violation[]> {
     const topLevelSet = /^setCookie\(/m.test(cmSrc);
     if (topLevelSet) {
       violations.push(
-        error(
-          'cookie-set-at-import',
-          'cookie-manager.ts sets a cookie at module load.',
-          { file: 'src/platform/privacy/cookie-manager.ts' },
-        ),
+        error('cookie-set-at-import', 'cookie-manager.ts sets a cookie at module load.', {
+          file: 'src/platform/privacy/cookie-manager.ts',
+        }),
       );
     }
   }
@@ -83,7 +81,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: scan src for tracking APIs that must be gated.
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of files) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -94,15 +95,11 @@ export async function run(): Promise<Violation[]> {
       while ((match = re.exec(src)) !== null) {
         if (!isGated(src, match.index)) {
           violations.push(
-            error(
-              'tracking-ungated',
-              `Tracking API "${api.name}" used without consent gate.`,
-              {
-                file: relPath,
-                line: lineNumberAt(src, match.index),
-                hint: 'Wrap in isGranted("analytics") or isGranted("ads").',
-              },
-            ),
+            error('tracking-ungated', `Tracking API "${api.name}" used without consent gate.`, {
+              file: relPath,
+              line: lineNumberAt(src, match.index),
+              hint: 'Wrap in isGranted("analytics") or isGranted("ads").',
+            }),
           );
         }
         if (match.index === re.lastIndex) re.lastIndex += 1;
@@ -137,14 +134,10 @@ export async function run(): Promise<Violation[]> {
         const name = cookieMatch[1];
         if (!PRE_CONSENT_COOKIE_NAMES.has(name) && !isGated(src, cookieMatch.index)) {
           violations.push(
-            warning(
-              'cookie-set-ungated',
-              `Cookie "${name}" set outside consent gate.`,
-              {
-                file: relPath,
-                line: lineNumberAt(src, cookieMatch.index),
-              },
-            ),
+            warning('cookie-set-ungated', `Cookie "${name}" set outside consent gate.`, {
+              file: relPath,
+              line: lineNumberAt(src, cookieMatch.index),
+            }),
           );
         }
         if (cookieMatch.index === cookieRe.lastIndex) cookieRe.lastIndex += 1;

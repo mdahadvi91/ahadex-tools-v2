@@ -45,11 +45,7 @@ export const HERO = {
     'Reduce the file size of JPG, PNG, WebP, GIF and AVIF images by re-encoding them in your browser.',
   subtitle:
     'No account required. Files are processed in browser memory and never transmitted to a server.',
-  trustSignals: [
-    'Runs in your browser',
-    'No account required',
-    'No file upload',
-  ],
+  trustSignals: ['Runs in your browser', 'No account required', 'No file upload'],
 } as const;
 
 export const DIRECT_ANSWER =
@@ -81,9 +77,7 @@ export const SECTIONS: readonly ContentSection[] = [
   },
   {
     heading: 'Which format should I choose?',
-    paragraphs: [
-      'The best format depends on the content and whether transparency matters.',
-    ],
+    paragraphs: ['The best format depends on the content and whether transparency matters.'],
     list: [
       'JPEG: small files for photographs and gradients. No transparency. Best when file size matters more than perfect edges.',
       'WebP: good balance of quality and size for modern browsers. Supports transparency. Typically smaller than JPEG at similar visual quality.',
@@ -155,11 +149,41 @@ export const USE_CASES: readonly UseCase[] = [
 ];
 
 export const SUPPORTED_INPUT_FORMATS: readonly FormatInfo[] = [
-  { name: 'JPEG', mime: 'image/jpeg', lossy: true, transparency: false, note: 'Standard for photos.' },
-  { name: 'PNG', mime: 'image/png', lossy: false, transparency: true, note: 'Lossless, supports alpha.' },
-  { name: 'WebP', mime: 'image/webp', lossy: true, transparency: true, note: 'Modern format, small files.' },
-  { name: 'GIF', mime: 'image/gif', lossy: false, transparency: true, note: 'Single-frame output only.' },
-  { name: 'AVIF', mime: 'image/avif', lossy: true, transparency: true, note: 'Input only; output pending.' },
+  {
+    name: 'JPEG',
+    mime: 'image/jpeg',
+    lossy: true,
+    transparency: false,
+    note: 'Standard for photos.',
+  },
+  {
+    name: 'PNG',
+    mime: 'image/png',
+    lossy: false,
+    transparency: true,
+    note: 'Lossless, supports alpha.',
+  },
+  {
+    name: 'WebP',
+    mime: 'image/webp',
+    lossy: true,
+    transparency: true,
+    note: 'Modern format, small files.',
+  },
+  {
+    name: 'GIF',
+    mime: 'image/gif',
+    lossy: false,
+    transparency: true,
+    note: 'Single-frame output only.',
+  },
+  {
+    name: 'AVIF',
+    mime: 'image/avif',
+    lossy: true,
+    transparency: true,
+    note: 'Input only; output pending.',
+  },
 ];
 
 export const PRIVACY = {
@@ -216,8 +240,7 @@ export const FAQ: readonly FAQItem[] = [
   },
   {
     question: 'Is there a watermark or signup?',
-    answer:
-      'No watermark and no signup. The tool is free to use and does not require an account.',
+    answer: 'No watermark and no signup. The tool is free to use and does not require an account.',
   },
   {
     question: 'Why is my PNG larger after compression?',

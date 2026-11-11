@@ -94,18 +94,22 @@ async function checkAnalyticsPayloads(): Promise<Violation[]> {
     const src = await readText(file);
     const relPath = relative(PATHS.root, file).split('\\').join('/');
 
-    const forbiddenKeys = ['file.name', 'fileName', 'filename', 'fileContent', 'content', 'blob', 'buffer'];
+    const forbiddenKeys = [
+      'file.name',
+      'fileName',
+      'filename',
+      'fileContent',
+      'content',
+      'blob',
+      'buffer',
+    ];
     for (const key of forbiddenKeys) {
       if (new RegExp(`['"]${key.replace('.', '\\.')}['"]`, 'i').test(src)) {
         violations.push(
-          error(
-            'analytics-forbidden-key',
-            `Analytics module references forbidden key "${key}".`,
-            {
-              file: relPath,
-              hint: 'Analytics payloads must never include file data.',
-            },
-          ),
+          error('analytics-forbidden-key', `Analytics module references forbidden key "${key}".`, {
+            file: relPath,
+            hint: 'Analytics payloads must never include file data.',
+          }),
         );
       }
     }

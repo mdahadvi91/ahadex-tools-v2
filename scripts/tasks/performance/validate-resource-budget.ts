@@ -51,11 +51,9 @@ export async function run(): Promise<Violation[]> {
   // Rule 2: resource-budget.ts exists and imports from config.
   if (!(await pathExists(RESOURCE_BUDGET))) {
     violations.push(
-      error(
-        'resource-budget-missing',
-        'src/platform/performance/resource-budget.ts is missing.',
-        { file: 'src/platform/performance/resource-budget.ts' },
-      ),
+      error('resource-budget-missing', 'src/platform/performance/resource-budget.ts is missing.', {
+        file: 'src/platform/performance/resource-budget.ts',
+      }),
     );
   } else {
     const src = await readText(RESOURCE_BUDGET);
@@ -85,21 +83,17 @@ export async function run(): Promise<Violation[]> {
 
     if (!/export\s+function\s+isWithinBudget/.test(src)) {
       violations.push(
-        error(
-          'resource-budget-no-check',
-          'resource-budget.ts does not export isWithinBudget.',
-          { file: 'src/platform/performance/resource-budget.ts' },
-        ),
+        error('resource-budget-no-check', 'resource-budget.ts does not export isWithinBudget.', {
+          file: 'src/platform/performance/resource-budget.ts',
+        }),
       );
     }
 
     if (!/export\s+function\s+measureUsage/.test(src)) {
       violations.push(
-        error(
-          'resource-budget-no-measure',
-          'resource-budget.ts does not export measureUsage.',
-          { file: 'src/platform/performance/resource-budget.ts' },
-        ),
+        error('resource-budget-no-measure', 'resource-budget.ts does not export measureUsage.', {
+          file: 'src/platform/performance/resource-budget.ts',
+        }),
       );
     }
   }
@@ -107,33 +101,25 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: performance-monitor.ts calls isWithinBudget on load.
   if (!(await pathExists(MONITOR))) {
     violations.push(
-      error(
-        'monitor-missing',
-        'src/platform/performance/performance-monitor.ts is missing.',
-        { file: 'src/platform/performance/performance-monitor.ts' },
-      ),
+      error('monitor-missing', 'src/platform/performance/performance-monitor.ts is missing.', {
+        file: 'src/platform/performance/performance-monitor.ts',
+      }),
     );
   } else {
     const src = await readText(MONITOR);
     if (!/isWithinBudget\(/.test(src)) {
       violations.push(
-        error(
-          'monitor-no-budget-check',
-          'performance-monitor.ts does not call isWithinBudget.',
-          {
-            file: 'src/platform/performance/performance-monitor.ts',
-            hint: 'Without it, resource overruns are never logged.',
-          },
-        ),
+        error('monitor-no-budget-check', 'performance-monitor.ts does not call isWithinBudget.', {
+          file: 'src/platform/performance/performance-monitor.ts',
+          hint: 'Without it, resource overruns are never logged.',
+        }),
       );
     }
     if (!/measureUsage\(/.test(src)) {
       violations.push(
-        warning(
-          'monitor-no-measure',
-          'performance-monitor.ts does not call measureUsage.',
-          { file: 'src/platform/performance/performance-monitor.ts' },
-        ),
+        warning('monitor-no-measure', 'performance-monitor.ts does not call measureUsage.', {
+          file: 'src/platform/performance/performance-monitor.ts',
+        }),
       );
     }
   }

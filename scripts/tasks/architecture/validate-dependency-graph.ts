@@ -20,19 +20,59 @@ interface PackageJson {
 }
 
 const NODE_BUILTINS = new Set([
-  'fs', 'path', 'os', 'crypto', 'http', 'https', 'url', 'util', 'stream',
-  'events', 'child_process', 'buffer', 'assert', 'zlib', 'worker_threads',
-  'perf_hooks', 'module', 'process', 'readline', 'net', 'dns', 'tls',
-  'string_decoder', 'querystring', 'punycode', 'timers', 'vm', 'v8',
+  'fs',
+  'path',
+  'os',
+  'crypto',
+  'http',
+  'https',
+  'url',
+  'util',
+  'stream',
+  'events',
+  'child_process',
+  'buffer',
+  'assert',
+  'zlib',
+  'worker_threads',
+  'perf_hooks',
+  'module',
+  'process',
+  'readline',
+  'net',
+  'dns',
+  'tls',
+  'string_decoder',
+  'querystring',
+  'punycode',
+  'timers',
+  'vm',
+  'v8',
 ]);
 
 const CLI_ONLY = new Set([
-  'typescript', 'eslint', 'prettier', 'vitest', 'tsx', 'vite',
-  '@vitejs/plugin-react', '@tailwindcss/postcss', '@eslint/js',
-  'typescript-eslint', 'eslint-config-prettier', 'eslint-plugin-react-hooks',
-  'globals', 'postcss', 'autoprefixer', 'tailwindcss',
-  '@types/node', '@types/react', '@types/react-dom',
-  'playwright', '@playwright/test', '@vitest/ui',
+  'typescript',
+  'eslint',
+  'prettier',
+  'vitest',
+  'tsx',
+  'vite',
+  '@vitejs/plugin-react',
+  '@tailwindcss/postcss',
+  '@eslint/js',
+  'typescript-eslint',
+  'eslint-config-prettier',
+  'eslint-plugin-react-hooks',
+  'globals',
+  'postcss',
+  'autoprefixer',
+  'tailwindcss',
+  '@types/node',
+  '@types/react',
+  '@types/react-dom',
+  'playwright',
+  '@playwright/test',
+  '@vitest/ui',
 ]);
 
 function isNodeBuiltin(spec: string): boolean {
@@ -95,9 +135,7 @@ function lineNumberAt(source: string, index: number): number {
 }
 
 /** Extracts bare module specifiers from import/export statements. */
-function extractBareImports(
-  source: string,
-): Array<{ spec: string; line: number }> {
+function extractBareImports(source: string): Array<{ spec: string; line: number }> {
   const clean = stripComments(source);
   const out: Array<{ spec: string; line: number }> = [];
   const re = /\b(?:import|from)\s+(?:type\s+)?[^'"]*?from\s+['"]([^'"]+)['"]/g;
@@ -132,9 +170,7 @@ function extractRegisteredGroups(tasksSource: string): Set<string> {
 }
 
 /** Detects group cycles in the dependency graph. */
-function findGroupCycles(
-  deps: Record<string, readonly string[]>,
-): string[][] {
+function findGroupCycles(deps: Record<string, readonly string[]>): string[][] {
   const cycles: string[][] = [];
   const visited = new Set<string>();
   const stack: string[] = [];
@@ -162,9 +198,7 @@ export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
   // Rule 1: group dependency graph must be acyclic.
-  const cycles = findGroupCycles(
-    GROUP_DEPENDENCIES as Record<string, readonly string[]>,
-  );
+  const cycles = findGroupCycles(GROUP_DEPENDENCIES as Record<string, readonly string[]>);
   for (const cycle of cycles) {
     violations.push(
       error('group-cycle', `Group dependency cycle: ${cycle.join(' -> ')}`, {
@@ -212,11 +246,9 @@ export async function run(): Promise<Violation[]> {
     for (const child of children) {
       if (!declaredGroups.has(child)) {
         violations.push(
-          error(
-            'dep-unknown-group',
-            `Group "${group}" depends on unknown group "${child}".`,
-            { file: 'scripts/registry/dependencies.ts' },
-          ),
+          error('dep-unknown-group', `Group "${group}" depends on unknown group "${child}".`, {
+            file: 'scripts/registry/dependencies.ts',
+          }),
         );
       }
     }
@@ -236,7 +268,10 @@ export async function run(): Promise<Violation[]> {
 
   const usedPackages = new Map<string, string>();
   for (const file of sourceFiles) {
-    const rel = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const rel = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (!rel.startsWith('src/') && !rel.startsWith('scripts/')) continue;
     if (rel.endsWith('.test.ts') || rel.endsWith('.test.tsx')) continue;
 

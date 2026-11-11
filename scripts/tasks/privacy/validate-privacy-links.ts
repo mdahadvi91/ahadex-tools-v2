@@ -37,11 +37,9 @@ export async function run(): Promise<Violation[]> {
     for (const path of REQUIRED_LEGAL_LINKS) {
       if (!nav.includes(`'${path}'`) && !nav.includes(`"${path}"`)) {
         violations.push(
-          error(
-            'legal-link-missing',
-            `Legal link "${path}" is missing from navigation.ts.`,
-            { file: 'src/config/navigation.ts' },
-          ),
+          error('legal-link-missing', `Legal link "${path}" is missing from navigation.ts.`, {
+            file: 'src/config/navigation.ts',
+          }),
         );
       }
     }
@@ -58,23 +56,17 @@ export async function run(): Promise<Violation[]> {
     const footer = await readText(FOOTER);
     if (!/FOOTER_SECTIONS/.test(footer)) {
       violations.push(
-        error(
-          'footer-no-sections',
-          'Footer.tsx does not render FOOTER_SECTIONS.',
-          {
-            file: 'src/components/Footer.tsx',
-            hint: 'Legal links are unreachable from the footer.',
-          },
-        ),
+        error('footer-no-sections', 'Footer.tsx does not render FOOTER_SECTIONS.', {
+          file: 'src/components/Footer.tsx',
+          hint: 'Legal links are unreachable from the footer.',
+        }),
       );
     }
   }
 
   // Rule 3: every legal page exists and includes the contact email.
   const pages = await walkFiles(PATHS.srcPages, { extensions: ['.tsx'] });
-  const pageBasenames = new Set(
-    pages.map((p) => p.split('/').pop()?.replace('.tsx', '') ?? ''),
-  );
+  const pageBasenames = new Set(pages.map((p) => p.split('/').pop()?.replace('.tsx', '') ?? ''));
 
   const requiredPages: Array<[string, string]> = [
     ['PrivacyPolicy', 'privacy'],
@@ -101,11 +93,10 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(privacyPath);
     if (!src.includes(CONTACT_EMAIL)) {
       violations.push(
-        warning(
-          'privacy-no-contact',
-          'Privacy Policy does not include the contact email.',
-          { file: 'src/pages/PrivacyPolicy.tsx', hint: `Include ${CONTACT_EMAIL}.` },
-        ),
+        warning('privacy-no-contact', 'Privacy Policy does not include the contact email.', {
+          file: 'src/pages/PrivacyPolicy.tsx',
+          hint: `Include ${CONTACT_EMAIL}.`,
+        }),
       );
     }
   }
@@ -117,11 +108,9 @@ export async function run(): Promise<Violation[]> {
     for (const path of REQUIRED_LEGAL_LINKS) {
       if (!routes.includes(`'${path}'`) && !routes.includes(`"${path}"`)) {
         violations.push(
-          error(
-            'legal-route-missing',
-            `Route "${path}" is missing from routes.tsx.`,
-            { file: 'src/router/routes.tsx' },
-          ),
+          error('legal-route-missing', `Route "${path}" is missing from routes.tsx.`, {
+            file: 'src/router/routes.tsx',
+          }),
         );
       }
     }

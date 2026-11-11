@@ -47,13 +47,23 @@ const BUCKETED_FIELDS = ['fileSize'];
 
 /** Allowlisted analytics field names. Anything else is suspicious. */
 const ALLOWED_FIELDS = new Set([
-  'path', 'title',
-  'toolId', 'toolName',
-  'fileType', 'fileSizeBucket', 'fileCount',
-  'durationMs', 'reason', 'errorCode',
-  'analytics', 'ads',
-  'slot', 'position',
-  'source', 'locale', 'theme',
+  'path',
+  'title',
+  'toolId',
+  'toolName',
+  'fileType',
+  'fileSizeBucket',
+  'fileCount',
+  'durationMs',
+  'reason',
+  'errorCode',
+  'analytics',
+  'ads',
+  'slot',
+  'position',
+  'source',
+  'locale',
+  'theme',
   'timestamp',
 ]);
 
@@ -102,15 +112,11 @@ export async function run(): Promise<Violation[]> {
   for (const { field, line } of fields) {
     if (FORBIDDEN_FIELDS.includes(field)) {
       violations.push(
-        error(
-          'forbidden-payload-field',
-          `Payload declares forbidden field "${field}".`,
-          {
-            file: 'src/platform/analytics/events.ts',
-            line,
-            hint: 'Analytics must never carry PII or file data.',
-          },
-        ),
+        error('forbidden-payload-field', `Payload declares forbidden field "${field}".`, {
+          file: 'src/platform/analytics/events.ts',
+          line,
+          hint: 'Analytics must never carry PII or file data.',
+        }),
       );
     }
   }
@@ -119,15 +125,11 @@ export async function run(): Promise<Violation[]> {
   for (const { field, line } of fields) {
     if (BUCKETED_FIELDS.includes(field)) {
       violations.push(
-        error(
-          'raw-file-size',
-          `Payload uses raw "${field}". Use "${field}Bucket" instead.`,
-          {
-            file: 'src/platform/analytics/events.ts',
-            line,
-            hint: 'Raw file size can fingerprint users.',
-          },
-        ),
+        error('raw-file-size', `Payload uses raw "${field}". Use "${field}Bucket" instead.`, {
+          file: 'src/platform/analytics/events.ts',
+          line,
+          hint: 'Raw file size can fingerprint users.',
+        }),
       );
     }
   }
@@ -156,11 +158,9 @@ export async function run(): Promise<Violation[]> {
     for (const key of coreKeys) {
       if (!filterSrc.includes(key)) {
         violations.push(
-          warning(
-            'privacy-filter-missing-key',
-            `privacy-filter.ts does not mention "${key}".`,
-            { file: 'src/platform/analytics/privacy-filter.ts' },
-          ),
+          warning('privacy-filter-missing-key', `privacy-filter.ts does not mention "${key}".`, {
+            file: 'src/platform/analytics/privacy-filter.ts',
+          }),
         );
       }
     }
@@ -169,7 +169,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 5: trackEvent calls in src/ must use ALLOWED_FIELDS keys only.
   const sourceFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of sourceFiles) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
     if (relPath.startsWith('src/platform/analytics/')) continue;
 

@@ -73,14 +73,10 @@ export async function run(): Promise<Violation[]> {
       const full = `${PATHS.srcTools}/${slug}/${required}`;
       if (!(await pathExists(full))) {
         violations.push(
-          error(
-            'tool-missing-file',
-            `Tool "${slug}" is missing required file ${required}.`,
-            {
-              file: `src/tools/${slug}/${required}`,
-              hint: 'Every tool must have manifest.ts, index.ts and Page.tsx.',
-            },
-          ),
+          error('tool-missing-file', `Tool "${slug}" is missing required file ${required}.`, {
+            file: `src/tools/${slug}/${required}`,
+            hint: 'Every tool must have manifest.ts, index.ts and Page.tsx.',
+          }),
         );
       }
     }
@@ -119,15 +115,11 @@ export async function run(): Promise<Violation[]> {
       const otherTool = targetToolOf(resolved);
       if (otherTool && otherTool !== ownTool) {
         violations.push(
-          error(
-            'cross-tool-import',
-            `Tool "${ownTool}" imports from tool "${otherTool}".`,
-            {
-              file: relPath,
-              line: imp.line,
-              hint: 'Tools must be isolated. Share code via src/platform instead.',
-            },
-          ),
+          error('cross-tool-import', `Tool "${ownTool}" imports from tool "${otherTool}".`, {
+            file: relPath,
+            line: imp.line,
+            hint: 'Tools must be isolated. Share code via src/platform instead.',
+          }),
         );
       }
     }
@@ -141,14 +133,10 @@ export async function run(): Promise<Violation[]> {
     });
     if (toolTestFiles.length === 0) {
       violations.push(
-        warning(
-          'tool-no-tests',
-          `Tool "${slug}" has no test files.`,
-          {
-            file: `src/tools/${slug}/`,
-            hint: 'Add at least one unit or integration test.',
-          },
-        ),
+        warning('tool-no-tests', `Tool "${slug}" has no test files.`, {
+          file: `src/tools/${slug}/`,
+          hint: 'Add at least one unit or integration test.',
+        }),
       );
     }
   }

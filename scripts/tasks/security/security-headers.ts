@@ -96,11 +96,10 @@ export async function run(): Promise<Violation[]> {
       const problem = req.validate(value);
       if (problem) {
         violations.push(
-          error(
-            'invalid-header-value',
-            `Header "${req.header}" is invalid: ${problem}.`,
-            { file: 'public/_headers', hint: `Got: "${value}"` },
-          ),
+          error('invalid-header-value', `Header "${req.header}" is invalid: ${problem}.`, {
+            file: 'public/_headers',
+            hint: `Got: "${value}"`,
+          }),
         );
       }
     }
@@ -117,11 +116,9 @@ export async function run(): Promise<Violation[]> {
 
   if (/access-control-allow-origin\s*:\s*\*/i.test(content)) {
     violations.push(
-      warning(
-        'wildcard-cors',
-        'Access-Control-Allow-Origin is "*". Confirm this is intentional.',
-        { file: 'public/_headers' },
-      ),
+      warning('wildcard-cors', 'Access-Control-Allow-Origin is "*". Confirm this is intentional.', {
+        file: 'public/_headers',
+      }),
     );
   }
 

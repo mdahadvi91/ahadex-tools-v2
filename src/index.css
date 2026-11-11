@@ -2,11 +2,15 @@
  * Global styles and shared animations.
  */
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @layer base {
   html {
-    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      sans-serif;
     scroll-behavior: smooth;
   }
 }
@@ -30,15 +34,27 @@
 
 /* Hero background orbs: slow drifting gradients, GPU-composited. */
 @keyframes drift-a {
-  0% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(40px, -30px, 0) scale(1.1); }
-  100% { transform: translate3d(0, 0, 0) scale(1); }
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(40px, -30px, 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
 @keyframes drift-b {
-  0% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-30px, 40px, 0) scale(1.15); }
-  100% { transform: translate3d(0, 0, 0) scale(1); }
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-30px, 40px, 0) scale(1.15);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
 .hero-orb {

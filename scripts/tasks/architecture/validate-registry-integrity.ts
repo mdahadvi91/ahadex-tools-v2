@@ -120,11 +120,10 @@ export async function run(): Promise<Violation[]> {
     const expectedPath = join(PATHS.scripts, 'tasks', imp.group, `${imp.module}.ts`);
     if (!(await pathExists(expectedPath))) {
       violations.push(
-        error(
-          'registry-import-missing',
-          `Registry imports missing file: ${imp.path}`,
-          { file: 'scripts/registry/tasks.ts', line: imp.line },
-        ),
+        error('registry-import-missing', `Registry imports missing file: ${imp.path}`, {
+          file: 'scripts/registry/tasks.ts',
+          line: imp.line,
+        }),
       );
     }
   }
@@ -138,28 +137,20 @@ export async function run(): Promise<Violation[]> {
 
     if (!importedModuleKeys.has(key)) {
       violations.push(
-        error(
-          'task-not-imported',
-          `Task file exists but is not imported by tasks.ts: ${key}.`,
-          {
-            file: relative(PATHS.root, taskFile.path).split('\\').join('/'),
-            hint: 'Add the import and register the task, or remove the file.',
-          },
-        ),
+        error('task-not-imported', `Task file exists but is not imported by tasks.ts: ${key}.`, {
+          file: relative(PATHS.root, taskFile.path).split('\\').join('/'),
+          hint: 'Add the import and register the task, or remove the file.',
+        }),
       );
       continue;
     }
 
     if (!registeredModules.has(key)) {
       violations.push(
-        error(
-          'task-not-registered',
-          `Task is imported but not registered in a group: ${key}.`,
-          {
-            file: 'scripts/registry/tasks.ts',
-            hint: 'Add the task to its group in TASKS.',
-          },
-        ),
+        error('task-not-registered', `Task is imported but not registered in a group: ${key}.`, {
+          file: 'scripts/registry/tasks.ts',
+          hint: 'Add the task to its group in TASKS.',
+        }),
       );
     }
   }
@@ -169,11 +160,9 @@ export async function run(): Promise<Violation[]> {
   for (const registered of registeredModules) {
     if (!diskKeys.has(registered)) {
       violations.push(
-        error(
-          'registered-task-missing',
-          `Task is registered but file is missing: ${registered}.`,
-          { file: 'scripts/registry/tasks.ts' },
-        ),
+        error('registered-task-missing', `Task is registered but file is missing: ${registered}.`, {
+          file: 'scripts/registry/tasks.ts',
+        }),
       );
     }
   }
@@ -185,11 +174,9 @@ export async function run(): Promise<Violation[]> {
     const groupFiles = taskFiles.filter((t) => t.group === group.name);
     if (groupFiles.length === 0) {
       violations.push(
-        warning(
-          'empty-group',
-          `Group "${group.name}" has no task files.`,
-          { file: `scripts/tasks/${group.name}/` },
-        ),
+        warning('empty-group', `Group "${group.name}" has no task files.`, {
+          file: `scripts/tasks/${group.name}/`,
+        }),
       );
     }
   }

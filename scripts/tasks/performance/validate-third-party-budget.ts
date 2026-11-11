@@ -55,7 +55,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 1: GA domain only appears in allowed files.
   const sourceFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of sourceFiles) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -124,21 +127,20 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: no <script src="https://..."> outside index.html.
   const htmlFiles = await walkFiles(PATHS.root, { extensions: ['.html'] });
   for (const file of htmlFiles) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath === 'index.html') continue;
     const src = await readText(file);
     const re = /<script[^>]+src\s*=\s*['"](https?:\/\/[^'"]+)['"]/g;
     let m: RegExpExecArray | null;
     while ((m = re.exec(src)) !== null) {
       violations.push(
-        warning(
-          'external-script-in-html',
-          `External script in ${relPath}: ${m[1]}`,
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-          },
-        ),
+        warning('external-script-in-html', `External script in ${relPath}: ${m[1]}`, {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+        }),
       );
       if (m.index === re.lastIndex) re.lastIndex += 1;
     }
@@ -152,15 +154,11 @@ export async function run(): Promise<Violation[]> {
     let m: RegExpExecArray | null;
     while ((m = re.exec(src)) !== null) {
       violations.push(
-        error(
-          'third-party-sync-script',
-          `External script loaded from index.html: ${m[1]}`,
-          {
-            file: 'index.html',
-            line: lineNumberAt(src, m.index),
-            hint: 'Load third-party scripts only after consent, from a component.',
-          },
-        ),
+        error('third-party-sync-script', `External script loaded from index.html: ${m[1]}`, {
+          file: 'index.html',
+          line: lineNumberAt(src, m.index),
+          hint: 'Load third-party scripts only after consent, from a component.',
+        }),
       );
       if (m.index === re.lastIndex) re.lastIndex += 1;
     }

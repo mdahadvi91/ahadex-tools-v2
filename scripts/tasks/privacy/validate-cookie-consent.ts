@@ -24,11 +24,7 @@ const REQUIRED_CONSENT_EXPORTS = [
   'subscribeConsent',
 ];
 
-const REQUIRED_COOKIE_EXPORTS = [
-  'getCookie',
-  'setCookie',
-  'deleteCookie',
-];
+const REQUIRED_COOKIE_EXPORTS = ['getCookie', 'setCookie', 'deleteCookie'];
 
 function lineNumberAt(source: string, index: number): number {
   let count = 1;
@@ -54,11 +50,9 @@ export async function run(): Promise<Violation[]> {
     for (const name of REQUIRED_CONSENT_EXPORTS) {
       if (!new RegExp(`export\\s+function\\s+${name}`).test(src)) {
         violations.push(
-          error(
-            'consent-export-missing',
-            `consent-manager.ts must export "${name}".`,
-            { file: 'src/platform/privacy/consent-manager.ts' },
-          ),
+          error('consent-export-missing', `consent-manager.ts must export "${name}".`, {
+            file: 'src/platform/privacy/consent-manager.ts',
+          }),
         );
       }
     }
@@ -67,14 +61,10 @@ export async function run(): Promise<Violation[]> {
     const importsCookieManager = /from\s+['"][^'"]*cookie-manager['"]/.test(src);
     if (!importsCookieManager) {
       violations.push(
-        error(
-          'consent-no-cookie-manager',
-          'consent-manager.ts must import from cookie-manager.',
-          {
-            file: 'src/platform/privacy/consent-manager.ts',
-            hint: 'Cookie read/write belongs in cookie-manager only.',
-          },
-        ),
+        error('consent-no-cookie-manager', 'consent-manager.ts must import from cookie-manager.', {
+          file: 'src/platform/privacy/consent-manager.ts',
+          hint: 'Cookie read/write belongs in cookie-manager only.',
+        }),
       );
     }
 
@@ -117,11 +107,9 @@ export async function run(): Promise<Violation[]> {
     for (const name of REQUIRED_COOKIE_EXPORTS) {
       if (!new RegExp(`export\\s+function\\s+${name}`).test(src)) {
         violations.push(
-          error(
-            'cookie-export-missing',
-            `cookie-manager.ts must export "${name}".`,
-            { file: 'src/platform/privacy/cookie-manager.ts' },
-          ),
+          error('cookie-export-missing', `cookie-manager.ts must export "${name}".`, {
+            file: 'src/platform/privacy/cookie-manager.ts',
+          }),
         );
       }
     }
@@ -138,11 +126,9 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(COOKIE_PAGE);
     if (!/consent/i.test(src)) {
       violations.push(
-        warning(
-          'cookie-page-no-consent',
-          'Cookie Policy page does not mention consent.',
-          { file: 'src/pages/CookiePolicy.tsx' },
-        ),
+        warning('cookie-page-no-consent', 'Cookie Policy page does not mention consent.', {
+          file: 'src/pages/CookiePolicy.tsx',
+        }),
       );
     }
   }

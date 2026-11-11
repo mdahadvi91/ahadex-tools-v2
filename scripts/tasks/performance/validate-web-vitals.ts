@@ -37,7 +37,11 @@ async function loadBudgets(): Promise<RuntimeBudget | null> {
   return { lcpMs: lcp, cls, inpMs: inp, ttfbMs: ttfb };
 }
 
-function extractThreshold(src: string, key: 'LCP' | 'CLS' | 'FID' | 'INP' | 'TTFB', field: 'good' | 'poor'): number | null {
+function extractThreshold(
+  src: string,
+  key: 'LCP' | 'CLS' | 'FID' | 'INP' | 'TTFB',
+  field: 'good' | 'poor',
+): number | null {
   // Match: LCP: { good: 2500, poor: 4000 }
   const re = new RegExp(`${key}\\s*:\\s*\\{[^}]*${field}\\s*:\\s*([0-9.]+)`, 'i');
   const m = src.match(re);
@@ -60,24 +64,26 @@ export async function run(): Promise<Violation[]> {
   // Rule 1: THRESHOLDS block exists.
   if (!/THRESHOLDS\s*:\s*Record/.test(src)) {
     violations.push(
-      error(
-        'thresholds-missing',
-        'web-vitals.ts does not declare THRESHOLDS.',
-        { file: 'src/platform/performance/web-vitals.ts' },
-      ),
+      error('thresholds-missing', 'web-vitals.ts does not declare THRESHOLDS.', {
+        file: 'src/platform/performance/web-vitals.ts',
+      }),
     );
   }
 
   // Rule 2: LCP, CLS, INP, TTFB, FID keys present.
-  const requiredKeys: Array<'LCP' | 'CLS' | 'FID' | 'INP' | 'TTFB'> = ['LCP', 'CLS', 'FID', 'INP', 'TTFB'];
+  const requiredKeys: Array<'LCP' | 'CLS' | 'FID' | 'INP' | 'TTFB'> = [
+    'LCP',
+    'CLS',
+    'FID',
+    'INP',
+    'TTFB',
+  ];
   for (const key of requiredKeys) {
     if (!new RegExp(`\\b${key}\\b`).test(src)) {
       violations.push(
-        error(
-          'threshold-missing',
-          `Threshold for "${key}" is missing.`,
-          { file: 'src/platform/performance/web-vitals.ts' },
-        ),
+        error('threshold-missing', `Threshold for "${key}" is missing.`, {
+          file: 'src/platform/performance/web-vitals.ts',
+        }),
       );
     }
   }
@@ -97,11 +103,9 @@ export async function run(): Promise<Violation[]> {
   const budgets = await loadBudgets();
   if (budgets === null) {
     violations.push(
-      warning(
-        'budgets-unreadable',
-        'Could not read RUNTIME_BUDGET from performance-budgets.ts.',
-        { file: 'src/config/performance-budgets.ts' },
-      ),
+      warning('budgets-unreadable', 'Could not read RUNTIME_BUDGET from performance-budgets.ts.', {
+        file: 'src/config/performance-budgets.ts',
+      }),
     );
   } else {
     const lcpGood = extractThreshold(src, 'LCP', 'good');
@@ -119,11 +123,9 @@ export async function run(): Promise<Violation[]> {
     for (const [name, actual, expected] of checks) {
       if (actual === null) {
         violations.push(
-          warning(
-            'threshold-unreadable',
-            `Cannot parse ${name} "good" threshold.`,
-            { file: 'src/platform/performance/web-vitals.ts' },
-          ),
+          warning('threshold-unreadable', `Cannot parse ${name} "good" threshold.`, {
+            file: 'src/platform/performance/web-vitals.ts',
+          }),
         );
       } else if (Math.abs(actual - expected) > 0.001) {
         violations.push(
@@ -143,11 +145,9 @@ export async function run(): Promise<Violation[]> {
   // Rule 5: rating function present.
   if (!/function\s+rate\b/.test(src)) {
     violations.push(
-      warning(
-        'no-rate-function',
-        'web-vitals.ts does not declare a rate() helper.',
-        { file: 'src/platform/performance/web-vitals.ts' },
-      ),
+      warning('no-rate-function', 'web-vitals.ts does not declare a rate() helper.', {
+        file: 'src/platform/performance/web-vitals.ts',
+      }),
     );
   }
 

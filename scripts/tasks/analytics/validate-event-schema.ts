@@ -83,14 +83,10 @@ export async function run(): Promise<Violation[]> {
   for (const key of eventKeys) {
     if (!payloadKeys.includes(key)) {
       violations.push(
-        error(
-          'event-without-payload',
-          `Event "${key}" has no entry in EventPayloadMap.`,
-          {
-            file: 'src/platform/analytics/events.ts',
-            hint: 'Add a payload interface for this event.',
-          },
-        ),
+        error('event-without-payload', `Event "${key}" has no entry in EventPayloadMap.`, {
+          file: 'src/platform/analytics/events.ts',
+          hint: 'Add a payload interface for this event.',
+        }),
       );
     }
   }
@@ -122,14 +118,10 @@ export async function run(): Promise<Violation[]> {
     for (const key of eventKeys) {
       if (!schemaKeys.includes(key)) {
         violations.push(
-          error(
-            'event-not-in-schema',
-            `Event "${key}" has no entry in REQUIRED_FIELDS.`,
-            {
-              file: 'src/platform/analytics/event-schema.ts',
-              hint: 'Add required field list for this event.',
-            },
-          ),
+          error('event-not-in-schema', `Event "${key}" has no entry in REQUIRED_FIELDS.`, {
+            file: 'src/platform/analytics/event-schema.ts',
+            hint: 'Add required field list for this event.',
+          }),
         );
       }
     }
@@ -137,11 +129,9 @@ export async function run(): Promise<Violation[]> {
     for (const key of schemaKeys) {
       if (!eventKeys.includes(key)) {
         violations.push(
-          warning(
-            'schema-entry-orphan',
-            `REQUIRED_FIELDS has "${key}" but no matching event.`,
-            { file: 'src/platform/analytics/event-schema.ts' },
-          ),
+          warning('schema-entry-orphan', `REQUIRED_FIELDS has "${key}" but no matching event.`, {
+            file: 'src/platform/analytics/event-schema.ts',
+          }),
         );
       }
     }
@@ -151,7 +141,10 @@ export async function run(): Promise<Violation[]> {
   const sourceFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   const knownValues = new Set(eventValues);
   for (const file of sourceFiles) {
-    const relPath = file.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = file
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
     if (relPath === 'src/platform/analytics/events.ts') continue;
     if (relPath === 'src/platform/analytics/event-schema.ts') continue;
@@ -162,15 +155,11 @@ export async function run(): Promise<Violation[]> {
       const match = pattern.exec(src);
       if (match) {
         violations.push(
-          warning(
-            'raw-event-string',
-            `Raw event string "${value}" used outside events.ts.`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, match.index),
-              hint: 'Import the constant from ANALYTICS_EVENTS.',
-            },
-          ),
+          warning('raw-event-string', `Raw event string "${value}" used outside events.ts.`, {
+            file: relPath,
+            line: lineNumberAt(src, match.index),
+            hint: 'Import the constant from ANALYTICS_EVENTS.',
+          }),
         );
       }
     }

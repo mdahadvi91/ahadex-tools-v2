@@ -109,7 +109,20 @@ export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
   const sourceFiles = await walkFiles(PATHS.root, {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.json', '.md', '.yml', '.yaml', '.toml', '.env'],
+    extensions: [
+      '.ts',
+      '.tsx',
+      '.js',
+      '.jsx',
+      '.mjs',
+      '.cjs',
+      '.json',
+      '.md',
+      '.yml',
+      '.yaml',
+      '.toml',
+      '.env',
+    ],
     skipDirs: ['node_modules', '.git', 'dist', 'coverage', '.vite', 'reports'],
   });
 

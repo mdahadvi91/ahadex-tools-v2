@@ -58,8 +58,7 @@ function getSiteUrl(): string {
   const url = process.env.VITE_SITE_URL?.trim();
   if (!url) {
     throw new Error(
-      'VITE_SITE_URL is required to generate sitemap. ' +
-        'Set it in .env or CI environment.',
+      'VITE_SITE_URL is required to generate sitemap. ' + 'Set it in .env or CI environment.',
     );
   }
   return url.replace(/\/+$/, '');
@@ -162,14 +161,10 @@ export async function run(): Promise<import('../../utils/validation-result').Vio
     ];
   } catch (err) {
     return [
-      error(
-        'sitemap-generation-failed',
-        err instanceof Error ? err.message : String(err),
-        {
-          file: 'public/sitemap.xml',
-          hint: 'Ensure VITE_SITE_URL is set and tool manifests are valid.',
-        },
-      ),
+      error('sitemap-generation-failed', err instanceof Error ? err.message : String(err), {
+        file: 'public/sitemap.xml',
+        hint: 'Ensure VITE_SITE_URL is set and tool manifests are valid.',
+      }),
     ];
   }
 }
@@ -187,10 +182,7 @@ if (isDirectInvocation) {
       process.exit(0);
     })
     .catch((err: unknown) => {
-      console.error(
-        '[sitemap] failed:',
-        err instanceof Error ? err.message : String(err),
-      );
+      console.error('[sitemap] failed:', err instanceof Error ? err.message : String(err));
       process.exit(1);
     });
 }

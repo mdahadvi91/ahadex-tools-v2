@@ -5,11 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  presetToOptions,
-  formatBytes,
-  savingsPercent,
-} from '../types';
+import { presetToOptions, formatBytes, savingsPercent } from '../types';
 import { validateInput } from '../engine/validation';
 import { SECTIONS, FAQ, HOW_IT_WORKS } from '../content';
 import { buildSchema } from '../schema';

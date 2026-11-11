@@ -50,11 +50,9 @@ export async function run(): Promise<Violation[]> {
   const siteUrl = getSiteUrl();
   if (!siteUrl) {
     return [
-      warning(
-        'coverage-no-site-url',
-        'VITE_SITE_URL not set; cannot validate URL coverage.',
-        { hint: 'Set VITE_SITE_URL in .env or CI environment.' },
-      ),
+      warning('coverage-no-site-url', 'VITE_SITE_URL not set; cannot validate URL coverage.', {
+        hint: 'Set VITE_SITE_URL in .env or CI environment.',
+      }),
     ];
   }
 
@@ -78,11 +76,7 @@ export async function run(): Promise<Violation[]> {
 
   const { tools } = await discoverTools();
   for (const tool of tools) {
-    if (
-      tool.manifest.status === 'live' &&
-      tool.manifest.indexable &&
-      tool.manifest.sitemap
-    ) {
+    if (tool.manifest.status === 'live' && tool.manifest.indexable && tool.manifest.sitemap) {
       expected.add(joinUrl(siteUrl, tool.manifest.path));
     }
   }
@@ -102,14 +96,10 @@ export async function run(): Promise<Violation[]> {
   for (const url of sitemapLocs) {
     if (!expected.has(url)) {
       violations.push(
-        error(
-          'stale-sitemap-url',
-          `Sitemap contains a URL that is no longer expected: ${url}`,
-          {
-            file: 'public/sitemap.xml',
-            hint: 'Regenerate the sitemap; remove stale routes.',
-          },
-        ),
+        error('stale-sitemap-url', `Sitemap contains a URL that is no longer expected: ${url}`, {
+          file: 'public/sitemap.xml',
+          hint: 'Regenerate the sitemap; remove stale routes.',
+        }),
       );
     }
   }

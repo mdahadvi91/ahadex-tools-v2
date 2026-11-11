@@ -3,12 +3,7 @@
  */
 
 /** Supported input MIME types. */
-export type SupportedMime =
-  | 'image/png'
-  | 'image/jpeg'
-  | 'image/webp'
-  | 'image/gif'
-  | 'image/avif';
+export type SupportedMime = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/gif' | 'image/avif';
 
 /** Supported output formats. */
 export type OutputFormat = 'jpeg' | 'webp' | 'png';
@@ -59,8 +54,7 @@ export interface CompressionResult {
 }
 
 export type WorkerRequest =
-  | { kind: 'compress'; id: number; input: CompressionInput }
-  | { kind: 'cancel'; id: number };
+  { kind: 'compress'; id: number; input: CompressionInput } | { kind: 'cancel'; id: number };
 
 export type WorkerResponse =
   | { kind: 'result'; id: number; result: CompressionResult }

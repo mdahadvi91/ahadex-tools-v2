@@ -6,16 +6,11 @@
  * boundary without special handling.
  */
 
-import type {
-  CompressionInput,
-  CompressionResult,
-  WorkerErrorCode,
-} from '../types';
+import type { CompressionInput, CompressionResult, WorkerErrorCode } from '../types';
 
 /** Request from the main thread to the worker. */
 export type WorkerInbound =
-  | { kind: 'compress'; id: number; input: CompressionInput }
-  | { kind: 'ping'; id: number };
+  { kind: 'compress'; id: number; input: CompressionInput } | { kind: 'ping'; id: number };
 
 /** Response from the worker to the main thread. */
 export type WorkerOutbound =
@@ -32,8 +27,6 @@ export function isCompressRequest(
   return msg.kind === 'compress';
 }
 
-export function isPingRequest(
-  msg: WorkerInbound,
-): msg is Extract<WorkerInbound, { kind: 'ping' }> {
+export function isPingRequest(msg: WorkerInbound): msg is Extract<WorkerInbound, { kind: 'ping' }> {
   return msg.kind === 'ping';
 }

@@ -44,12 +44,16 @@ self.addEventListener('message', async (event: MessageEvent<WorkerInbound>) => {
       err && typeof err === 'object' && 'code' in err
         ? (err as { code: WorkerOutbound extends { code: infer C } ? C : string }).code
         : 'internal';
-    const message =
-      err instanceof Error ? err.message : 'Unknown error during compression.';
+    const message = err instanceof Error ? err.message : 'Unknown error during compression.';
     post({
       kind: 'error',
       id: message && typeof message === 'string' ? (event.data as { id: number }).id : -1,
-      code: code as 'decode-failed' | 'encode-failed' | 'canvas-unavailable' | 'unsupported-format' | 'internal',
+      code: code as
+        | 'decode-failed'
+        | 'encode-failed'
+        | 'canvas-unavailable'
+        | 'unsupported-format'
+        | 'internal',
       message: err instanceof Error ? err.message : 'Unknown error during compression.',
     });
   }

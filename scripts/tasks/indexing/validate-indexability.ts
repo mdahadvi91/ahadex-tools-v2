@@ -55,7 +55,10 @@ export async function run(): Promise<Violation[]> {
 
   for (const tool of tools) {
     const { manifest, filePath } = tool;
-    const relPath = filePath.replace(PATHS.root + '/', '').split('\\').join('/');
+    const relPath = filePath
+      .replace(PATHS.root + '/', '')
+      .split('\\')
+      .join('/');
 
     // Rule: draft or deprecated => not indexable.
     if (manifest.status !== 'live' && manifest.indexable) {
@@ -112,11 +115,9 @@ export async function run(): Promise<Violation[]> {
     // Rule: path must start with /tools/.
     if (!manifest.path.startsWith('/tools/')) {
       violations.push(
-        error(
-          'invalid-tool-path',
-          `Tool path "${manifest.path}" must start with /tools/.`,
-          { file: relPath },
-        ),
+        error('invalid-tool-path', `Tool path "${manifest.path}" must start with /tools/.`, {
+          file: relPath,
+        }),
       );
     }
 
@@ -130,11 +131,9 @@ export async function run(): Promise<Violation[]> {
     }
     if (manifest.description.trim().length === 0) {
       violations.push(
-        error(
-          'empty-tool-description',
-          `Tool "${manifest.slug}" has empty description.`,
-          { file: relPath },
-        ),
+        error('empty-tool-description', `Tool "${manifest.slug}" has empty description.`, {
+          file: relPath,
+        }),
       );
     }
   }

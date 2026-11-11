@@ -104,13 +104,9 @@ async function checkToolGuards(): Promise<Violation[]> {
     }
     if (!hasGuard && toolFiles.some((f) => !f.endsWith('.test.ts'))) {
       violations.push(
-        error(
-          'tool-missing-size-guard',
-          `Tool "${slug}" has no file-policy validation.`,
-          {
-            hint: 'Call validateSingleFile or validateBatch before processing.',
-          },
-        ),
+        error('tool-missing-size-guard', `Tool "${slug}" has no file-policy validation.`, {
+          hint: 'Call validateSingleFile or validateBatch before processing.',
+        }),
       );
     }
   }
