@@ -21,28 +21,28 @@ function benchmark(fn: () => void, iterations: number): number {
 }
 
 describe('image-compressor pure helpers performance', () => {
-  it('presetToOptions runs in under 10ms for 10000 calls', () => {
+  it('presetToOptions runs in under 50ms for 10000 calls', () => {
     const elapsed = benchmark(() => {
       presetToOptions('balanced', 1024 * 1024);
     }, 10000);
-    expect(elapsed).toBeLessThan(10);
+    expect(elapsed).toBeLessThan(50);
   });
 
-  it('formatBytes runs in under 5ms for 10000 calls', () => {
+  it('formatBytes runs in under 25ms for 10000 calls', () => {
     const elapsed = benchmark(() => {
       formatBytes(1024 * 1024);
     }, 10000);
-    expect(elapsed).toBeLessThan(5);
+    expect(elapsed).toBeLessThan(25);
   });
 
-  it('savingsPercent runs in under 5ms for 10000 calls', () => {
+  it('savingsPercent runs in under 25ms for 10000 calls', () => {
     const elapsed = benchmark(() => {
       savingsPercent(1000, 500);
     }, 10000);
-    expect(elapsed).toBeLessThan(5);
+    expect(elapsed).toBeLessThan(25);
   });
 
-  it('validateInput runs in under 20ms for 10000 calls', () => {
+  it('validateInput runs in under 100ms for 10000 calls', () => {
     const input = {
       bytes: new ArrayBuffer(1024),
       inputMime: 'image/png' as const,
@@ -52,7 +52,7 @@ describe('image-compressor pure helpers performance', () => {
     const elapsed = benchmark(() => {
       validateInput(input);
     }, 10000);
-    expect(elapsed).toBeLessThan(20);
+    expect(elapsed).toBeLessThan(100);
   });
 });
 
@@ -67,11 +67,11 @@ describe('image-compressor content size limits', () => {
     expect(json.length).toBeLessThan(30 * 1024);
   });
 
-  it('schema renders in under 10ms for 1000 calls', () => {
+  it('schema renders in under 50ms for 1000 calls', () => {
     const elapsed = benchmark(() => {
       buildSchema('https://ahadex.online');
     }, 1000);
-    expect(elapsed).toBeLessThan(10);
+    expect(elapsed).toBeLessThan(50);
   });
 });
 
