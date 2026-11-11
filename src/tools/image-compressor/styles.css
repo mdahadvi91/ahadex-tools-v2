@@ -1,0 +1,44 @@
+/**
+ * Scoped styles for the Image Compressor tool.
+ * Only used where Tailwind classes are insufficient.
+ * All selectors are prefixed with .image-compressor- to avoid leaks.
+ */
+
+.image-compressor-preview {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.image-compressor-dropzone-active {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.image-compressor-quality-slider {
+  accent-color: #2563eb;
+}
+
+.image-compressor-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.image-compressor-result-savings {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.image-compressor-result-growth {
+  color: #dc2626;
+  font-weight: 600;
+}
