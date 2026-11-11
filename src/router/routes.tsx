@@ -4,37 +4,27 @@
  */
 
 import type { RouteObject } from 'react-router-dom';
+import Home from '../pages/Home';
+import Tools from '../pages/Tools';
+import About from '../pages/About';
+import Contact from '../pages/Contact';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
+import Terms from '../pages/Terms';
+import Disclaimer from '../pages/Disclaimer';
+import CookiePolicy from '../pages/CookiePolicy';
+import NotFound from '../pages/NotFound';
 import { getToolRoutes } from './route-registry';
-
-function NotFound() {
-  return (
-    <div>
-      <h1>404 - Page Not Found</h1>
-    </div>
-  );
-}
-
-function Home() {
-  return (
-    <div>
-      <h1>AHADEX Tools</h1>
-      <p>Privacy-first browser-based file tools.</p>
-    </div>
-  );
-}
-
-function ToolsIndex() {
-  return (
-    <div>
-      <h1>All Tools</h1>
-    </div>
-  );
-}
 
 export function buildRoutes(): RouteObject[] {
   const staticRoutes: RouteObject[] = [
     { path: '/', element: <Home /> },
-    { path: '/tools', element: <ToolsIndex /> },
+    { path: '/tools', element: <Tools /> },
+    { path: '/about', element: <About /> },
+    { path: '/contact', element: <Contact /> },
+    { path: '/privacy', element: <PrivacyPolicy /> },
+    { path: '/terms', element: <Terms /> },
+    { path: '/disclaimer', element: <Disclaimer /> },
+    { path: '/cookies', element: <CookiePolicy /> },
     { path: '*', element: <NotFound /> },
   ];
 
