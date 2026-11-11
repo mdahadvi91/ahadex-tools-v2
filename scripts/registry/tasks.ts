@@ -46,6 +46,25 @@ import { run as validateConsentTrackingRun } from '../tasks/analytics/validate-c
 import { run as validateAnalyticsConfigRun } from '../tasks/analytics/validate-analytics-config';
 
 import { run as validateBundleSizeRun } from '../tasks/performance/validate-bundle-size';
+
+import { run as validateOgImagesRun } from '../tasks/assets/validate-og-images';
+import { run as validateImageAssetsRun } from '../tasks/assets/validate-image-assets';
+import { run as validateImageAltRun } from '../tasks/assets/validate-image-alt';
+import { run as validateAssetReferencesRun } from '../tasks/assets/validate-asset-references';
+import { run as validateUnusedAssetsRun } from '../tasks/assets/validate-unused-assets';
+
+import { run as validateSeoConfigRun } from '../tasks/seo/validate-seo-config';
+import { run as validateMetadataRun } from '../tasks/seo/validate-metadata';
+import { run as validateCanonicalRun } from '../tasks/seo/validate-canonical';
+import { run as validateSocialMetaRun } from '../tasks/seo/validate-social-meta';
+import { run as validateKeywordMapRun } from '../tasks/seo/validate-keyword-map';
+import { run as validateKeywordCannibalizationRun } from '../tasks/seo/validate-keyword-cannibalization';
+import { run as validateSearchIntentRun } from '../tasks/seo/validate-search-intent';
+import { run as validateInternalLinksRun } from '../tasks/seo/validate-internal-links';
+import { run as validateOrphanPagesRun } from '../tasks/seo/validate-orphan-pages';
+import { run as validateRedirectsRun } from '../tasks/seo/validate-redirects';
+import { run as validateRedirectChainsRun } from '../tasks/seo/validate-redirect-chains';
+import { run as validateIndexBloatRun } from '../tasks/seo/validate-index-bloat';
 import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
@@ -108,7 +127,20 @@ export const TASKS: TaskRegistry = Object.freeze({
   seo: {
     name: 'seo',
     description: 'Metadata, canonical, social, keywords, internal links.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-seo-config', group: 'seo', run: validateSeoConfigRun },
+      { name: 'validate-metadata', group: 'seo', run: validateMetadataRun },
+      { name: 'validate-canonical', group: 'seo', run: validateCanonicalRun },
+      { name: 'validate-social-meta', group: 'seo', run: validateSocialMetaRun },
+      { name: 'validate-keyword-map', group: 'seo', run: validateKeywordMapRun },
+      { name: 'validate-keyword-cannibalization', group: 'seo', run: validateKeywordCannibalizationRun },
+      { name: 'validate-search-intent', group: 'seo', run: validateSearchIntentRun },
+      { name: 'validate-internal-links', group: 'seo', run: validateInternalLinksRun },
+      { name: 'validate-orphan-pages', group: 'seo', run: validateOrphanPagesRun },
+      { name: 'validate-redirects', group: 'seo', run: validateRedirectsRun },
+      { name: 'validate-redirect-chains', group: 'seo', run: validateRedirectChainsRun },
+      { name: 'validate-index-bloat', group: 'seo', run: validateIndexBloatRun },
+    ],
   },
   content: {
     name: 'content',
@@ -128,7 +160,13 @@ export const TASKS: TaskRegistry = Object.freeze({
   assets: {
     name: 'assets',
     description: 'OG images, image assets, alt text, references, unused.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-og-images', group: 'assets', run: validateOgImagesRun },
+      { name: 'validate-image-assets', group: 'assets', run: validateImageAssetsRun },
+      { name: 'validate-image-alt', group: 'assets', run: validateImageAltRun },
+      { name: 'validate-asset-references', group: 'assets', run: validateAssetReferencesRun },
+      { name: 'validate-unused-assets', group: 'assets', run: validateUnusedAssetsRun },
+    ],
   },
   indexing: {
     name: 'indexing',
