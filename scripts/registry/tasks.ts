@@ -20,6 +20,12 @@ import { run as prototypePollutionRun } from '../tasks/security/validate-prototy
 import { run as resourceExhaustionRun } from '../tasks/security/validate-resource-exhaustion';
 import { run as sensitiveDataLeaksRun } from '../tasks/security/validate-sensitive-data-leaks';
 
+import { run as generateSitemapRun } from '../tasks/indexing/generate-sitemap';
+import { run as validateSitemapRun } from '../tasks/indexing/validate-sitemap';
+import { run as validateRobotsRun } from '../tasks/indexing/validate-robots';
+import { run as validateIndexabilityRun } from '../tasks/indexing/validate-indexability';
+import { run as validateUrlCoverageRun } from '../tasks/indexing/validate-url-coverage';
+
 const NO_TASKS: readonly never[] = [];
 
 export const TASKS: TaskRegistry = Object.freeze({
@@ -81,8 +87,14 @@ export const TASKS: TaskRegistry = Object.freeze({
   },
   indexing: {
     name: 'indexing',
-    description: 'Sitemap, robots, indexability, hreflang, URL coverage.',
-    tasks: NO_TASKS,
+    description: 'Sitemap, robots, indexability, URL coverage.',
+    tasks: [
+      { name: 'generate-sitemap', group: 'indexing', run: generateSitemapRun },
+      { name: 'validate-sitemap', group: 'indexing', run: validateSitemapRun },
+      { name: 'validate-robots', group: 'indexing', run: validateRobotsRun },
+      { name: 'validate-indexability', group: 'indexing', run: validateIndexabilityRun },
+      { name: 'validate-url-coverage', group: 'indexing', run: validateUrlCoverageRun },
+    ],
   },
   growth: {
     name: 'growth',
