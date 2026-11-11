@@ -60,11 +60,11 @@ Until then, TypeScript 6.0.3 is the required and only supported version.
 
 ## Alternatives Considered
 
-- **Unpinned (always `@latest`):** rejected — non-reproducible builds,
+- **Unpinned (always `@latest`):** rejected - non-reproducible builds,
   version drift like the TypeScript 7 incident.
-- **Exact version pins everywhere:** rejected — friction on patch
+- **Exact version pins everywhere:** rejected - friction on patch
   updates, prevents security patches from flowing in automatically.
-- **Manual review on every patch bump:** rejected — unsustainable for a
+- **Manual review on every patch bump:** rejected - unsustainable for a
   small team.
 
 ## References
