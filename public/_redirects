@@ -1,0 +1,8 @@
+# SPA fallback for client-side routes
+/tools/*  /index.html  200
+/about    /index.html  200
+/contact  /index.html  200
+/privacy  /index.html  200
+/terms    /index.html  200
+/disclaimer /index.html  200
+/cookies  /index.html  200
