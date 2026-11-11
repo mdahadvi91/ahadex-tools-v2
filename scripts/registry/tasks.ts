@@ -34,6 +34,12 @@ import { run as validateRouteOwnershipRun } from '../tasks/architecture/validate
 import { run as validateRegistryIntegrityRun } from '../tasks/architecture/validate-registry-integrity';
 import { run as validateDependencyGraphRun } from '../tasks/architecture/validate-dependency-graph';
 
+import { run as validateCookieConsentRun } from '../tasks/privacy/validate-cookie-consent';
+import { run as validateConsentEnforcementRun } from '../tasks/privacy/validate-consent-enforcement';
+import { run as validatePrivacyLinksRun } from '../tasks/privacy/validate-privacy-links';
+import { run as validateDataMinimizationRun } from '../tasks/privacy/validate-data-minimization';
+import { run as validateTrackingPrivacyRun } from '../tasks/privacy/validate-tracking-privacy';
+
 const NO_TASKS: readonly never[] = [];
 
 export const TASKS: TaskRegistry = Object.freeze({
@@ -120,7 +126,13 @@ export const TASKS: TaskRegistry = Object.freeze({
   privacy: {
     name: 'privacy',
     description: 'Cookie consent, enforcement, privacy links, data minimization.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-cookie-consent', group: 'privacy', run: validateCookieConsentRun },
+      { name: 'validate-consent-enforcement', group: 'privacy', run: validateConsentEnforcementRun },
+      { name: 'validate-privacy-links', group: 'privacy', run: validatePrivacyLinksRun },
+      { name: 'validate-data-minimization', group: 'privacy', run: validateDataMinimizationRun },
+      { name: 'validate-tracking-privacy', group: 'privacy', run: validateTrackingPrivacyRun },
+    ],
   },
   accessibility: {
     name: 'accessibility',
