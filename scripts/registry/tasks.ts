@@ -65,6 +65,17 @@ import { run as validateOrphanPagesRun } from '../tasks/seo/validate-orphan-page
 import { run as validateRedirectsRun } from '../tasks/seo/validate-redirects';
 import { run as validateRedirectChainsRun } from '../tasks/seo/validate-redirect-chains';
 import { run as validateIndexBloatRun } from '../tasks/seo/validate-index-bloat';
+
+import { run as validateContentFilesRun } from '../tasks/content/validate-content-files';
+import { run as validateContentStructureRun } from '../tasks/content/validate-content-structure';
+import { run as validateHeadingHierarchyRun } from '../tasks/content/validate-heading-hierarchy';
+import { run as validateFaqContentRun } from '../tasks/content/validate-faq-content';
+import { run as validateContentQualityRun } from '../tasks/content/validate-content-quality';
+import { run as validateDuplicateContentRun } from '../tasks/content/validate-duplicate-content';
+import { run as validateContentFreshnessRun } from '../tasks/content/validate-content-freshness';
+import { run as validateContentSourcesRun } from '../tasks/content/validate-content-sources';
+import { run as validateTopicClustersRun } from '../tasks/content/validate-topic-clusters';
+import { run as validateEditorialAttributionRun } from '../tasks/content/validate-editorial-attribution';
 import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
@@ -145,7 +156,18 @@ export const TASKS: TaskRegistry = Object.freeze({
   content: {
     name: 'content',
     description: 'Structure, headings, FAQs, quality, freshness, attribution.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-content-files', group: 'content', run: validateContentFilesRun },
+      { name: 'validate-content-structure', group: 'content', run: validateContentStructureRun },
+      { name: 'validate-heading-hierarchy', group: 'content', run: validateHeadingHierarchyRun },
+      { name: 'validate-faq-content', group: 'content', run: validateFaqContentRun },
+      { name: 'validate-content-quality', group: 'content', run: validateContentQualityRun },
+      { name: 'validate-duplicate-content', group: 'content', run: validateDuplicateContentRun },
+      { name: 'validate-content-freshness', group: 'content', run: validateContentFreshnessRun },
+      { name: 'validate-content-sources', group: 'content', run: validateContentSourcesRun },
+      { name: 'validate-topic-clusters', group: 'content', run: validateTopicClustersRun },
+      { name: 'validate-editorial-attribution', group: 'content', run: validateEditorialAttributionRun },
+    ],
   },
   geo: {
     name: 'geo',
