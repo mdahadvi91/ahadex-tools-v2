@@ -2,42 +2,49 @@
  * Node-side tool discovery. Reads src/tools/<slug>/manifest.ts at
  * runtime and returns parsed manifests. Mirrors the Vite-side glob
  * discovery in src/router/route-registry.ts.
+ *
+ * Note: ToolManifest is intentionally duplicated here, not imported
+ * from src/config/tools.ts, to keep this script inside the Node
+ * tsconfig project. The two must stay in sync; the planned
+ * scripts/tasks/architecture/validate-registry-integrity.ts will
+ * verify equality.
  */
 
 import { join } from 'node:path';
 import { readdir } from 'node:fs/promises';
 import { pathExists, readText } from './file-system';
 import { PATHS } from './constants';
-import type { ToolManifest } from '../../src/config/tools';
+
+export type ToolStatus = 'draft' | 'live' | 'deprecated';
+
+export interface ToolManifestShape {
+  slug: string;
+  path: string;
+  title: string;
+  description: string;
+  indexable: boolean;
+  sitemap: boolean;
+  status: ToolStatus;
+  launchOrder: number;
+  requiresConsent: boolean;
+}
 
 const TOOLS_DIR = PATHS.srcTools;
 
-/**
- * Extracts a manifest object from a manifest.ts file's source text.
- * Expects the file to export a default object literal or a const.
- * This is a deliberate regex parse; the manifest files are simple
- * and stable by convention.
- */
-function parseManifestSource(source: string): ToolManifest | null {
-  // Match: export const manifest: ToolManifest = { ... };
-  // or:    const manifest: ToolManifest = { ... };
-  // or:    export const manifest = { ... };
+function parseManifestSource(source: string): ToolManifestShape | null {
   const match = source.match(
     /(?:export\s+)?const\s+manifest\s*(?::\s*ToolManifest\s*)?=\s*(\{[\s\S]*?\n\};)/,
   );
   if (!match) return null;
 
   const objectLiteral = match[1].replace(/;\s*$/, '');
-
-  // Convert TS object literal to JSON-compatible text.
-  // Rules: keys already quoted are fine; single quotes become double.
   const normalized = objectLiteral
     .replace(/'/g, '"')
     .replace(/([a-zA-Z_$][\w$]*)\s*:/g, '"$1":')
     .replace(/,\s*}/g, '}');
 
   try {
-    return JSON.parse(normalized) as ToolManifest;
+    return JSON.parse(normalized) as ToolManifestShape;
   } catch {
     return null;
   }
@@ -45,7 +52,7 @@ function parseManifestSource(source: string): ToolManifest | null {
 
 export interface DiscoveredTool {
   slug: string;
-  manifest: ToolManifest;
+  manifest: ToolManifestShape;
   filePath: string;
 }
 
@@ -54,10 +61,6 @@ export interface DiscoveryResult {
   errors: string[];
 }
 
-/**
- * Walks src/tools/, reads each <slug>/manifest.ts, and parses it.
- * Skips folders without a manifest.
- */
 export async function discoverTools(): Promise<DiscoveryResult> {
   const errors: string[] = [];
   const tools: DiscoveredTool[] = [];
