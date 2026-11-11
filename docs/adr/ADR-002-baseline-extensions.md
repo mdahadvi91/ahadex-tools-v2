@@ -42,3 +42,14 @@ once committed.
   group orchestrators would duplicate logic 17 times.
 - **Edit baseline document without an ADR:** rejected; violates the
   freeze protocol.
+
+## Update 2026-11-12: Image Compressor additions
+
+While implementing the Image Compressor tool, the following additional
+files were added to the baseline:
+
+| File | Reason |
+|---|---|
+| `src/tools/image-compressor/assets/og-image.png` | Placeholder OG image (copy of site logo). Replaced with a designed image before launch. |
+| `scripts/tasks/architecture/validate-module-purity.ts` | Updated to strip function bodies before matching top-level statements (fixes false positives on inner await). |
+| `scripts/tasks/security/file-upload-security.ts` | Detector now matches real File consumers only (input handlers, drag/drop, FileReader). |
