@@ -1,6 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { assertValidEnvironment } from '@/config/environment';
 import App from './App.tsx';
+
+assertValidEnvironment();
 
 const container = document.getElementById('root');
 if (!container) {
