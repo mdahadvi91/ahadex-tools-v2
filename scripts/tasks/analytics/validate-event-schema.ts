@@ -14,30 +14,19 @@ import { error, warning, type Violation } from '../../utils/validation-result';
 const EVENTS_FILE = join(PATHS.srcPlatform, 'analytics/events.ts');
 const SCHEMA_FILE = join(PATHS.srcPlatform, 'analytics/event-schema.ts');
 
-/** Extracts the keys of ANALYTICS_EVENTS object. */
+/** Extracts the values (snake_case event names) of ANALYTICS_EVENTS.
+ *  These values are the canonical names used in EventPayloadMap and
+ *  REQUIRED_FIELDS. */
 function extractEventNames(src: string): string[] {
   const names: string[] = [];
   const block = src.match(/ANALYTICS_EVENTS\s*=\s*Object\.freeze\(\{([\s\S]*?)\}\s*as const\)/);
   if (!block) return names;
-  const keyRe = /^\s*([a-zA-Z][\w]*)\s*:/gm;
-  let m: RegExpExecArray | null;
-  while ((m = keyRe.exec(block[1])) !== null) {
-    names.push(m[1]);
-  }
-  return names;
-}
-
-/** Extracts the string values mapped by ANALYTICS_EVENTS. */
-function extractEventValues(src: string): string[] {
-  const values: string[] = [];
-  const block = src.match(/ANALYTICS_EVENTS\s*=\s*Object\.freeze\(\{([\s\S]*?)\}\s*as const\)/);
-  if (!block) return values;
   const valRe = /:\s*['"]([^'"]+)['"]/g;
   let m: RegExpExecArray | null;
   while ((m = valRe.exec(block[1])) !== null) {
-    values.push(m[1]);
+    names.push(m[1]);
   }
-  return values;
+  return names;
 }
 
 /** Extracts keys of EventPayloadMap. */
@@ -87,7 +76,7 @@ export async function run(): Promise<Violation[]> {
 
   const eventsSrc = await readText(EVENTS_FILE);
   const eventKeys = extractEventNames(eventsSrc);
-  const eventValues = extractEventValues(eventsSrc);
+  const eventValues = eventKeys; // same values, kept for clarity
   const payloadKeys = extractPayloadMapKeys(eventsSrc);
 
   // Rule 1: every event key must have a payload entry.
