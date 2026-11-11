@@ -273,3 +273,10 @@ export const INTERNAL_LINKS: readonly InternalLink[] = [
   { label: 'About AHADEX Tools', path: '/about' },
   { label: 'Privacy Policy', path: '/privacy' },
 ];
+
+/** Output format options for the UI select. */
+export const OUTPUT_FORMATS = [
+  { value: 'jpeg' as const, label: 'JPEG', note: 'Smallest, no transparency' },
+  { value: 'webp' as const, label: 'WebP', note: 'Best size for modern browsers' },
+  { value: 'png' as const, label: 'PNG', note: 'Lossless, larger files' },
+] as const;
