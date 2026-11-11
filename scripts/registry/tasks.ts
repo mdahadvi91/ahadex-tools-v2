@@ -26,13 +26,29 @@ import { run as validateRobotsRun } from '../tasks/indexing/validate-robots';
 import { run as validateIndexabilityRun } from '../tasks/indexing/validate-indexability';
 import { run as validateUrlCoverageRun } from '../tasks/indexing/validate-url-coverage';
 
+import { run as validateImportBoundariesRun } from '../tasks/architecture/validate-import-boundaries';
+import { run as validateCircularDependenciesRun } from '../tasks/architecture/validate-circular-dependencies';
+import { run as validateModulePurityRun } from '../tasks/architecture/validate-module-purity';
+import { run as validateToolIsolationRun } from '../tasks/architecture/validate-tool-isolation';
+import { run as validateRouteOwnershipRun } from '../tasks/architecture/validate-route-ownership';
+import { run as validateRegistryIntegrityRun } from '../tasks/architecture/validate-registry-integrity';
+import { run as validateDependencyGraphRun } from '../tasks/architecture/validate-dependency-graph';
+
 const NO_TASKS: readonly never[] = [];
 
 export const TASKS: TaskRegistry = Object.freeze({
   architecture: {
     name: 'architecture',
     description: 'Import boundaries, cycles, module purity, registry integrity.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-import-boundaries', group: 'architecture', run: validateImportBoundariesRun },
+      { name: 'validate-circular-dependencies', group: 'architecture', run: validateCircularDependenciesRun },
+      { name: 'validate-module-purity', group: 'architecture', run: validateModulePurityRun },
+      { name: 'validate-tool-isolation', group: 'architecture', run: validateToolIsolationRun },
+      { name: 'validate-route-ownership', group: 'architecture', run: validateRouteOwnershipRun },
+      { name: 'validate-registry-integrity', group: 'architecture', run: validateRegistryIntegrityRun },
+      { name: 'validate-dependency-graph', group: 'architecture', run: validateDependencyGraphRun },
+    ],
   },
   quality: {
     name: 'quality',
