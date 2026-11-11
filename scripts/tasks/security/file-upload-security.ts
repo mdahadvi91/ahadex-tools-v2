@@ -31,10 +31,7 @@ async function findToolConsumers(): Promise<string[]> {
     extensions: ['.ts', '.tsx'],
   });
   return files.filter(
-    (f) =>
-      !f.endsWith('.test.ts') &&
-      !f.endsWith('.test.tsx') &&
-      !f.includes('/tests/'),
+    (f) => !f.endsWith('.test.ts') && !f.endsWith('.test.tsx') && !f.includes('/tests/'),
   );
 }
 
@@ -74,11 +71,9 @@ export async function run(): Promise<Violation[]> {
 
   if (!(await pathExists(SECURITY_CONFIG))) {
     violations.push(
-      error(
-        'missing-security-config',
-        'src/platform/security/security-config.ts is missing.',
-        { file: 'src/platform/security/security-config.ts' },
-      ),
+      error('missing-security-config', 'src/platform/security/security-config.ts is missing.', {
+        file: 'src/platform/security/security-config.ts',
+      }),
     );
   }
 
@@ -86,7 +81,12 @@ export async function run(): Promise<Violation[]> {
   const consumers = await findToolConsumers();
   for (const file of consumers) {
     const src = await readText(file);
-    const usesFile = /\bFile\b|\bFileList\b|\.files\b/.test(src);
+    const usesFile =
+      /addEventListener\(\s*["']change["']/i.test(src) ||
+      /\.files\b/.test(src) ||
+      /new\s+FileReader\b/.test(src) ||
+      /dataTransfer\.files/.test(src) ||
+      /\bFileList\b/.test(src);
     if (!usesFile) continue;
 
     const importsPolicy = /from\s+['"][^'"]*file-policy['"]/.test(src);
@@ -111,8 +111,7 @@ export async function run(): Promise<Violation[]> {
     const htmlWrites =
       countLines(src, /\binnerHTML\s*=/g) + countLines(src, /dangerouslySetInnerHTML/g);
     if (htmlWrites === 0) continue;
-    const usesFile =
-      /\bFile\b|\bFileList\b|\.name\b.*\bfile\b|fileName/i.test(src);
+    const usesFile = /\bFile\b|\bFileList\b|\.name\b.*\bfile\b|fileName/i.test(src);
     if (usesFile) {
       violations.push(
         error(
@@ -126,11 +125,9 @@ export async function run(): Promise<Violation[]> {
       );
     } else {
       violations.push(
-        warning(
-          'innerHTML-usage',
-          'innerHTML/dangerouslySetInnerHTML used.',
-          { file: relative(PATHS.root, file).split('\\').join('/') },
-        ),
+        warning('innerHTML-usage', 'innerHTML/dangerouslySetInnerHTML used.', {
+          file: relative(PATHS.root, file).split('\\').join('/'),
+        }),
       );
     }
   }
@@ -150,11 +147,9 @@ export async function run(): Promise<Violation[]> {
     const hasWorker = files.some((f) => f.endsWith('/worker.ts'));
     if (!hasWorker) {
       violations.push(
-        warning(
-          'engine-missing-worker',
-          `Tool "${slug}" has engine files but no worker.ts.`,
-          { hint: 'Move heavy processing to a Web Worker.' },
-        ),
+        warning('engine-missing-worker', `Tool "${slug}" has engine files but no worker.ts.`, {
+          hint: 'Move heavy processing to a Web Worker.',
+        }),
       );
     }
   }
