@@ -1,20 +1,7 @@
 /**
  * Content constants for the Image Compressor tool. All factual
- * claims must be verifiable from the engine code (compressor.ts,
- * validation.ts, file-policy.ts).
- *
- * Structure:
- *   - HERO: title, tagline, trust signals
- *   - DIRECT_ANSWER: one-sentence answer for AEO / LLM citation
- *   - SECTIONS: substantive prose organized by heading
- *   - HOW_IT_WORKS: step-by-step explanation
- *   - USE_CASES: real scenarios
- *   - FORMATS: supported input/output with accurate notes
- *   - PRIVACY: what actually happens
- *   - LIMITATIONS: honest disclosure
- *   - FAQ: 10 real questions with factual answers
- *   - REFERENCES: authoritative external sources
- *   - INTERNAL_LINKS: cross-tool navigation
+ * claims must be verifiable from the engine code, file-policy, or
+ * network behavior observable in browser DevTools.
  */
 
 export interface FAQItem {
@@ -55,24 +42,24 @@ export interface InternalLink {
 export const HERO = {
   h1: 'Image Compressor',
   tagline:
-    'Compress JPG, PNG, WebP, GIF and AVIF images in your browser without uploading them.',
+    'Reduce the file size of JPG, PNG, WebP, GIF and AVIF images by re-encoding them in your browser.',
   subtitle:
-    'Files stay on your device. No accounts, no signup, no tracking of file contents.',
+    'No account required. Files are processed in browser memory and never transmitted to a server.',
   trustSignals: [
-    'Files stay on your device',
-    '0 KB sent to a server',
-    'Works offline after first load',
+    'Runs in your browser',
+    'No account required',
+    'No file upload',
   ],
 } as const;
 
 export const DIRECT_ANSWER =
-  'Image Compressor is a free browser-based tool that reduces the file size of JPG, PNG, WebP, GIF and AVIF images by re-encoding them locally in your browser. Files are never uploaded to any server, and no account is required.';
+  'Image Compressor is a free browser-based tool that reduces the file size of JPG, PNG, WebP, GIF and AVIF images by re-encoding them locally using the browser Canvas API. Files are not transmitted to a server during processing, and no account is required.';
 
 export const SECTIONS: readonly ContentSection[] = [
   {
     heading: 'What this tool does',
     paragraphs: [
-      'This tool reduces the file size of image files by re-encoding them at a lower quality or smaller resolution. All processing happens locally in your browser using the Canvas API and a Web Worker, so your original file never leaves your device.',
+      'This tool reduces the size of image files by re-encoding them at a lower quality or a smaller resolution. Processing happens inside your browser using the Canvas API and a Web Worker. The original file is read from your device and is not sent to a server for processing.',
       'You can select an output format (JPEG, WebP or PNG), adjust the compression quality, and optionally cap the maximum dimension. The compressed file is offered as a download with a suggested name.',
     ],
     list: [
@@ -81,15 +68,15 @@ export const SECTIONS: readonly ContentSection[] = [
       'Adjustable quality from 10% to 100%',
       'Optional resize to a maximum width or height',
       'Batch: compress multiple images in one session',
-      'No watermark, no account, no file upload',
+      'No watermark, no account required',
     ],
   },
   {
     heading: 'How compression works',
     paragraphs: [
-      'When you drop a file, your browser reads it into memory as a Blob and passes it to a Web Worker. The worker decodes the image into pixels, draws it onto an offscreen canvas at the requested output size, and re-encodes it at the chosen quality. The result is passed back to the main page as a downloadable Blob.',
-      'Because everything runs on your CPU, the speed depends on your device and the image size. A typical 3 MB photo compresses in under a second on a modern laptop. Very large images (over 10 MB) may take a few seconds on mobile devices.',
-      'The quality slider controls how aggressively pixels are sampled. Lower quality produces a smaller file but more visible artifacts. Higher quality preserves fine detail at the cost of file size. The setting you choose applies to every file in the current session.',
+      'When you add a file, your browser reads it into memory as a Blob and passes it to a Web Worker. The worker decodes the image into pixels, draws it onto an offscreen canvas at the requested output size, and re-encodes it at the chosen quality. The result is passed back to the page as a downloadable Blob.',
+      'Speed depends on your device and the image size. A typical 3 MB photo compresses in under a second on a modern laptop. Files over 10 MB may take a few seconds on mobile devices.',
+      'The quality slider controls how aggressively pixels are sampled. Lower values produce smaller files but visible artifacts. Higher values preserve more detail. The setting applies to every file in the current session.',
     ],
   },
   {
@@ -98,33 +85,33 @@ export const SECTIONS: readonly ContentSection[] = [
       'The best format depends on the content and whether transparency matters.',
     ],
     list: [
-      'JPEG: smallest files for photographs and gradients. No transparency. Best when file size matters more than perfect edges.',
-      'WebP: best balance of quality and size for modern browsers. Supports transparency. Roughly 25-35% smaller than JPEG at the same visual quality.',
-      'PNG: lossless, supports transparency. Files are larger but no quality is lost. Use for screenshots, text, line art, and images with sharp edges.',
-      'GIF: supported as input for simple animations. Output is a single-frame image. Not recommended for photos.',
-      'AVIF: supported as input. Offers very small files at high quality. Output is not currently supported because browser encoder support varies.',
+      'JPEG: small files for photographs and gradients. No transparency. Best when file size matters more than perfect edges.',
+      'WebP: good balance of quality and size for modern browsers. Supports transparency. Typically smaller than JPEG at similar visual quality.',
+      'PNG: lossless, supports transparency. Files are larger but visual quality is preserved. Use for screenshots, text, line art and sharp edges.',
+      'GIF: supported as input. Output is single-frame. Not recommended for photographs.',
+      'AVIF: supported as input. Output is not currently supported because browser encoder support varies.',
     ],
   },
   {
     heading: 'When to use this tool',
     paragraphs: [
       'Use this tool when you need to reduce image size before uploading to a website, attaching to an email, or sharing on a platform with a file size limit. It is also useful when you want to convert a screenshot PNG to a smaller JPEG or WebP without opening a desktop application.',
-      'Common cases include preparing images for a blog post, shrinking a photo attachment below an email provider limit, or reducing the size of screenshots before including them in a report. If you need to change the pixel dimensions rather than the file size, use the Image Resizer tool instead.',
+      'If you need to change pixel dimensions rather than file size, use the Image Resizer tool instead.',
     ],
   },
   {
-    heading: 'Privacy: what actually happens',
+    heading: 'Privacy and data handling',
     paragraphs: [
-      'Your image is read into your browser memory, processed locally, and offered back as a download. No network request contains the file bytes, file name, or any part of the image content. There is no account, no database, and no server that receives the file.',
-      'When you close the tab or reload the page, any reference to the file in memory is released. Refreshing the browser discards the file. If you keep the tab open, the file remains in memory until you clear it or close the tab.',
-      'The site collects no analytics without your consent. If you grant analytics consent, we record aggregate usage events such as "a tool was opened" or "an image was compressed" with an approximate file size bucket. File names, contents and exact sizes are never sent.',
+      'Your image is read from your device into browser memory and processed by code running locally in the tab. The file is not sent to a server for processing. When you close the tab or reload the page, the reference to the file in memory is released.',
+      'The site itself loads over the network like any web page. Your browser requests the HTML, JavaScript and CSS needed to run the tool, plus fonts and images used by the interface. These requests do not contain your file.',
+      'The site collects analytics only if you grant consent. If you grant analytics consent, aggregate usage events such as "a tool was opened" or "an image was compressed" are recorded with an approximate file size bucket. File names, contents and exact sizes are not sent.',
     ],
   },
   {
-    heading: 'Limitations you should know',
+    heading: 'Limitations',
     paragraphs: [
       'Compression cannot recover quality that was lost when the original image was created or previously compressed. Re-compressing an already-compressed JPEG may produce visible artifacts or, in rare cases, a larger file.',
-      'PNG is lossless. Re-encoding a PNG does not reduce visual quality, but the file may grow if the original was already well compressed. For smaller PNG output, switch to WebP when transparency is required, or JPEG when it is not.',
+      'PNG is lossless. Re-encoding a PNG does not reduce visual quality, but the file may grow if the original was already well-compressed. For smaller PNG output, switch to WebP when transparency is required, or JPEG when it is not.',
       'The maximum input size is 25 MB per image, and the maximum decoded pixel count is 80 megapixels. These limits protect browser memory. Files above these limits fail before processing begins.',
     ],
   },
@@ -133,25 +120,25 @@ export const SECTIONS: readonly ContentSection[] = [
 export const HOW_IT_WORKS = [
   {
     step: 1,
-    title: 'Drop or select images',
-    body: 'Drag one or more images into the drop zone, or click to open your file browser. Each file is validated against the supported formats and the 25 MB size limit before any processing begins.',
+    title: 'Add images',
+    body: 'Drag one or more images into the drop zone, or click to open your file browser. Each file is checked for supported format and size before processing.',
   },
   {
     step: 2,
     title: 'Pick your settings',
-    body: 'Choose the output format and quality. Optionally cap the maximum dimension to resize large photos. The preset buttons set sensible defaults for common cases.',
+    body: 'Choose the output format and quality. Optionally cap the maximum dimension to resize large photos. Presets set sensible defaults.',
   },
   {
     step: 3,
     title: 'Compress and download',
-    body: 'The browser decodes, resizes and re-encodes each file locally. When complete, you can download the result. Files are held in memory only; nothing is transmitted.',
+    body: 'The browser decodes, resizes and re-encodes each file locally. Download the result when complete.',
   },
 ] as const;
 
 export const USE_CASES: readonly UseCase[] = [
   {
     title: 'Website images',
-    body: 'Reduce hero images, thumbnails, and blog images before uploading to a CMS. Smaller images improve page load speed and reduce bandwidth cost.',
+    body: 'Reduce hero images, thumbnails and blog images before uploading to a CMS. Smaller images improve page load speed and reduce bandwidth cost.',
   },
   {
     title: 'Email attachments',
@@ -176,36 +163,36 @@ export const SUPPORTED_INPUT_FORMATS: readonly FormatInfo[] = [
 ];
 
 export const PRIVACY = {
-  heading: 'Privacy and data handling',
+  heading: 'Privacy summary',
   paragraphs: [
-    'Files are loaded into browser memory and processed by a Web Worker running on your device. At no point is the file transmitted over the network.',
-    'Analytics is off by default. If you grant analytics consent, we record aggregate usage events (tool open, file size bucket, processing duration) with no file names or content.',
+    'Files are loaded into browser memory and processed by a Web Worker running on your device. The file is not sent to a server for compression.',
+    'The site collects aggregate analytics only if you grant consent. Analytics events do not include file names, file contents or exact file sizes.',
     'Consent is stored in a single first-party cookie and can be changed at any time from the settings panel.',
   ],
 } as const;
 
 export const LIMITATIONS = {
-  heading: 'Limitations',
+  heading: 'Limits to be aware of',
   list: [
     'Maximum input size: 25 MB per image.',
-    'Maximum decoded pixels: 80 million (e.g. 8,944 x 8,944).',
-    'GIF output is not supported; only the first frame is extracted.',
+    'Maximum decoded pixels: 80 million.',
+    'GIF output is not supported; only the first frame is used.',
     'AVIF output is not supported yet; use WebP or JPEG.',
-    'Compression is lossy for JPEG and WebP. Visual quality decreases as the quality slider moves lower.',
+    'JPEG and WebP compression are lossy. Visual quality decreases at lower quality settings.',
     'PNG output is lossless and may not reduce file size for already-optimized PNGs.',
   ],
 } as const;
 
 export const FAQ: readonly FAQItem[] = [
   {
-    question: 'Is my image uploaded to a server?',
+    question: 'Is my image sent to a server?',
     answer:
-      'No. The image is read into browser memory and compressed by a Web Worker. No network request contains the file data.',
+      'No. The file is read into browser memory and compressed by code running locally in your browser. The file is not transmitted to a server for processing.',
   },
   {
     question: 'What file size can I compress?',
     answer:
-      'Up to 25 MB per image. This limit is enforced before any processing to protect browser memory.',
+      'Up to 25 MB per image. This limit is enforced before processing to protect browser memory.',
   },
   {
     question: 'Which image formats are supported?',
@@ -215,17 +202,17 @@ export const FAQ: readonly FAQItem[] = [
   {
     question: 'Does compression reduce image quality?',
     answer:
-      'JPEG and WebP use lossy compression, so some quality is lost at lower settings. PNG output is lossless. Adjust the quality slider before compressing to balance size against visual quality.',
+      'JPEG and WebP use lossy compression, so some quality is lost at lower settings. PNG output is lossless. Adjust the quality slider to balance size against visual quality.',
   },
   {
-    question: 'Does this tool work offline?',
+    question: 'Does this tool work without internet?',
     answer:
-      'After the first page load, compression works without a network connection. The first visit requires a network to download the application.',
+      'After the first load, some parts of the tool may continue to work because the browser has cached the page. However, this site does not currently include a service worker, so it is not guaranteed to work offline.',
   },
   {
     question: 'Can I compress multiple images at once?',
     answer:
-      'Yes. Drop or select multiple files. Each file is processed independently and can be downloaded individually or together.',
+      'Yes. Add multiple files; each is processed independently and can be downloaded individually or together.',
   },
   {
     question: 'Is there a watermark or signup?',
@@ -235,17 +222,17 @@ export const FAQ: readonly FAQItem[] = [
   {
     question: 'Why is my PNG larger after compression?',
     answer:
-      'PNG is lossless. Re-encoding may occasionally increase the file size. Choose WebP or JPEG output for a smaller file when transparency is not required.',
+      'PNG is lossless. Re-encoding may occasionally increase file size. Choose WebP or JPEG output for a smaller file when transparency is not required.',
   },
   {
     question: 'What is the difference between JPEG and WebP?',
     answer:
-      'WebP typically produces smaller files at the same visual quality, and it supports transparency. JPEG is more widely supported by older software and has no transparency.',
+      'WebP typically produces smaller files at similar visual quality and supports transparency. JPEG is more widely supported by older software and does not support transparency.',
   },
   {
-    question: 'Does compressing the same image twice reduce quality again?',
+    question: 'Does compressing the same image twice reduce quality?',
     answer:
-      'Yes, for lossy formats. Each time a JPEG or WebP image is re-encoded, some quality is lost. Start from the original file whenever possible.',
+      'Yes, for lossy formats. Each re-encode of a JPEG or WebP image loses some quality. Start from the original file whenever possible.',
   },
 ];
 
@@ -263,7 +250,7 @@ export const REFERENCES: readonly Reference[] = [
   {
     label: 'WebP compression study',
     url: 'https://developers.google.com/speed/webp/docs/webp_study',
-    note: 'Google Study showing WebP vs JPEG size reductions.',
+    note: 'Google study comparing WebP vs JPEG sizes.',
   },
 ];
 
