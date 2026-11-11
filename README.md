@@ -23,17 +23,17 @@ other Node version.
 
 Defined in `package.json`. They work only after dependencies are installed.
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the dev server |
-| `npm run build` | Production build |
-| `npm run preview` | Preview the production build |
-| `npm run type-check` | TypeScript check |
-| `npm run lint` | ESLint |
-| `npm run format` | Format with Prettier |
-| `npm run format:check` | Check formatting |
-| `npm test` | Run unit tests once |
-| `npm run test:watch` | Run tests in watch mode |
+| Command                | Purpose                      |
+| ---------------------- | ---------------------------- |
+| `npm run dev`          | Start the dev server         |
+| `npm run build`        | Production build             |
+| `npm run preview`      | Preview the production build |
+| `npm run type-check`   | TypeScript check             |
+| `npm run lint`         | ESLint                       |
+| `npm run format`       | Format with Prettier         |
+| `npm run format:check` | Check formatting             |
+| `npm test`             | Run unit tests once          |
+| `npm run test:watch`   | Run tests in watch mode      |
 
 ## Environment
 

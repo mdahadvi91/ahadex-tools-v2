@@ -37,18 +37,11 @@ export default defineConfig(({ mode }) => {
   }
 
   if (env.VITE_GA_MEASUREMENT_ID && !GA_ID_PATTERN.test(env.VITE_GA_MEASUREMENT_ID)) {
-    throw new Error(
-      `VITE_GA_MEASUREMENT_ID is malformed: "${env.VITE_GA_MEASUREMENT_ID}".`,
-    );
+    throw new Error(`VITE_GA_MEASUREMENT_ID is malformed: "${env.VITE_GA_MEASUREMENT_ID}".`);
   }
 
-  if (
-    env.VITE_ADSENSE_PUBLISHER_ID &&
-    !ADSENSE_ID_PATTERN.test(env.VITE_ADSENSE_PUBLISHER_ID)
-  ) {
-    throw new Error(
-      `VITE_ADSENSE_PUBLISHER_ID is malformed: "${env.VITE_ADSENSE_PUBLISHER_ID}".`,
-    );
+  if (env.VITE_ADSENSE_PUBLISHER_ID && !ADSENSE_ID_PATTERN.test(env.VITE_ADSENSE_PUBLISHER_ID)) {
+    throw new Error(`VITE_ADSENSE_PUBLISHER_ID is malformed: "${env.VITE_ADSENSE_PUBLISHER_ID}".`);
   }
 
   return {
