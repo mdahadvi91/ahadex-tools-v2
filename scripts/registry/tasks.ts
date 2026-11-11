@@ -40,6 +40,11 @@ import { run as validatePrivacyLinksRun } from '../tasks/privacy/validate-privac
 import { run as validateDataMinimizationRun } from '../tasks/privacy/validate-data-minimization';
 import { run as validateTrackingPrivacyRun } from '../tasks/privacy/validate-tracking-privacy';
 
+import { run as validateEventSchemaRun } from '../tasks/analytics/validate-event-schema';
+import { run as validateEventPrivacyRun } from '../tasks/analytics/validate-event-privacy';
+import { run as validateConsentTrackingRun } from '../tasks/analytics/validate-consent-tracking';
+import { run as validateAnalyticsConfigRun } from '../tasks/analytics/validate-analytics-config';
+
 const NO_TASKS: readonly never[] = [];
 
 export const TASKS: TaskRegistry = Object.freeze({
@@ -147,7 +152,12 @@ export const TASKS: TaskRegistry = Object.freeze({
   analytics: {
     name: 'analytics',
     description: 'Event schema, privacy, consent tracking, analytics config.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-event-schema', group: 'analytics', run: validateEventSchemaRun },
+      { name: 'validate-event-privacy', group: 'analytics', run: validateEventPrivacyRun },
+      { name: 'validate-consent-tracking', group: 'analytics', run: validateConsentTrackingRun },
+      { name: 'validate-analytics-config', group: 'analytics', run: validateAnalyticsConfigRun },
+    ],
   },
   i18n: {
     name: 'i18n',
