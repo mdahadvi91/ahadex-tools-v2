@@ -72,20 +72,16 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(envPath);
     if (!/adsensePublisherId/.test(src)) {
       violations.push(
-        error(
-          'environment-no-adsense',
-          'environment.ts does not expose adsensePublisherId.',
-          { file: 'src/config/environment.ts' },
-        ),
+        error('environment-no-adsense', 'environment.ts does not expose adsensePublisherId.', {
+          file: 'src/config/environment.ts',
+        }),
       );
     }
     if (!/adsensePublisherId\s*:\s*string\s*\|\s*null/.test(src)) {
       violations.push(
-        warning(
-          'environment-adsense-not-nullable',
-          'adsensePublisherId should be string | null.',
-          { file: 'src/config/environment.ts' },
-        ),
+        warning('environment-adsense-not-nullable', 'adsensePublisherId should be string | null.', {
+          file: 'src/config/environment.ts',
+        }),
       );
     }
   }
@@ -96,23 +92,17 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(flagsPath);
     if (!/ads\s*:/.test(src)) {
       violations.push(
-        error(
-          'flags-no-ads',
-          'feature-flags.ts does not declare an "ads" flag.',
-          { file: 'src/config/feature-flags.ts' },
-        ),
+        error('flags-no-ads', 'feature-flags.ts does not declare an "ads" flag.', {
+          file: 'src/config/feature-flags.ts',
+        }),
       );
     }
     if (!/adsensePublisherId/.test(src)) {
       violations.push(
-        warning(
-          'flags-no-adsense-ref',
-          'feature-flags.ts does not reference adsensePublisherId.',
-          {
-            file: 'src/config/feature-flags.ts',
-            hint: 'Ads should be enabled only when a publisher ID is present.',
-          },
-        ),
+        warning('flags-no-adsense-ref', 'feature-flags.ts does not reference adsensePublisherId.', {
+          file: 'src/config/feature-flags.ts',
+          hint: 'Ads should be enabled only when a publisher ID is present.',
+        }),
       );
     }
   }
@@ -120,7 +110,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 5: no hardcoded AdSense publisher IDs in src/.
   const sourceFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of sourceFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -132,15 +125,11 @@ export async function run(): Promise<Violation[]> {
       if (/PATTERN|regex|pattern|test\(/i.test(context)) continue;
 
       violations.push(
-        warning(
-          'hardcoded-publisher-id',
-          `Possible hardcoded AdSense ID: "${m[0]}".`,
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-            hint: 'Use VITE_ADSENSE_PUBLISHER_ID instead.',
-          },
-        ),
+        warning('hardcoded-publisher-id', `Possible hardcoded AdSense ID: "${m[0]}".`, {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+          hint: 'Use VITE_ADSENSE_PUBLISHER_ID instead.',
+        }),
       );
       if (m.index === re.lastIndex) re.lastIndex += 1;
     }

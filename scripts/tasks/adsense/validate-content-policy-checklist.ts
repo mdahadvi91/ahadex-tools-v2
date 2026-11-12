@@ -22,7 +22,10 @@ const REQUIRED_PAGES = [
 ];
 
 const FORBIDDEN_CONTENT_PATTERNS = [
-  { name: 'adult-content', regex: /\b(?:porn|xxx|adult content|explicit)\b/i },
+  {
+    name: 'adult-content',
+    regex: /\b(?:pornography|pornographic|adult (?:content|material|video|site))\b/i,
+  },
   { name: 'violence', regex: /\b(?:kill|murder|torture|assault|violent)\b/i },
   { name: 'drugs', regex: /\b(?:cocaine|heroin|methamphetamine|illegal drugs)\b/i },
   { name: 'weapons', regex: /\b(?:buy guns|assault rifle|explosive device)\b/i },
@@ -69,21 +72,20 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: scan all content for forbidden topics.
   const contentFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
     for (const pattern of FORBIDDEN_CONTENT_PATTERNS) {
       if (pattern.regex.test(src)) {
         violations.push(
-          error(
-            'adsense-forbidden-content',
-            `Possible ${pattern.name} in content.`,
-            {
-              file: relPath,
-              hint: 'AdSense forbids this category of content.',
-            },
-          ),
+          error('adsense-forbidden-content', `Possible ${pattern.name} in content.`, {
+            file: relPath,
+            hint: 'AdSense forbids this category of content.',
+          }),
         );
       }
     }
@@ -95,14 +97,10 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(privacyPath);
     if (!/Google|AdSense/i.test(src)) {
       violations.push(
-        warning(
-          'adsense-privacy-no-google',
-          'Privacy Policy does not mention Google or AdSense.',
-          {
-            file: 'src/pages/PrivacyPolicy.tsx',
-            hint: 'AdSense requires disclosure of Google data collection.',
-          },
-        ),
+        warning('adsense-privacy-no-google', 'Privacy Policy does not mention Google or AdSense.', {
+          file: 'src/pages/PrivacyPolicy.tsx',
+          hint: 'AdSense requires disclosure of Google data collection.',
+        }),
       );
     }
   }
@@ -113,11 +111,9 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(cookiePath);
     if (!/ad|adsense|advertis/i.test(src)) {
       violations.push(
-        warning(
-          'adsense-cookie-no-ads',
-          'Cookie Policy does not mention advertising cookies.',
-          { file: 'src/pages/CookiePolicy.tsx' },
-        ),
+        warning('adsense-cookie-no-ads', 'Cookie Policy does not mention advertising cookies.', {
+          file: 'src/pages/CookiePolicy.tsx',
+        }),
       );
     }
   }

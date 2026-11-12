@@ -35,7 +35,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -55,15 +58,11 @@ export async function run(): Promise<Violation[]> {
         const hasLabel = LABEL_PATTERNS.some((p) => p.test(context));
         if (!hasLabel) {
           violations.push(
-            error(
-              'ad-without-label',
-              'Ad unit missing "Advertisement" or "Sponsored" label.',
-              {
-                file: relPath,
-                line,
-                hint: 'AdSense policy requires a clear, visible ad label.',
-              },
-            ),
+            error('ad-without-label', 'Ad unit missing "Advertisement" or "Sponsored" label.', {
+              file: relPath,
+              line,
+              hint: 'AdSense policy requires a clear, visible ad label.',
+            }),
           );
         }
       }
@@ -73,21 +72,16 @@ export async function run(): Promise<Violation[]> {
     const hasAd = AD_PATTERNS.some((p) => p.test(src));
     if (hasAd && !/AdLabel|Advertisement/i.test(src)) {
       violations.push(
-        warning(
-          'ad-no-label-component',
-          'File contains ads but no visible ad label component.',
-          { file: relPath },
-        ),
+        warning('ad-no-label-component', 'File contains ads but no visible ad label component.', {
+          file: relPath,
+        }),
       );
     }
   }
 
   if (foundAds === 0) {
     violations.push(
-      info(
-        'ad-labels-skipped',
-        'No ad units detected. Label rules will apply when ads are added.',
-      ),
+      info('ad-labels-skipped', 'No ad units detected. Label rules will apply when ads are added.'),
     );
   }
 
