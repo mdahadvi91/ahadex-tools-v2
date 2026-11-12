@@ -34,12 +34,15 @@ export async function run(): Promise<Violation[]> {
   const toolPaths = new Set(tools.map((t) => t.manifest.path));
   const validPaths = new Set([...STATIC_PATHS, ...toolPaths]);
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
 
     // Match path: '/path' in INTERNAL_LINKS-like arrays
@@ -49,14 +52,10 @@ export async function run(): Promise<Violation[]> {
       const path = m[1].split('#')[0].split('?')[0];
       if (!validPaths.has(path)) {
         violations.push(
-          error(
-            'invalid-link-target',
-            `Link target "${m[1]}" is not a valid route.`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-            },
-          ),
+          error('invalid-link-target', `Link target "${m[1]}" is not a valid route.`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+          }),
         );
       }
     }
@@ -67,14 +66,10 @@ export async function run(): Promise<Violation[]> {
       const path = m[1].split('#')[0].split('?')[0];
       if (!validPaths.has(path)) {
         violations.push(
-          warning(
-            'invalid-to-target',
-            `Link target "${m[1]}" is not a valid route.`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-            },
-          ),
+          warning('invalid-to-target', `Link target "${m[1]}" is not a valid route.`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+          }),
         );
       }
     }

@@ -24,7 +24,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
     if (relPath.includes('node_modules')) continue;
 
@@ -56,10 +59,7 @@ export async function run(): Promise<Violation[]> {
     }
 
     // Rule 2: email variants.
-    const wrongEmails = [
-      /hello@AHADEX\.online/gi,
-      /hello@Ahadex\.online/gi,
-    ];
+    const wrongEmails = [/hello@AHADEX\.online/gi, /hello@Ahadex\.online/gi];
     for (const pattern of wrongEmails) {
       let m: RegExpExecArray | null;
       while ((m = pattern.exec(src)) !== null) {
@@ -83,15 +83,11 @@ export async function run(): Promise<Violation[]> {
       let m: RegExpExecArray | null;
       while ((m = pattern.exec(src)) !== null) {
         violations.push(
-          warning(
-            'brand-domain-www',
-            `Canonical domain uses www: "${m[0]}".`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: 'Canonical domain is "ahadex.online" (no www).',
-            },
-          ),
+          warning('brand-domain-www', `Canonical domain uses www: "${m[0]}".`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: 'Canonical domain is "ahadex.online" (no www).',
+          }),
         );
         if (m.index === pattern.lastIndex) pattern.lastIndex += 1;
       }

@@ -47,8 +47,8 @@ function extractKeywords(src: string): KeywordMapShape | null {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const keywordFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/keywords.ts'),
+  const keywordFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/keywords.ts'),
   );
 
   if (keywordFiles.length === 0) {
@@ -102,7 +102,10 @@ export async function run(): Promise<Violation[]> {
   await writeText(reportPath, lines.join('\n'));
 
   violations.push(
-    info('keyword-report-written', `Wrote keyword report to reports/keyword-report.md (${entries.length} tools).`),
+    info(
+      'keyword-report-written',
+      `Wrote keyword report to reports/keyword-report.md (${entries.length} tools).`,
+    ),
   );
 
   return violations;

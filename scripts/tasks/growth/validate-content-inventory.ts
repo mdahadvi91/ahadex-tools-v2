@@ -15,7 +15,10 @@ import { info, warning, type Violation } from '../../utils/validation-result';
 
 function countWords(src: string): number {
   const literals = [...src.matchAll(/['"`]([^'"`]{20,})['"`]/g)].map((m) => m[1]);
-  return literals.join(' ').split(/\s+/).filter((w) => w.length > 0).length;
+  return literals
+    .join(' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 0).length;
 }
 
 export async function run(): Promise<Violation[]> {
@@ -59,11 +62,9 @@ export async function run(): Promise<Violation[]> {
 
     if (wordCount < 500) {
       violations.push(
-        warning(
-          'inventory-thin',
-          `Tool "${slug}" has only ${wordCount} words in content.ts.`,
-          { hint: 'Add more substantive content.' },
-        ),
+        warning('inventory-thin', `Tool "${slug}" has only ${wordCount} words in content.ts.`, {
+          hint: 'Add more substantive content.',
+        }),
       );
     }
     if (!hasFaq) {

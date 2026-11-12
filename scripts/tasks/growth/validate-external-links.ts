@@ -23,7 +23,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -33,15 +36,11 @@ export async function run(): Promise<Violation[]> {
     let m: RegExpExecArray | null;
     while ((m = httpRe.exec(src)) !== null) {
       violations.push(
-        error(
-          'insecure-external-link',
-          'External link uses HTTP (should be HTTPS).',
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-            hint: 'All external links must use HTTPS.',
-          },
-        ),
+        error('insecure-external-link', 'External link uses HTTP (should be HTTPS).', {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+          hint: 'All external links must use HTTPS.',
+        }),
       );
     }
 
@@ -69,11 +68,22 @@ export async function run(): Promise<Violation[]> {
       const host = m[1];
       // Skip well-known domains.
       const trusted = [
-        'schema.org', 'www.w3.org', 'w3.org', 'developer.mozilla.org',
-        'mdn.mozilla.org', 'developers.google.com', 'web.dev',
-        'webassembly.org', 'react.dev', 'vitejs.dev', 'tailwindcss.com',
-        'typescriptlang.org', 'github.com', 'npmjs.com',
-        'google-analytics.com', 'googletagmanager.com',
+        'schema.org',
+        'www.w3.org',
+        'w3.org',
+        'developer.mozilla.org',
+        'mdn.mozilla.org',
+        'developers.google.com',
+        'web.dev',
+        'webassembly.org',
+        'react.dev',
+        'vitejs.dev',
+        'tailwindcss.com',
+        'typescriptlang.org',
+        'github.com',
+        'npmjs.com',
+        'google-analytics.com',
+        'googletagmanager.com',
         'ahadex.online',
       ];
       if (!trusted.some((t) => host === t || host.endsWith(`.${t}`))) {
