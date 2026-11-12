@@ -61,10 +61,7 @@ export async function run(): Promise<Violation[]> {
   const siteUrl = getSiteUrl();
   if (!siteUrl) {
     return [
-      warning(
-        'schema-urls-no-site-url',
-        'VITE_SITE_URL is not set. Cannot validate schema URLs.',
-      ),
+      warning('schema-urls-no-site-url', 'VITE_SITE_URL is not set. Cannot validate schema URLs.'),
     ];
   }
 
@@ -87,33 +84,24 @@ export async function run(): Promise<Violation[]> {
     for (const url of urls) {
       if (!url.startsWith('https://')) {
         violations.push(
-          error(
-            'schema-url-not-https',
-            `Tool "${slug}" schema has non-HTTPS URL: ${url}`,
-            { file: `src/tools/${slug}/schema.ts` },
-          ),
+          error('schema-url-not-https', `Tool "${slug}" schema has non-HTTPS URL: ${url}`, {
+            file: `src/tools/${slug}/schema.ts`,
+          }),
         );
         continue;
       }
 
       if (url.includes('?') || url.includes('#')) {
         violations.push(
-          warning(
-            'schema-url-has-params',
-            `Tool "${slug}" schema URL has query or hash: ${url}`,
-            {
-              file: `src/tools/${slug}/schema.ts`,
-              hint: 'Canonical URLs should not include query parameters.',
-            },
-          ),
+          warning('schema-url-has-params', `Tool "${slug}" schema URL has query or hash: ${url}`, {
+            file: `src/tools/${slug}/schema.ts`,
+            hint: 'Canonical URLs should not include query parameters.',
+          }),
         );
       }
 
       // Schema URLs must belong to the site origin (except schema.org references).
-      if (
-        !url.startsWith(siteUrl) &&
-        !url.startsWith('https://schema.org')
-      ) {
+      if (!url.startsWith(siteUrl) && !url.startsWith('https://schema.org')) {
         violations.push(
           warning(
             'schema-url-external',

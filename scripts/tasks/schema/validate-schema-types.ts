@@ -95,14 +95,10 @@ export async function run(): Promise<Violation[]> {
     for (const expected of EXPECTED_TYPES) {
       if (!types.has(expected)) {
         violations.push(
-          warning(
-            'schema-missing-type',
-            `Tool "${slug}" does not use "${expected}" type.`,
-            {
-              file: `src/tools/${slug}/schema.ts`,
-              hint: `${expected} improves structured data richness.`,
-            },
-          ),
+          warning('schema-missing-type', `Tool "${slug}" does not use "${expected}" type.`, {
+            file: `src/tools/${slug}/schema.ts`,
+            hint: `${expected} improves structured data richness.`,
+          }),
         );
       }
     }
@@ -110,23 +106,16 @@ export async function run(): Promise<Violation[]> {
     for (const type of types) {
       if (!KNOWN_TYPES.has(type)) {
         violations.push(
-          error(
-            'schema-unknown-type',
-            `Tool "${slug}" uses unknown schema type "${type}".`,
-            {
-              file: `src/tools/${slug}/schema.ts`,
-              hint: 'Verify the exact case on schema.org.',
-            },
-          ),
+          error('schema-unknown-type', `Tool "${slug}" uses unknown schema type "${type}".`, {
+            file: `src/tools/${slug}/schema.ts`,
+            hint: 'Verify the exact case on schema.org.',
+          }),
         );
       }
     }
 
     violations.push(
-      info(
-        'schema-types-ok',
-        `Tool "${slug}" uses ${types.size} types: ${[...types].join(', ')}`,
-      ),
+      info('schema-types-ok', `Tool "${slug}" uses ${types.size} types: ${[...types].join(', ')}`),
     );
   }
 

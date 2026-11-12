@@ -62,11 +62,9 @@ export async function run(): Promise<Violation[]> {
       // Rule 1: no duplicate @id within the same tool.
       if (seenInTool.has(id)) {
         violations.push(
-          error(
-            'schema-duplicate-id-in-tool',
-            `Tool "${slug}" uses @id "${id}" more than once.`,
-            { file: `src/tools/${slug}/schema.ts` },
-          ),
+          error('schema-duplicate-id-in-tool', `Tool "${slug}" uses @id "${id}" more than once.`, {
+            file: `src/tools/${slug}/schema.ts`,
+          }),
         );
       }
       seenInTool.add(id);
@@ -91,10 +89,7 @@ export async function run(): Promise<Violation[]> {
   }
 
   violations.push(
-    info(
-      'schema-duplicates-ok',
-      `${seenIds.size} unique @id values across ${tools.size} tools.`,
-    ),
+    info('schema-duplicates-ok', `${seenIds.size} unique @id values across ${tools.size} tools.`),
   );
 
   return violations;

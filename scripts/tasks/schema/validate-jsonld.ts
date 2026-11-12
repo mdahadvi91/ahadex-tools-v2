@@ -71,9 +71,7 @@ export async function run(): Promise<Violation[]> {
     const { schema, error: loadErr } = await loadAndBuildSchema(slug);
 
     if (loadErr) {
-      violations.push(
-        error('schema-load-failed', `Tool "${slug}": ${loadErr}`, { file: relPath }),
-      );
+      violations.push(error('schema-load-failed', `Tool "${slug}": ${loadErr}`, { file: relPath }));
       continue;
     }
     if (!schema) {
