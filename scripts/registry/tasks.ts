@@ -88,6 +88,13 @@ import { run as validateAnswerStructureRun } from '../tasks/geo/validate-answer-
 import { run as validateAiReadabilityRun } from '../tasks/geo/validate-ai-readability';
 import { run as validateFactualContentRun } from '../tasks/geo/validate-factual-content';
 import { run as validateEntityCoverageRun } from '../tasks/geo/validate-entity-coverage';
+
+import { run as validateSemanticHtmlRun } from '../tasks/accessibility/validate-semantic-html';
+import { run as validateKeyboardAccessRun } from '../tasks/accessibility/validate-keyboard-access';
+import { run as validateAriaRun } from '../tasks/accessibility/validate-aria';
+import { run as accessibilityAuditRun } from '../tasks/accessibility/accessibility-audit';
+import { run as validateFocusOrderRun } from '../tasks/accessibility/validate-focus-order';
+import { run as validateColorContrastRun } from '../tasks/accessibility/validate-color-contrast';
 import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
@@ -256,7 +263,14 @@ export const TASKS: TaskRegistry = Object.freeze({
   accessibility: {
     name: 'accessibility',
     description: 'Semantic HTML, keyboard, ARIA, focus, color contrast.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-semantic-html', group: 'accessibility', run: validateSemanticHtmlRun },
+      { name: 'validate-keyboard-access', group: 'accessibility', run: validateKeyboardAccessRun },
+      { name: 'validate-aria', group: 'accessibility', run: validateAriaRun },
+      { name: 'accessibility-audit', group: 'accessibility', run: accessibilityAuditRun },
+      { name: 'validate-focus-order', group: 'accessibility', run: validateFocusOrderRun },
+      { name: 'validate-color-contrast', group: 'accessibility', run: validateColorContrastRun },
+    ],
   },
   performance: {
     name: 'performance',
