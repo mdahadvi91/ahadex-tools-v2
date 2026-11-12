@@ -1,11 +1,9 @@
 /**
  * Content quality validator. Detects low-quality patterns that hurt
- * SEO ranking and AdSense approval:
- *   - Marketing superlatives without evidence
- *   - Placeholder text (TODO, lorem ipsum, coming soon)
- *   - Repetitive sentences (keyword stuffing)
- *   - Sentence length extremes (too short or too long)
- *   - Empty or short paragraphs
+ * SEO ranking and AdSense approval.
+ *
+ * Uses linear string scanning instead of complex regex to avoid
+ * catastrophic backtracking on large files.
  */
 
 import { walkFiles, readText } from '../../utils/file-system';
@@ -31,19 +29,9 @@ const FORBIDDEN_PATTERNS: Array<{ name: string; regex: RegExp; severity: 'error'
   { name: 'placeholder-text', regex: /\bplaceholder\b|\bdummy text\b/i, severity: 'error' },
 ];
 
-const MIN_PARAGRAPH_LENGTH = 50;
+const MIN_PARAGRAPH_LENGTH = 40;
 const MAX_SENTENCE_LENGTH = 300;
-
-/** Extracts all paragraph-like string literals (60+ chars). */
-function extractParagraphs(src: string): Array<{ text: string; line: number }> {
-  const out: Array<{ text: string; line: number }> = [];
-  const re = /['"`]([^'"`]{40,})['"`]/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(src)) !== null) {
-    out.push({ text: m[1], line: lineNumberAt(src, m.index) });
-  }
-  return out;
-}
+const MIN_PARAGRAPH_FOR_QUALITY = 80;
 
 function lineNumberAt(source: string, index: number): number {
   let count = 1;
@@ -51,6 +39,42 @@ function lineNumberAt(source: string, index: number): number {
     if (source.charCodeAt(i) === 10) count += 1;
   }
   return count;
+}
+
+/**
+ * Extracts paragraph-like string literals using linear scanning.
+ * A "paragraph" is any single-quoted, double-quoted, or backtick
+ * string literal with 40+ characters of content. Skips strings that
+ * contain newlines (those are multi-line template literals; not
+ * treated as paragraphs).
+ */
+function extractParagraphs(src: string): Array<{ text: string; line: number }> {
+  const out: Array<{ text: string; line: number }> = [];
+  let i = 0;
+  while (i < src.length) {
+    const c = src[i];
+    if (c === "'" || c === '"' || c === '`') {
+      const quote = c;
+      const start = i;
+      let j = i + 1;
+      while (j < src.length) {
+        if (src[j] === '\\') {
+          j += 2;
+          continue;
+        }
+        if (src[j] === quote) break;
+        j++;
+      }
+      const body = src.slice(start + 1, j);
+      if (body.length >= MIN_PARAGRAPH_LENGTH && !body.includes('\n')) {
+        out.push({ text: body, line: lineNumberAt(src, start) });
+      }
+      i = j + 1;
+      continue;
+    }
+    i++;
+  }
+  return out;
 }
 
 function splitSentences(text: string): string[] {
@@ -104,14 +128,18 @@ export async function run(): Promise<Violation[]> {
     // Rule 2: paragraph length.
     const paragraphs = extractParagraphs(src);
     for (const p of paragraphs) {
-      if (p.text.length < MIN_PARAGRAPH_LENGTH) {
-        violations.push(
-          warning('paragraph-too-short', `Paragraph is only ${p.text.length} chars.`, {
-            file: relPath,
-            line: p.line,
-            hint: 'Short paragraphs may indicate thin content.',
-          }),
-        );
+      if (p.text.length < MIN_PARAGRAPH_FOR_QUALITY && p.text.length >= MIN_PARAGRAPH_LENGTH) {
+        // Short paragraphs are common (list items, headers) so only
+        // warn if the paragraph looks like prose (contains a space).
+        if (p.text.includes(' ')) {
+          violations.push(
+            warning('paragraph-too-short', `Paragraph is only ${p.text.length} chars.`, {
+              file: relPath,
+              line: p.line,
+              hint: 'Very short paragraphs may indicate thin content.',
+            }),
+          );
+        }
       }
     }
 
@@ -134,7 +162,7 @@ export async function run(): Promise<Violation[]> {
       }
     }
 
-    // Rule 4: repeated sentences (keyword stuffing indicator).
+    // Rule 4: repeated sentences.
     const allSentences = new Set<string>();
     const duplicates = new Set<string>();
     for (const p of paragraphs) {
