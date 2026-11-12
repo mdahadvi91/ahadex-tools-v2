@@ -90,7 +90,10 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(file);
 
     for (const api of FORBIDDEN_PRE_CONSENT_APIS) {
-      const re = new RegExp(api.pattern.source, api.pattern.flags);
+      const re = new RegExp(
+        api.pattern.source,
+        api.pattern.flags.includes('g') ? api.pattern.flags : api.pattern.flags + 'g',
+      );
       let match: RegExpExecArray | null;
       while ((match = re.exec(src)) !== null) {
         if (!isGated(src, match.index)) {

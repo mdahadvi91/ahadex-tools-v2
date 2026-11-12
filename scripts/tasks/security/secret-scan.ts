@@ -143,7 +143,10 @@ export async function run(): Promise<Violation[]> {
 
     for (const pattern of PATTERNS) {
       // Fresh RegExp per file: avoid lastIndex carryover with /g.
-      const re = new RegExp(pattern.regex.source, pattern.regex.flags);
+      const re = new RegExp(
+        pattern.regex.source,
+        pattern.regex.flags.includes('g') ? pattern.regex.flags : pattern.regex.flags + 'g',
+      );
       let match: RegExpExecArray | null;
       while ((match = re.exec(source)) !== null) {
         const line = lineNumberAt(source, match.index);

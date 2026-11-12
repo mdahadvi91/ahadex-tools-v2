@@ -128,7 +128,10 @@ export async function run(): Promise<Violation[]> {
     const relPath = relative(PATHS.root, file).split('\\').join('/');
 
     for (const pattern of PATTERNS) {
-      const re = new RegExp(pattern.regex.source, pattern.regex.flags);
+      const re = new RegExp(
+        pattern.regex.source,
+        pattern.regex.flags.includes('g') ? pattern.regex.flags : pattern.regex.flags + 'g',
+      );
       let match: RegExpExecArray | null;
       while ((match = re.exec(src)) !== null) {
         const line = lineNumberAt(src, match.index);

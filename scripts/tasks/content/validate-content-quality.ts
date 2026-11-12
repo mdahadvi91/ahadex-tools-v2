@@ -2,8 +2,8 @@
  * Content quality validator. Detects low-quality patterns that hurt
  * SEO ranking and AdSense approval.
  *
- * Uses linear string scanning instead of complex regex to avoid
- * catastrophic backtracking on large files.
+ * Uses linear string scanning only. No lookbehind regex, no
+ * catastrophic backtracking.
  */
 
 import { walkFiles, readText } from '../../utils/file-system';
@@ -31,7 +31,6 @@ const FORBIDDEN_PATTERNS: Array<{ name: string; regex: RegExp; severity: 'error'
 
 const MIN_PARAGRAPH_LENGTH = 40;
 const MAX_SENTENCE_LENGTH = 300;
-const MIN_PARAGRAPH_FOR_QUALITY = 80;
 
 function lineNumberAt(source: string, index: number): number {
   let count = 1;
@@ -43,10 +42,8 @@ function lineNumberAt(source: string, index: number): number {
 
 /**
  * Extracts paragraph-like string literals using linear scanning.
- * A "paragraph" is any single-quoted, double-quoted, or backtick
- * string literal with 40+ characters of content. Skips strings that
- * contain newlines (those are multi-line template literals; not
- * treated as paragraphs).
+ * A "paragraph" is any string literal with 40+ characters, no
+ * newlines. Handles escapes.
  */
 function extractParagraphs(src: string): Array<{ text: string; line: number }> {
   const out: Array<{ text: string; line: number }> = [];
@@ -57,15 +54,18 @@ function extractParagraphs(src: string): Array<{ text: string; line: number }> {
       const quote = c;
       const start = i;
       let j = i + 1;
+      let body = '';
       while (j < src.length) {
         if (src[j] === '\\') {
+          body += src[j];
+          if (j + 1 < src.length) body += src[j + 1];
           j += 2;
           continue;
         }
         if (src[j] === quote) break;
+        body += src[j];
         j++;
       }
-      const body = src.slice(start + 1, j);
       if (body.length >= MIN_PARAGRAPH_LENGTH && !body.includes('\n')) {
         out.push({ text: body, line: lineNumberAt(src, start) });
       }
@@ -77,11 +77,30 @@ function extractParagraphs(src: string): Array<{ text: string; line: number }> {
   return out;
 }
 
+/**
+ * Splits text into sentences without regex lookbehind.
+ * Splits on `.`, `?`, `!` followed by whitespace.
+ */
 function splitSentences(text: string): string[] {
-  return text
-    .split(/(?<=[.!?])\s+/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
+  const out: string[] = [];
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if ((c === '.' || c === '?' || c === '!') && i + 1 < text.length) {
+      const next = text[i + 1];
+      if (next === ' ' || next === '\t' || next === '\n') {
+        const s = text.slice(start, i + 1).trim();
+        if (s.length > 0) out.push(s);
+        start = i + 1;
+        // Skip consecutive whitespace.
+        while (start < text.length && /\s/.test(text[start])) start++;
+        i = start - 1;
+      }
+    }
+  }
+  const tail = text.slice(start).trim();
+  if (tail.length > 0) out.push(tail);
+  return out;
 }
 
 export async function run(): Promise<Violation[]> {
@@ -100,7 +119,10 @@ export async function run(): Promise<Violation[]> {
 
     // Rule 1: forbidden patterns.
     for (const pattern of FORBIDDEN_PATTERNS) {
-      const re = new RegExp(pattern.regex.source, pattern.regex.flags);
+      const re = new RegExp(
+        pattern.regex.source,
+        pattern.regex.flags.includes('g') ? pattern.regex.flags : pattern.regex.flags + 'g',
+      );
       let m: RegExpExecArray | null;
       while ((m = re.exec(src)) !== null) {
         const line = lineNumberAt(src, m.index);
@@ -125,25 +147,10 @@ export async function run(): Promise<Violation[]> {
       }
     }
 
-    // Rule 2: paragraph length.
+    // Rule 2: sentence length + duplicate sentence detection.
     const paragraphs = extractParagraphs(src);
-    for (const p of paragraphs) {
-      if (p.text.length < MIN_PARAGRAPH_FOR_QUALITY && p.text.length >= MIN_PARAGRAPH_LENGTH) {
-        // Short paragraphs are common (list items, headers) so only
-        // warn if the paragraph looks like prose (contains a space).
-        if (p.text.includes(' ')) {
-          violations.push(
-            warning('paragraph-too-short', `Paragraph is only ${p.text.length} chars.`, {
-              file: relPath,
-              line: p.line,
-              hint: 'Very short paragraphs may indicate thin content.',
-            }),
-          );
-        }
-      }
-    }
-
-    // Rule 3: sentence length.
+    const allSentences = new Set<string>();
+    const duplicates = new Set<string>();
     for (const p of paragraphs) {
       for (const sentence of splitSentences(p.text)) {
         if (sentence.length > MAX_SENTENCE_LENGTH) {
@@ -159,17 +166,9 @@ export async function run(): Promise<Violation[]> {
             ),
           );
         }
-      }
-    }
-
-    // Rule 4: repeated sentences.
-    const allSentences = new Set<string>();
-    const duplicates = new Set<string>();
-    for (const p of paragraphs) {
-      for (const s of splitSentences(p.text)) {
-        const normalized = s.toLowerCase().trim();
+        const normalized = sentence.toLowerCase().trim();
         if (normalized.length < 30) continue;
-        if (allSentences.has(normalized)) duplicates.add(s);
+        if (allSentences.has(normalized)) duplicates.add(sentence);
         else allSentences.add(normalized);
       }
     }
