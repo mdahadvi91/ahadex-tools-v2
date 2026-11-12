@@ -101,6 +101,16 @@ import { run as validateAdPlacementRun } from '../tasks/adsense/validate-ad-plac
 import { run as validateAdLabelsRun } from '../tasks/adsense/validate-ad-labels';
 import { run as validateContentPolicyChecklistRun } from '../tasks/adsense/validate-content-policy-checklist';
 import { run as validatePublisherConfigRun } from '../tasks/adsense/validate-publisher-config';
+
+import { run as validateBuildRun } from '../tasks/production/validate-build';
+import { run as validatePrerenderRun } from '../tasks/production/validate-prerender';
+import { run as validateStaticHtmlRun } from '../tasks/production/validate-static-html';
+import { run as validateRouteOutputRun } from '../tasks/production/validate-route-output';
+import { run as validateArtifactIntegrityRun } from '../tasks/production/validate-artifact-integrity';
+import { run as validateBrowserCompatibilityRun } from '../tasks/production/validate-browser-compatibility';
+import { run as validateWorkerLifecycleRun } from '../tasks/production/validate-worker-lifecycle';
+import { run as validateErrorIsolationRun } from '../tasks/production/validate-error-isolation';
+import { run as lighthouseAuditRun } from '../tasks/production/lighthouse-audit';
 import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
@@ -326,7 +336,25 @@ export const TASKS: TaskRegistry = Object.freeze({
   production: {
     name: 'production',
     description: 'Build, prerender, static HTML, route output, Lighthouse.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-build', group: 'production', run: validateBuildRun },
+      { name: 'validate-prerender', group: 'production', run: validatePrerenderRun },
+      { name: 'validate-static-html', group: 'production', run: validateStaticHtmlRun },
+      { name: 'validate-route-output', group: 'production', run: validateRouteOutputRun },
+      {
+        name: 'validate-artifact-integrity',
+        group: 'production',
+        run: validateArtifactIntegrityRun,
+      },
+      {
+        name: 'validate-browser-compatibility',
+        group: 'production',
+        run: validateBrowserCompatibilityRun,
+      },
+      { name: 'validate-worker-lifecycle', group: 'production', run: validateWorkerLifecycleRun },
+      { name: 'validate-error-isolation', group: 'production', run: validateErrorIsolationRun },
+      { name: 'lighthouse-audit', group: 'production', run: lighthouseAuditRun },
+    ],
   },
 } as const);
 
