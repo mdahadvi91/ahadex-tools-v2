@@ -47,25 +47,22 @@ export async function run(): Promise<Violation[]> {
   const redirectsPath = join(PATHS.public, '_redirects');
   if (!(await pathExists(redirectsPath))) {
     violations.push(
-      error(
-        'redirects-missing',
-        'public/_redirects is missing (SPA fallback may not work).',
-        { file: 'public/_redirects' },
-      ),
+      error('redirects-missing', 'public/_redirects is missing (SPA fallback may not work).', {
+        file: 'public/_redirects',
+      }),
     );
   } else {
     const redirects = await readText(redirectsPath);
     // SPA fallback: any path → index.html 200
-    if (!/\/\*\s+\/index\.html\s+200/.test(redirects) && !/\/tools\/\*\s+\/index\.html\s+200/.test(redirects)) {
+    if (
+      !/\/\*\s+\/index\.html\s+200/.test(redirects) &&
+      !/\/tools\/\*\s+\/index\.html\s+200/.test(redirects)
+    ) {
       violations.push(
-        warning(
-          'redirects-no-spa-fallback',
-          'public/_redirects has no catch-all SPA fallback.',
-          {
-            file: 'public/_redirects',
-            hint: 'Add: /* /index.html 200 for SPA routing.',
-          },
-        ),
+        warning('redirects-no-spa-fallback', 'public/_redirects has no catch-all SPA fallback.', {
+          file: 'public/_redirects',
+          hint: 'Add: /* /index.html 200 for SPA routing.',
+        }),
       );
     }
   }

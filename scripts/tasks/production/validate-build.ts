@@ -99,11 +99,9 @@ export async function run(): Promise<Violation[]> {
     const hasMaps = assets.some((f) => f.endsWith('.map'));
     if (hasMaps) {
       violations.push(
-        warning(
-          'source-maps-in-dist',
-          'Source maps present in dist/ (public exposure risk).',
-          { file: 'dist/assets/' },
-        ),
+        warning('source-maps-in-dist', 'Source maps present in dist/ (public exposure risk).', {
+          file: 'dist/assets/',
+        }),
       );
     }
 

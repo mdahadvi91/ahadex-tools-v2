@@ -43,14 +43,10 @@ export async function run(): Promise<Violation[]> {
       const routeHtml = join(PATHS.dist, routePath, 'index.html');
       if (!(await pathExists(routeHtml))) {
         violations.push(
-          error(
-            'route-html-missing',
-            `SSG mode active but ${routeHtml} is missing.`,
-            {
-              file: `dist/${routePath}/index.html`,
-              hint: 'Run `npm run generate:prerender` after build.',
-            },
-          ),
+          error('route-html-missing', `SSG mode active but ${routeHtml} is missing.`, {
+            file: `dist/${routePath}/index.html`,
+            hint: 'Run `npm run generate:prerender` after build.',
+          }),
         );
       }
     }
@@ -105,11 +101,9 @@ export async function run(): Promise<Violation[]> {
     const indexPath2 = join(PATHS.srcTools, tool.manifest.slug, 'index.ts');
     if (!(await pathExists(indexPath2))) {
       violations.push(
-        error(
-          'tool-no-index',
-          `Tool "${tool.manifest.slug}" has no index.ts entry point.`,
-          { file: `src/tools/${tool.manifest.slug}/index.ts` },
-        ),
+        error('tool-no-index', `Tool "${tool.manifest.slug}" has no index.ts entry point.`, {
+          file: `src/tools/${tool.manifest.slug}/index.ts`,
+        }),
       );
     }
   }

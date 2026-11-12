@@ -34,7 +34,8 @@ const SUSPICIOUS_PATTERNS: Array<{
   },
   {
     name: 'competitor-comparison',
-    regex: /\b(?:unlike|compared to|better than)\s+(?:Photoshop|TinyPNG|Adobe|Canva|Google Images|iLoveIMG|Squoosh)\b/i,
+    regex:
+      /\b(?:unlike|compared to|better than)\s+(?:Photoshop|TinyPNG|Adobe|Canva|Google Images|iLoveIMG|Squoosh)\b/i,
     hint: 'Competitor comparisons risk legal issues. Remove or cite official sources.',
   },
   {
@@ -44,7 +45,8 @@ const SUSPICIOUS_PATTERNS: Array<{
   },
   {
     name: 'official-endorsement',
-    regex: /\b(?:official|endorsed|approved by|recommended by)\s+(?:Google|Microsoft|Apple|Mozilla|W3C)\b/i,
+    regex:
+      /\b(?:official|endorsed|approved by|recommended by)\s+(?:Google|Microsoft|Apple|Mozilla|W3C)\b/i,
     hint: 'Do not claim third-party endorsement.',
   },
   {
@@ -73,12 +75,15 @@ function hasNearbyReference(src: string, index: number): boolean {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
 
     for (const pattern of SUSPICIOUS_PATTERNS) {
@@ -94,15 +99,11 @@ export async function run(): Promise<Violation[]> {
           continue;
         }
         violations.push(
-          warning(
-            `factual-${pattern.name}`,
-            `Suspicious claim: "${m[0].slice(0, 60)}"`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: pattern.hint,
-            },
-          ),
+          warning(`factual-${pattern.name}`, `Suspicious claim: "${m[0].slice(0, 60)}"`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: pattern.hint,
+          }),
         );
         if (m.index === re.lastIndex) re.lastIndex += 1;
       }

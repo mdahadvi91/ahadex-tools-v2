@@ -26,11 +26,9 @@ export async function run(): Promise<Violation[]> {
   // Rule 1: dist exists.
   if (!(await pathExists(PATHS.dist))) {
     return [
-      warning(
-        'lighthouse-no-dist',
-        'dist/ is missing. Lighthouse static audit skipped.',
-        { hint: 'Run `npm run build` to enable.' },
-      ),
+      warning('lighthouse-no-dist', 'dist/ is missing. Lighthouse static audit skipped.', {
+        hint: 'Run `npm run build` to enable.',
+      }),
     ];
   }
 
@@ -58,25 +56,19 @@ export async function run(): Promise<Violation[]> {
     const headMatch = html.match(/<head>([\s\S]*?)<\/head>/i);
     if (headMatch) {
       const headContent = headMatch[1];
-      const blockingScript = /<script\b(?![^>]*\b(?:async|defer|type=["']module["']))[^>]*src=/.test(
-        headContent,
-      );
+      const blockingScript =
+        /<script\b(?![^>]*\b(?:async|defer|type=["']module["']))[^>]*src=/.test(headContent);
       if (blockingScript) {
         violations.push(
-          error(
-            'lighthouse-render-blocking-script',
-            'Render-blocking <script> in <head>.',
-            {
-              file: 'dist/index.html',
-              hint: 'Use defer or type="module" for scripts.',
-            },
-          ),
+          error('lighthouse-render-blocking-script', 'Render-blocking <script> in <head>.', {
+            file: 'dist/index.html',
+            hint: 'Use defer or type="module" for scripts.',
+          }),
         );
       }
 
-      const blockingStylesheet = /<link\b[^>]*rel=["']stylesheet["'](?![^>]*media=["']print["'])/.test(
-        headContent,
-      );
+      const blockingStylesheet =
+        /<link\b[^>]*rel=["']stylesheet["'](?![^>]*media=["']print["'])/.test(headContent);
       if (blockingStylesheet) {
         violations.push(
           info(

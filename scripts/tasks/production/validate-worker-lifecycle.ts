@@ -26,7 +26,10 @@ export async function run(): Promise<Violation[]> {
   const tsxFiles = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
 
   for (const file of tsxFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -36,15 +39,11 @@ export async function run(): Promise<Violation[]> {
 
     if (hasCreateEngine && !hasDispose) {
       violations.push(
-        error(
-          'worker-no-dispose',
-          'Component creates engine but never disposes it (leak).',
-          {
-            file: relPath,
-            line: lineNumberAt(src, src.search(/\bcreateEngine\s*\(/)),
-            hint: 'Call engine.dispose() in useEffect cleanup.',
-          },
-        ),
+        error('worker-no-dispose', 'Component creates engine but never disposes it (leak).', {
+          file: relPath,
+          line: lineNumberAt(src, src.search(/\bcreateEngine\s*\(/)),
+          hint: 'Call engine.dispose() in useEffect cleanup.',
+        }),
       );
     }
 
@@ -52,14 +51,10 @@ export async function run(): Promise<Violation[]> {
     const usesWorkerInState = /useState\s*<\s*.*Worker/.test(src);
     if (usesWorkerInState) {
       violations.push(
-        warning(
-          'worker-in-state',
-          'Worker instance stored in useState (should be useRef).',
-          {
-            file: relPath,
-            hint: 'Workers are not serializable; use useRef.',
-          },
-        ),
+        warning('worker-in-state', 'Worker instance stored in useState (should be useRef).', {
+          file: relPath,
+          hint: 'Workers are not serializable; use useRef.',
+        }),
       );
     }
   }
@@ -67,7 +62,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: engine/index.ts must have cleanup on dispose.
   const engineFiles = await walkFiles(PATHS.srcTools, { extensions: ['.ts'] });
   for (const file of engineFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (!relPath.endsWith('/engine/index.ts')) continue;
 
     const src = await readText(file);
@@ -82,11 +80,10 @@ export async function run(): Promise<Violation[]> {
     }
     if (!/\.onerror\s*=|addEventListener\(\s*["']error["']/.test(src)) {
       violations.push(
-        warning(
-          'engine-no-error-handler',
-          'Engine does not listen for worker errors.',
-          { file: relPath, hint: 'Add worker.addEventListener("error", ...).' },
-        ),
+        warning('engine-no-error-handler', 'Engine does not listen for worker errors.', {
+          file: relPath,
+          hint: 'Add worker.addEventListener("error", ...).',
+        }),
       );
     }
   }
@@ -94,7 +91,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 4: worker.ts must have message handler.
   const workerFiles = engineFiles.filter((f) => f.endsWith('/engine/worker.ts'));
   for (const file of workerFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     if (!/addEventListener\(\s*['"]message['"]/.test(src)) {
       violations.push(

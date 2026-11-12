@@ -27,20 +27,14 @@ export async function run(): Promise<Violation[]> {
     `${PATHS.srcComponents}/ErrorBoundary.tsx`,
     `${PATHS.srcComponents}/ui/ErrorBoundary.tsx`,
   ];
-  const hasBoundary = await Promise.all(boundaryPaths.map(pathExists)).then((r) =>
-    r.some(Boolean),
-  );
+  const hasBoundary = await Promise.all(boundaryPaths.map(pathExists)).then((r) => r.some(Boolean));
 
   if (!hasBoundary) {
     violations.push(
-      warning(
-        'no-error-boundary',
-        'No ErrorBoundary component exists.',
-        {
-          file: 'src/components/ErrorBoundary.tsx',
-          hint: 'Wrap tool routes in an ErrorBoundary to isolate crashes.',
-        },
-      ),
+      warning('no-error-boundary', 'No ErrorBoundary component exists.', {
+        file: 'src/components/ErrorBoundary.tsx',
+        hint: 'Wrap tool routes in an ErrorBoundary to isolate crashes.',
+      }),
     );
   }
 
@@ -50,11 +44,9 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(appPath);
     if (hasBoundary && !/ErrorBoundary/.test(src)) {
       violations.push(
-        warning(
-          'no-boundary-in-app',
-          'App.tsx does not use ErrorBoundary.',
-          { file: 'src/App.tsx' },
-        ),
+        warning('no-boundary-in-app', 'App.tsx does not use ErrorBoundary.', {
+          file: 'src/App.tsx',
+        }),
       );
     }
   }
@@ -62,7 +54,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: async functions calling engine must try/catch.
   const tsxFiles = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
   for (const file of tsxFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -92,14 +87,10 @@ export async function run(): Promise<Violation[]> {
     const thenRe = /\.then\s*\(([^)]*)\)\s*(?!\.catch)/g;
     while ((m = thenRe.exec(src)) !== null) {
       violations.push(
-        warning(
-          'then-without-catch',
-          '.then() without .catch (unhandled rejection risk).',
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-          },
-        ),
+        warning('then-without-catch', '.then() without .catch (unhandled rejection risk).', {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+        }),
       );
       if (m.index === thenRe.lastIndex) thenRe.lastIndex += 1;
     }

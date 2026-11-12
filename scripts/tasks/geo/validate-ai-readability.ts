@@ -69,12 +69,15 @@ function wordCount(text: string): number {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     const paragraphs = extractParagraphs(src);
 
@@ -98,11 +101,10 @@ export async function run(): Promise<Violation[]> {
       const sentences = countSentences(p.text);
       if (sentences > 6) {
         violations.push(
-          warning(
-            'ai-too-many-sentences',
-            `Paragraph has ${sentences} sentences (target 2-4).`,
-            { file: relPath, line: p.line },
-          ),
+          warning('ai-too-many-sentences', `Paragraph has ${sentences} sentences (target 2-4).`, {
+            file: relPath,
+            line: p.line,
+          }),
         );
       }
 
@@ -148,14 +150,10 @@ export async function run(): Promise<Violation[]> {
     // Rule 5: at least one list in the file (for enumerations).
     if (!/\[\s*['"`]/.test(src) || !src.includes('list')) {
       violations.push(
-        warning(
-          'ai-no-list-usage',
-          `Tool may not use lists for enumerations.`,
-          {
-            file: relPath,
-            hint: 'Lists improve AI readability for multi-item content.',
-          },
-        ),
+        warning('ai-no-list-usage', `Tool may not use lists for enumerations.`, {
+          file: relPath,
+          hint: 'Lists improve AI readability for multi-item content.',
+        }),
       );
     }
   }

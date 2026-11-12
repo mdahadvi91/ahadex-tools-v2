@@ -25,7 +25,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -53,28 +56,20 @@ export async function run(): Promise<Violation[]> {
       const hasRole = /\brole\s*=\s*['"]button['"]/.test(tag);
       if (!hasKeyDown) {
         violations.push(
-          error(
-            'clickable-no-keydown',
-            `Clickable <${m[1]}> has no onKeyDown handler.`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, tagStart),
-              hint: 'Add onKeyDown or use <button> instead.',
-            },
-          ),
+          error('clickable-no-keydown', `Clickable <${m[1]}> has no onKeyDown handler.`, {
+            file: relPath,
+            line: lineNumberAt(src, tagStart),
+            hint: 'Add onKeyDown or use <button> instead.',
+          }),
         );
       }
       if (!hasRole) {
         violations.push(
-          warning(
-            'clickable-no-role',
-            `Clickable <${m[1]}> has no role="button".`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, tagStart),
-              hint: 'Add role="button" for screen reader semantics.',
-            },
-          ),
+          warning('clickable-no-role', `Clickable <${m[1]}> has no role="button".`, {
+            file: relPath,
+            line: lineNumberAt(src, tagStart),
+            hint: 'Add role="button" for screen reader semantics.',
+          }),
         );
       }
     }
@@ -83,15 +78,11 @@ export async function run(): Promise<Violation[]> {
     const negTabRe = /<button\b[^>]*\btabIndex\s*=\s*\{?\s*-\s*1\s*\}?/g;
     while ((m = negTabRe.exec(src)) !== null) {
       violations.push(
-        warning(
-          'negative-tabindex-on-button',
-          '<button tabIndex={-1}> removes keyboard access.',
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-            hint: 'Only use tabIndex={-1} for programmatic focus targets.',
-          },
-        ),
+        warning('negative-tabindex-on-button', '<button tabIndex={-1}> removes keyboard access.', {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+          hint: 'Only use tabIndex={-1} for programmatic focus targets.',
+        }),
       );
     }
 
@@ -102,15 +93,11 @@ export async function run(): Promise<Violation[]> {
         const tag = m[0];
         if (!/aria-label|label\s*=/.test(tag)) {
           violations.push(
-            error(
-              'icon-button-no-label',
-              'IconButton missing aria-label/label prop.',
-              {
-                file: relPath,
-                line: lineNumberAt(src, m.index),
-                hint: 'Icon-only buttons must have accessible labels.',
-              },
-            ),
+            error('icon-button-no-label', 'IconButton missing aria-label/label prop.', {
+              file: relPath,
+              line: lineNumberAt(src, m.index),
+              hint: 'Icon-only buttons must have accessible labels.',
+            }),
           );
         }
       }

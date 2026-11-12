@@ -27,12 +27,15 @@ function extractDirectAnswer(src: string): string | null {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1] ?? 'unknown';
     const src = await readText(file);
 
@@ -56,11 +59,10 @@ export async function run(): Promise<Violation[]> {
     // Rule 2: DIRECT_ANSWER present and substantive.
     if (!directAnswer) {
       violations.push(
-        error(
-          'answer-no-direct-answer',
-          `Tool "${slug}" has no DIRECT_ANSWER.`,
-          { file: relPath, hint: 'AI systems quote this field.' },
-        ),
+        error('answer-no-direct-answer', `Tool "${slug}" has no DIRECT_ANSWER.`, {
+          file: relPath,
+          hint: 'AI systems quote this field.',
+        }),
       );
       continue;
     }
@@ -93,16 +95,17 @@ export async function run(): Promise<Violation[]> {
     // Rule 4: Answer should contain the tool name.
     if (hero.h1 && !directAnswer.toLowerCase().includes(hero.h1.toLowerCase())) {
       violations.push(
-        warning(
-          'answer-no-entity',
-          `Tool "${slug}" DIRECT_ANSWER does not mention "${hero.h1}".`,
-          { file: relPath, hint: 'Name the entity for citation.' },
-        ),
+        warning('answer-no-entity', `Tool "${slug}" DIRECT_ANSWER does not mention "${hero.h1}".`, {
+          file: relPath,
+          hint: 'Name the entity for citation.',
+        }),
       );
     }
 
     // Rule 5: Answer should describe what the tool does.
-    if (!/(?:is|does|provides|compresses|reduces|helps|converts|allows|processes)/i.test(directAnswer)) {
+    if (
+      !/(?:is|does|provides|compresses|reduces|helps|converts|allows|processes)/i.test(directAnswer)
+    ) {
       violations.push(
         warning(
           'answer-no-verb',

@@ -126,9 +126,7 @@ export async function run(): Promise<Violation[]> {
     }
   }
 
-  violations.push(
-    info('integrity-ok', `${assetRefs.size} asset references verified.`),
-  );
+  violations.push(info('integrity-ok', `${assetRefs.size} asset references verified.`));
 
   return violations;
 }

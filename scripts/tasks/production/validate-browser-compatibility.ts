@@ -67,7 +67,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -76,15 +79,11 @@ export async function run(): Promise<Violation[]> {
       let m: RegExpExecArray | null;
       while ((m = re.exec(src)) !== null) {
         violations.push(
-          warning(
-            `compat-${concern.name}`,
-            `${concern.name} requires ${concern.minBrowser}.`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: concern.hint,
-            },
-          ),
+          warning(`compat-${concern.name}`, `${concern.name} requires ${concern.minBrowser}.`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: concern.hint,
+          }),
         );
         if (m.index === re.lastIndex) re.lastIndex += 1;
       }

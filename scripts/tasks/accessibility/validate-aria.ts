@@ -13,13 +13,47 @@ import { PATHS } from '../../utils/constants';
 import { error, warning, type Violation } from '../../utils/validation-result';
 
 const VALID_ROLES = new Set([
-  'button', 'link', 'navigation', 'main', 'banner', 'contentinfo',
-  'dialog', 'alertdialog', 'alert', 'status', 'search', 'form',
-  'tab', 'tablist', 'tabpanel', 'menu', 'menubar', 'menuitem',
-  'list', 'listitem', 'article', 'region', 'complementary',
-  'progressbar', 'slider', 'switch', 'checkbox', 'radio', 'radiogroup',
-  'textbox', 'combobox', 'listbox', 'option', 'heading', 'img',
-  'presentation', 'none', 'group', 'separator', 'toolbar', 'tooltip',
+  'button',
+  'link',
+  'navigation',
+  'main',
+  'banner',
+  'contentinfo',
+  'dialog',
+  'alertdialog',
+  'alert',
+  'status',
+  'search',
+  'form',
+  'tab',
+  'tablist',
+  'tabpanel',
+  'menu',
+  'menubar',
+  'menuitem',
+  'list',
+  'listitem',
+  'article',
+  'region',
+  'complementary',
+  'progressbar',
+  'slider',
+  'switch',
+  'checkbox',
+  'radio',
+  'radiogroup',
+  'textbox',
+  'combobox',
+  'listbox',
+  'option',
+  'heading',
+  'img',
+  'presentation',
+  'none',
+  'group',
+  'separator',
+  'toolbar',
+  'tooltip',
 ]);
 
 function lineNumberAt(source: string, index: number): number {
@@ -36,7 +70,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -60,15 +97,11 @@ export async function run(): Promise<Violation[]> {
       const role = m[1].trim();
       if (!VALID_ROLES.has(role)) {
         violations.push(
-          warning(
-            'aria-unknown-role',
-            `Unknown ARIA role "${role}".`,
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: 'Verify exact spelling on WAI-ARIA spec.',
-            },
-          ),
+          warning('aria-unknown-role', `Unknown ARIA role "${role}".`, {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: 'Verify exact spelling on WAI-ARIA spec.',
+          }),
         );
       }
     }
@@ -78,15 +111,11 @@ export async function run(): Promise<Violation[]> {
       /<(button|a|input|select|textarea)\b[^>]*\baria-hidden\s*=\s*['"]true['"][^>]*>/g;
     while ((m = hiddenFocusableRe.exec(src)) !== null) {
       violations.push(
-        error(
-          'aria-hidden-focusable',
-          'aria-hidden="true" on a focusable element breaks a11y.',
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-            hint: 'Remove aria-hidden or make the element non-focusable.',
-          },
-        ),
+        error('aria-hidden-focusable', 'aria-hidden="true" on a focusable element breaks a11y.', {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+          hint: 'Remove aria-hidden or make the element non-focusable.',
+        }),
       );
     }
 
@@ -99,15 +128,11 @@ export async function run(): Promise<Violation[]> {
       const context = src.slice(windowStart, windowEnd);
       if (!/aria-modal\s*=\s*['"]true['"]/.test(context)) {
         violations.push(
-          warning(
-            'aria-dialog-no-modal',
-            'Dialog role without aria-modal="true".',
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: 'Modals should be aria-modal="true".',
-            },
-          ),
+          warning('aria-dialog-no-modal', 'Dialog role without aria-modal="true".', {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: 'Modals should be aria-modal="true".',
+          }),
         );
       }
     }

@@ -26,7 +26,10 @@ export async function run(): Promise<Violation[]> {
 
   // Rule 1: positive tabIndex is an anti-pattern.
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -34,15 +37,11 @@ export async function run(): Promise<Violation[]> {
     let m: RegExpExecArray | null;
     while ((m = positiveTabRe.exec(src)) !== null) {
       violations.push(
-        warning(
-          'positive-tabindex',
-          `Positive tabIndex="${m[1]}" disrupts natural focus order.`,
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-            hint: 'Use DOM order instead of tabIndex for ordering.',
-          },
-        ),
+        warning('positive-tabindex', `Positive tabIndex="${m[1]}" disrupts natural focus order.`, {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+          hint: 'Use DOM order instead of tabIndex for ordering.',
+        }),
       );
     }
   }
@@ -58,7 +57,10 @@ export async function run(): Promise<Violation[]> {
   for (const path of dialogFiles) {
     if (!allTsx.includes(path)) continue;
     const src = await readText(path);
-    const relPath = path.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = path
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
 
     // Must have keydown handler.
     if (!/addEventListener\(\s*['"]keydown['"]/.test(src)) {
@@ -85,40 +87,34 @@ export async function run(): Promise<Violation[]> {
     // Must handle Escape.
     if (!/['"]Escape['"]/.test(src)) {
       violations.push(
-        warning(
-          'dialog-no-escape',
-          `${relPath} does not close on Escape.`,
-          { file: relPath },
-        ),
+        warning('dialog-no-escape', `${relPath} does not close on Escape.`, { file: relPath }),
       );
     }
 
     // Must restore focus on close.
     if (!/\.focus\(\)/.test(src)) {
       violations.push(
-        warning(
-          'dialog-no-focus-restore',
-          `${relPath} does not restore focus when closing.`,
-          { file: relPath, hint: 'Store trigger element and focus it on close.' },
-        ),
+        warning('dialog-no-focus-restore', `${relPath} does not restore focus when closing.`, {
+          file: relPath,
+          hint: 'Store trigger element and focus it on close.',
+        }),
       );
     }
   }
 
   // Rule 3: skip link in App.tsx for keyboard users.
   const appPath = `${PATHS.src}/App.tsx`;
-  if (allTsx.includes(appPath) || (await walkFiles(PATHS.src, { extensions: ['.tsx'] })).includes(appPath)) {
+  if (
+    allTsx.includes(appPath) ||
+    (await walkFiles(PATHS.src, { extensions: ['.tsx'] })).includes(appPath)
+  ) {
     const src = await readText(appPath);
     if (!/skip|Skip to main|main-content/i.test(src)) {
       violations.push(
-        warning(
-          'no-skip-link',
-          'App.tsx has no skip-to-main link for keyboard users.',
-          {
-            file: 'src/App.tsx',
-            hint: 'Add <a href="#main">Skip to content</a> as first focusable element.',
-          },
-        ),
+        warning('no-skip-link', 'App.tsx has no skip-to-main link for keyboard users.', {
+          file: 'src/App.tsx',
+          hint: 'Add <a href="#main">Skip to content</a> as first focusable element.',
+        }),
       );
     }
   }

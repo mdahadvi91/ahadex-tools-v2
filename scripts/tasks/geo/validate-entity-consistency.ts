@@ -38,7 +38,9 @@ async function extractSchemaDescription(slug: string): Promise<string | null> {
   if (!(await pathExists(path))) return null;
   try {
     const mod = (await import(/* @vite-ignore */ path)) as {
-      buildSchema?: (url: string) => { '@graph'?: Array<{ '@type'?: string; description?: string }> };
+      buildSchema?: (url: string) => {
+        '@graph'?: Array<{ '@type'?: string; description?: string }>;
+      };
       default?: (url: string) => { '@graph'?: Array<{ '@type'?: string; description?: string }> };
     };
     const builder = mod.buildSchema ?? mod.default;
@@ -124,11 +126,9 @@ export async function run(): Promise<Violation[]> {
     }
 
     // Tool name must appear consistently.
-    const names = [
-      d.manifestDescription,
-      d.geoDirectAnswer,
-      d.contentDescription,
-    ].filter((v): v is string => v !== null);
+    const names = [d.manifestDescription, d.geoDirectAnswer, d.contentDescription].filter(
+      (v): v is string => v !== null,
+    );
 
     if (names.length > 0) {
       const firstWordOfNames = names.map((n) => n.split(/\s+/)[0]?.toLowerCase());

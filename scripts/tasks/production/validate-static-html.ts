@@ -75,11 +75,9 @@ export async function run(): Promise<Violation[]> {
   const inlineCount = (html.match(inlineRe) ?? []).length;
   if (inlineCount > 0) {
     violations.push(
-      warning(
-        'inline-handler',
-        'Inline event handler in HTML (' + inlineCount + ' instances).',
-        { file: 'dist/index.html' },
-      ),
+      warning('inline-handler', 'Inline event handler in HTML (' + inlineCount + ' instances).', {
+        file: 'dist/index.html',
+      }),
     );
   }
 

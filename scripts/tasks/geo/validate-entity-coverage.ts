@@ -30,7 +30,12 @@ const COMMON_EXPECTATIONS: readonly EntityExpectation[] = [
   },
   {
     name: 'privacy-statement',
-    patterns: [/\bprivacy\b/i, /\blocal(?:ly)?\b/i, /\byour device\b/i, /\bnever (?:leaves?|uploaded?)\b/i],
+    patterns: [
+      /\bprivacy\b/i,
+      /\blocal(?:ly)?\b/i,
+      /\byour device\b/i,
+      /\bnever (?:leaves?|uploaded?)\b/i,
+    ],
     required: true,
     hint: 'State the privacy stance explicitly.',
   },
@@ -54,7 +59,10 @@ const COMMON_EXPECTATIONS: readonly EntityExpectation[] = [
   },
   {
     name: 'no-signup',
-    patterns: [/\bno (?:signup|account|registration|login)\b/i, /\bwithout (?:signup|account|registration)\b/i],
+    patterns: [
+      /\bno (?:signup|account|registration|login)\b/i,
+      /\bwithout (?:signup|account|registration)\b/i,
+    ],
     required: false,
     hint: 'State whether a signup is required.',
   },
@@ -67,12 +75,15 @@ function checkCoverage(content: string, expectation: EntityExpectation): boolean
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1] ?? 'unknown';
     const src = await readText(file);
 
@@ -96,9 +107,7 @@ export async function run(): Promise<Violation[]> {
     }
 
     // Rule 2: tool name in first 100 chars of DIRECT_ANSWER.
-    const directAnswerMatch = src.match(
-      /DIRECT_ANSWER\s*=\s*(?:\n\s*)?['"`]([^'"`]+)['"`]/,
-    );
+    const directAnswerMatch = src.match(/DIRECT_ANSWER\s*=\s*(?:\n\s*)?['"`]([^'"`]+)['"`]/);
     if (directAnswerMatch) {
       const first100 = directAnswerMatch[1].slice(0, 100).toLowerCase();
       const toolNameWord = slug.replace(/-/g, ' ').toLowerCase().split(' ')[0];

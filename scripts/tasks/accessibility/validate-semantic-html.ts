@@ -52,11 +52,9 @@ export async function run(): Promise<Violation[]> {
     }
     if (!/<nav\b/i.test(src)) {
       violations.push(
-        warning(
-          'no-nav-element',
-          'Header.tsx does not use <nav> for navigation.',
-          { file: 'src/components/Header.tsx' },
-        ),
+        warning('no-nav-element', 'Header.tsx does not use <nav> for navigation.', {
+          file: 'src/components/Header.tsx',
+        }),
       );
     }
   }
@@ -77,7 +75,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 4: no <div onClick> without role/tabIndex (common a11y anti-pattern).
   const allFiles = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
   for (const file of allFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -108,15 +109,11 @@ export async function run(): Promise<Violation[]> {
       const tag = m[0];
       if (!/\bonClick\s*=/.test(tag) && !/\brole\s*=/.test(tag)) {
         violations.push(
-          warning(
-            'anchor-empty-href',
-            '<a href="#"> without onClick is not functional.',
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: 'Use <button> for actions, <a href="/path"> for navigation.',
-            },
-          ),
+          warning('anchor-empty-href', '<a href="#"> without onClick is not functional.', {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: 'Use <button> for actions, <a href="/path"> for navigation.',
+          }),
         );
       }
     }
