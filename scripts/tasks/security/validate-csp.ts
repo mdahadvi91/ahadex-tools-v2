@@ -2,13 +2,25 @@
  * Content Security Policy validator. Checks that the CSP emitted
  * by src/platform/security/content-security.ts is present in
  * public/_headers and uses safe directives.
+ *
+ * Note: 'unsafe-inline' in script-src is flagged as a warning (not
+ * error) because Cloudflare Pages injects inline scripts for bot
+ * protection, analytics and challenge flows that require it. A
+ * nonce-based CSP is the future upgrade path (see ADR-003).
  */
 
 import { readText, pathExists } from '../../utils/file-system';
 import { PATHS } from '../../utils/constants';
 import { error, warning, type Violation } from '../../utils/validation-result';
 
-const FORBIDDEN_SCRIPT_SOURCES = ["'unsafe-eval'", "'unsafe-inline'", 'http:', 'https://*'];
+const HARD_FORBIDDEN_SCRIPT_SOURCES = ["'unsafe-eval'", 'http:', 'https://*'];
+
+const SOFT_FLAGGED_SCRIPT_SOURCES: Array<{ value: string; reason: string }> = [
+  {
+    value: "'unsafe-inline'",
+    reason: "Cloudflare injections require 'unsafe-inline'; migrate to nonce-based CSP later.",
+  },
+];
 
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
@@ -42,7 +54,7 @@ export async function run(): Promise<Violation[]> {
     directives.set(name.toLowerCase(), rest.join(' '));
   }
 
-  // default-src is required.
+  // default-src required.
   if (!directives.has('default-src')) {
     violations.push(
       error('csp-missing-default', 'CSP must define default-src.', {
@@ -71,7 +83,7 @@ export async function run(): Promise<Violation[]> {
     );
   }
 
-  // frame-ancestors must be 'none' (defense in depth).
+  // frame-ancestors must be 'none'.
   const frameAncestors = directives.get('frame-ancestors');
   if (!frameAncestors || frameAncestors.trim() !== "'none'") {
     violations.push(
@@ -81,10 +93,10 @@ export async function run(): Promise<Violation[]> {
     );
   }
 
-  // script-src must not contain forbidden sources.
   const scriptSrc = directives.get('script-src');
   if (scriptSrc) {
-    for (const forbidden of FORBIDDEN_SCRIPT_SOURCES) {
+    // Hard-forbidden sources: error.
+    for (const forbidden of HARD_FORBIDDEN_SCRIPT_SOURCES) {
       if (scriptSrc.includes(forbidden)) {
         violations.push(
           error(
@@ -92,15 +104,26 @@ export async function run(): Promise<Violation[]> {
             `script-src contains forbidden source "${forbidden}".`,
             {
               file: 'public/_headers',
-              hint: "Remove 'unsafe-eval'/'unsafe-inline' or wildcard hosts.",
+              hint: "Remove 'unsafe-eval' or wildcard hosts.",
             },
           ),
         );
       }
     }
+
+    // Soft-flagged sources: warning with reason.
+    for (const soft of SOFT_FLAGGED_SCRIPT_SOURCES) {
+      if (scriptSrc.includes(soft.value)) {
+        violations.push(
+          warning('csp-script-src-soft', `script-src uses ${soft.value}: ${soft.reason}`, {
+            file: 'public/_headers',
+          }),
+        );
+      }
+    }
   }
 
-  // Must include worker-src for Web Workers.
+  // worker-src required (Web Workers).
   if (!directives.has('worker-src')) {
     violations.push(
       warning('csp-missing-worker-src', 'CSP should declare worker-src (Web Workers).', {

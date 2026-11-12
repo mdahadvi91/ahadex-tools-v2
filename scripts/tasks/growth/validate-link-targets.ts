@@ -8,8 +8,14 @@ import { discoverTools } from '../../utils/route-discovery';
 import { error, warning, type Violation } from '../../utils/validation-result';
 
 const STATIC_PATHS = new Set([
-  '/', '/tools', '/about', '/contact',
-  '/privacy', '/terms', '/disclaimer', '/cookies',
+  '/',
+  '/tools',
+  '/about',
+  '/contact',
+  '/privacy',
+  '/terms',
+  '/disclaimer',
+  '/cookies',
 ]);
 
 function lineNumberAt(source: string, index: number): number {
@@ -27,12 +33,15 @@ export async function run(): Promise<Violation[]> {
   const toolPaths = new Set(tools.map((t) => t.manifest.path));
   const validPaths = new Set([...STATIC_PATHS, ...toolPaths]);
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
 
     const pathRe = /path\s*:\s*['"`](\/[^'"`#?]*)['"`]/g;

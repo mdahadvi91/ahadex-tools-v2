@@ -4,10 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  ANALYTICS_EVENTS,
-  type EventPayloadMap,
-} from '../../src/platform/analytics/events';
+import { ANALYTICS_EVENTS, type EventPayloadMap } from '../../src/platform/analytics/events';
 import { filterPayload } from '../../src/platform/analytics/privacy-filter';
 
 describe('analytics: event schema', () => {

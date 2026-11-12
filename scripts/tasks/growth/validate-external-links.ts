@@ -17,12 +17,21 @@ function lineNumberAt(source: string, index: number): number {
 }
 
 const TRUSTED_DOMAINS = [
-  'schema.org', 'www.w3.org', 'w3.org',
-  'developer.mozilla.org', 'developers.google.com',
-  'web.dev', 'webassembly.org',
-  'react.dev', 'vitejs.dev', 'tailwindcss.com',
-  'typescriptlang.org', 'github.com', 'npmjs.com',
-  'google-analytics.com', 'googletagmanager.com',
+  'schema.org',
+  'www.w3.org',
+  'w3.org',
+  'developer.mozilla.org',
+  'developers.google.com',
+  'web.dev',
+  'webassembly.org',
+  'react.dev',
+  'vitejs.dev',
+  'tailwindcss.com',
+  'typescriptlang.org',
+  'github.com',
+  'npmjs.com',
+  'google-analytics.com',
+  'googletagmanager.com',
   'ahadex.online',
 ];
 
@@ -31,7 +40,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);

@@ -33,7 +33,10 @@ test.describe('Navigation', () => {
 
   test('navigation to about page works', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('link', { name: /^About$/ }).first().click();
+    await page
+      .getByRole('link', { name: /^About$/ })
+      .first()
+      .click();
     await expect(page).toHaveURL('/about');
     await expect(page.locator('h1')).toContainText(/About/i);
   });

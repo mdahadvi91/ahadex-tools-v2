@@ -4,7 +4,11 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { normalizeError, handleError, safeRun } from '../../src/platform/observability/error-handler';
+import {
+  normalizeError,
+  handleError,
+  safeRun,
+} from '../../src/platform/observability/error-handler';
 
 describe('error-isolation: normalizeError', () => {
   it('normalizes Error instance', () => {
