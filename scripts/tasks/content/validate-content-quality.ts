@@ -21,7 +21,7 @@ const FORBIDDEN_PATTERNS: Array<{ name: string; regex: RegExp; severity: 'error'
   },
   {
     name: 'false-guarantee',
-    regex: /\bguaranteed (?:results?|to work|success)\b/i,
+    regex: /(?<!not )\bguaranteed (?:results?|to work|success)\b/i,
     severity: 'error',
   },
   { name: 'world-best', regex: /\bworld'?s (?:best|leading|first)\b/i, severity: 'warning' },
