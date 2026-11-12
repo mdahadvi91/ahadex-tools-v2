@@ -95,6 +95,12 @@ import { run as validateAriaRun } from '../tasks/accessibility/validate-aria';
 import { run as accessibilityAuditRun } from '../tasks/accessibility/accessibility-audit';
 import { run as validateFocusOrderRun } from '../tasks/accessibility/validate-focus-order';
 import { run as validateColorContrastRun } from '../tasks/accessibility/validate-color-contrast';
+
+import { run as validateAdsTxtRun } from '../tasks/adsense/validate-ads-txt';
+import { run as validateAdPlacementRun } from '../tasks/adsense/validate-ad-placement';
+import { run as validateAdLabelsRun } from '../tasks/adsense/validate-ad-labels';
+import { run as validateContentPolicyChecklistRun } from '../tasks/adsense/validate-content-policy-checklist';
+import { run as validatePublisherConfigRun } from '../tasks/adsense/validate-publisher-config';
 import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
@@ -305,7 +311,17 @@ export const TASKS: TaskRegistry = Object.freeze({
   adsense: {
     name: 'adsense',
     description: 'ads.txt, ad placement, labels, content policy, publisher.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-ads-txt', group: 'adsense', run: validateAdsTxtRun },
+      { name: 'validate-ad-placement', group: 'adsense', run: validateAdPlacementRun },
+      { name: 'validate-ad-labels', group: 'adsense', run: validateAdLabelsRun },
+      {
+        name: 'validate-content-policy-checklist',
+        group: 'adsense',
+        run: validateContentPolicyChecklistRun,
+      },
+      { name: 'validate-publisher-config', group: 'adsense', run: validatePublisherConfigRun },
+    ],
   },
   production: {
     name: 'production',
