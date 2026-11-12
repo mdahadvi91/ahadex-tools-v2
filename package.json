@@ -38,7 +38,9 @@
     "generate:sitemap": "tsx scripts/tasks/indexing/generate-sitemap.ts",
     "prebuild": "tsx scripts/tasks/indexing/generate-sitemap.ts",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install --with-deps"
   },
   "dependencies": {
     "react": "19.3.1",
@@ -47,6 +49,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.65.0",
     "@tailwindcss/postcss": "4.3.5",
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",
