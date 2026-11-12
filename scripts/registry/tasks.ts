@@ -75,6 +75,15 @@ import { run as validateDuplicateContentRun } from '../tasks/content/validate-du
 import { run as validateContentFreshnessRun } from '../tasks/content/validate-content-freshness';
 import { run as validateContentSourcesRun } from '../tasks/content/validate-content-sources';
 import { run as validateTopicClustersRun } from '../tasks/content/validate-topic-clusters';
+import { run as validateContentInventoryRun } from '../tasks/growth/validate-content-inventory';
+import { run as validateLinkTargetsRun } from '../tasks/growth/validate-link-targets';
+import { run as validateExternalLinksRun } from '../tasks/growth/validate-external-links';
+import { run as validateBrandConsistencyRun } from '../tasks/growth/validate-brand-consistency';
+import { run as generateKeywordReportRun } from '../tasks/growth/generate-keyword-report';
+import { run as validateLocaleConfigRun } from '../tasks/i18n/validate-locale-config';
+import { run as validateTranslationsRun } from '../tasks/i18n/validate-translations';
+import { run as validateHreflangRun } from '../tasks/i18n/validate-hreflang';
+import { run as validateLocaleMetadataRun } from '../tasks/i18n/validate-locale-metadata';
 import { run as validateEditorialAttributionRun } from '../tasks/content/validate-editorial-attribution';
 
 import { run as validateJsonldRun } from '../tasks/schema/validate-jsonld';
@@ -115,8 +124,6 @@ import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-v
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
 import { run as validateLazyLoadingRun } from '../tasks/performance/validate-lazy-loading';
-
-const NO_TASKS: readonly never[] = [];
 
 export const TASKS: TaskRegistry = Object.freeze({
   architecture: {
@@ -259,7 +266,13 @@ export const TASKS: TaskRegistry = Object.freeze({
   growth: {
     name: 'growth',
     description: 'Content inventory, link targets, brand consistency.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-content-inventory', group: 'growth', run: validateContentInventoryRun },
+      { name: 'validate-link-targets', group: 'growth', run: validateLinkTargetsRun },
+      { name: 'validate-external-links', group: 'growth', run: validateExternalLinksRun },
+      { name: 'validate-brand-consistency', group: 'growth', run: validateBrandConsistencyRun },
+      { name: 'generate-keyword-report', group: 'growth', run: generateKeywordReportRun },
+    ],
   },
   privacy: {
     name: 'privacy',
@@ -316,7 +329,12 @@ export const TASKS: TaskRegistry = Object.freeze({
   i18n: {
     name: 'i18n',
     description: 'Locale config, translations, hreflang, locale metadata.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-locale-config', group: 'i18n', run: validateLocaleConfigRun },
+      { name: 'validate-translations', group: 'i18n', run: validateTranslationsRun },
+      { name: 'validate-hreflang', group: 'i18n', run: validateHreflangRun },
+      { name: 'validate-locale-metadata', group: 'i18n', run: validateLocaleMetadataRun },
+    ],
   },
   adsense: {
     name: 'adsense',
