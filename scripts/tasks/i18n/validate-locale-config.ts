@@ -20,7 +20,9 @@ export async function run(): Promise<Violation[]> {
 
   // Rule 1: html lang attribute in index.html.
   const indexHtmlPath = `${PATHS.root}/index.html`;
-  if (await walkFiles(PATHS.root, { extensions: ['.html'] }).then((f) => f.includes(indexHtmlPath))) {
+  if (
+    await walkFiles(PATHS.root, { extensions: ['.html'] }).then((f) => f.includes(indexHtmlPath))
+  ) {
     const src = await readText(indexHtmlPath);
     const langMatch = src.match(/<html\b[^>]*\blang\s*=\s*['"]([^'"]+)['"]/);
     if (!langMatch) {
@@ -43,15 +45,17 @@ export async function run(): Promise<Violation[]> {
 
   // Rule 2: site.ts has a locale field.
   const siteConfigPath = `${PATHS.srcConfig}/site.ts`;
-  if (await walkFiles(PATHS.srcConfig, { extensions: ['.ts'] }).then((f) => f.includes(siteConfigPath))) {
+  if (
+    await walkFiles(PATHS.srcConfig, { extensions: ['.ts'] }).then((f) =>
+      f.includes(siteConfigPath),
+    )
+  ) {
     const src = await readText(siteConfigPath);
     if (!/locale\s*:/.test(src)) {
       violations.push(
-        warning(
-          'missing-locale-config',
-          'site.ts does not declare a locale field.',
-          { file: 'src/config/site.ts' },
-        ),
+        warning('missing-locale-config', 'site.ts does not declare a locale field.', {
+          file: 'src/config/site.ts',
+        }),
       );
     }
   }
@@ -64,7 +68,10 @@ export async function run(): Promise<Violation[]> {
   });
 
   for (const file of htmlFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     const langMatches = src.matchAll(/<html\b[^>]*\blang\s*=\s*['"]([^'"]+)['"]/g);
     for (const m of langMatches) {
@@ -80,9 +87,7 @@ export async function run(): Promise<Violation[]> {
     }
   }
 
-  violations.push(
-    info('locale-config-ok', `Default locale: ${EXPECTED_DEFAULT_LOCALE}`),
-  );
+  violations.push(info('locale-config-ok', `Default locale: ${EXPECTED_DEFAULT_LOCALE}`));
 
   return violations;
 }

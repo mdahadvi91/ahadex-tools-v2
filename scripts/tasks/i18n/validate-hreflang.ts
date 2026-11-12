@@ -25,7 +25,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.tsx', '.ts'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -68,24 +71,17 @@ export async function run(): Promise<Violation[]> {
     // x-default required if any other hreflang exists.
     if (found.length > 0 && !found.includes('x-default')) {
       violations.push(
-        warning(
-          'missing-x-default',
-          'hreflang present but x-default is missing.',
-          {
-            file: relPath,
-            hint: 'Add <link rel="alternate" hreflang="x-default" href="..." />.',
-          },
-        ),
+        warning('missing-x-default', 'hreflang present but x-default is missing.', {
+          file: relPath,
+          hint: 'Add <link rel="alternate" hreflang="x-default" href="..." />.',
+        }),
       );
     }
   }
 
   if (foundHreflang === 0) {
     violations.push(
-      info(
-        'hreflang-skipped',
-        'No hreflang tags found (English-only site, i18n deferred).',
-      ),
+      info('hreflang-skipped', 'No hreflang tags found (English-only site, i18n deferred).'),
     );
   }
 

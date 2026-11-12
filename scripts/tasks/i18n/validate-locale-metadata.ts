@@ -19,7 +19,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -31,11 +34,9 @@ export async function run(): Promise<Violation[]> {
       const locale = m[1];
       if (!OG_LOCALE_RE.test(locale)) {
         violations.push(
-          error(
-            'invalid-og-locale',
-            `ogLocale "${locale}" must match format "en_US".`,
-            { file: relPath },
-          ),
+          error('invalid-og-locale', `ogLocale "${locale}" must match format "en_US".`, {
+            file: relPath,
+          }),
         );
       }
     }
@@ -62,19 +63,15 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(sitePath);
     if (!/locale\s*:/.test(src)) {
       violations.push(
-        warning(
-          'site-missing-locale',
-          'src/config/site.ts does not declare a locale.',
-          { file: 'src/config/site.ts' },
-        ),
+        warning('site-missing-locale', 'src/config/site.ts does not declare a locale.', {
+          file: 'src/config/site.ts',
+        }),
       );
     }
   }
 
   if (violations.length === 0) {
-    violations.push(
-      info('locale-metadata-ok', 'Locale metadata consistent (single-locale site).'),
-    );
+    violations.push(info('locale-metadata-ok', 'Locale metadata consistent (single-locale site).'));
   }
 
   return violations;

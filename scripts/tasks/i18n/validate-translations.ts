@@ -38,7 +38,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
     if (isAllowed(relPath)) continue;
 
@@ -52,15 +55,11 @@ export async function run(): Promise<Violation[]> {
       const text = m[1].trim();
       if (text.length < 5) continue;
       violations.push(
-        warning(
-          'hardcoded-string',
-          `Possibly hardcoded UI string: "${text.slice(0, 40)}".`,
-          {
-            file: relPath,
-            line: lineNumberAt(src, m.index),
-            hint: 'Extract to translation map when i18n is added.',
-          },
-        ),
+        warning('hardcoded-string', `Possibly hardcoded UI string: "${text.slice(0, 40)}".`, {
+          file: relPath,
+          line: lineNumberAt(src, m.index),
+          hint: 'Extract to translation map when i18n is added.',
+        }),
       );
       if (m.index === textRe.lastIndex) textRe.lastIndex += 1;
     }
@@ -68,10 +67,7 @@ export async function run(): Promise<Violation[]> {
 
   if (violations.length === 0) {
     violations.push(
-      info(
-        'translations-ok',
-        'No hardcoded UI strings detected outside allowed paths.',
-      ),
+      info('translations-ok', 'No hardcoded UI strings detected outside allowed paths.'),
     );
   }
 
