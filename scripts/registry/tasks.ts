@@ -76,6 +76,12 @@ import { run as validateContentFreshnessRun } from '../tasks/content/validate-co
 import { run as validateContentSourcesRun } from '../tasks/content/validate-content-sources';
 import { run as validateTopicClustersRun } from '../tasks/content/validate-topic-clusters';
 import { run as validateEditorialAttributionRun } from '../tasks/content/validate-editorial-attribution';
+
+import { run as validateJsonldRun } from '../tasks/schema/validate-jsonld';
+import { run as validateSchemaTypesRun } from '../tasks/schema/validate-schema-types';
+import { run as validateSchemaUrlsRun } from '../tasks/schema/validate-schema-urls';
+import { run as validateSchemaDuplicatesRun } from '../tasks/schema/validate-schema-duplicates';
+import { run as validateSchemaConsistencyRun } from '../tasks/schema/validate-schema-consistency';
 import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
@@ -185,7 +191,13 @@ export const TASKS: TaskRegistry = Object.freeze({
   schema: {
     name: 'schema',
     description: 'JSON-LD validity, types, URLs, duplicates, consistency.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-jsonld', group: 'schema', run: validateJsonldRun },
+      { name: 'validate-schema-types', group: 'schema', run: validateSchemaTypesRun },
+      { name: 'validate-schema-urls', group: 'schema', run: validateSchemaUrlsRun },
+      { name: 'validate-schema-duplicates', group: 'schema', run: validateSchemaDuplicatesRun },
+      { name: 'validate-schema-consistency', group: 'schema', run: validateSchemaConsistencyRun },
+    ],
   },
   assets: {
     name: 'assets',
