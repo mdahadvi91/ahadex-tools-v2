@@ -43,11 +43,9 @@ export async function run(): Promise<Violation[]> {
 
   if (!(await pathExists(PATHS.publicSitemap))) {
     return [
-      warning(
-        'sitemap-missing',
-        'public/sitemap.xml is missing. Index bloat cannot be checked.',
-        { file: 'public/sitemap.xml' },
-      ),
+      warning('sitemap-missing', 'public/sitemap.xml is missing. Index bloat cannot be checked.', {
+        file: 'public/sitemap.xml',
+      }),
     ];
   }
 
@@ -56,12 +54,7 @@ export async function run(): Promise<Violation[]> {
   const { tools } = await discoverTools();
   const nonIndexable = new Set(
     tools
-      .filter(
-        (t) =>
-          t.manifest.status !== 'live' ||
-          !t.manifest.indexable ||
-          !t.manifest.sitemap,
-      )
+      .filter((t) => t.manifest.status !== 'live' || !t.manifest.indexable || !t.manifest.sitemap)
       .map((t) => t.manifest.path),
   );
 
@@ -73,11 +66,10 @@ export async function run(): Promise<Violation[]> {
     for (const forbidden of NEVER_INDEX) {
       if (path === forbidden || path.startsWith(forbidden + '/')) {
         violations.push(
-          error(
-            'sitemap-index-bloat',
-            `Sitemap contains forbidden path "${path}".`,
-            { file: 'public/sitemap.xml', hint: `"${forbidden}" must not be indexed.` },
-          ),
+          error('sitemap-index-bloat', `Sitemap contains forbidden path "${path}".`, {
+            file: 'public/sitemap.xml',
+            hint: `"${forbidden}" must not be indexed.`,
+          }),
         );
       }
     }
@@ -96,11 +88,9 @@ export async function run(): Promise<Violation[]> {
     // Rule 3: no non-indexable tools.
     if (nonIndexable.has(path)) {
       violations.push(
-        error(
-          'sitemap-non-indexable-tool',
-          `Sitemap contains non-indexable tool: ${path}.`,
-          { file: 'public/sitemap.xml' },
-        ),
+        error('sitemap-non-indexable-tool', `Sitemap contains non-indexable tool: ${path}.`, {
+          file: 'public/sitemap.xml',
+        }),
       );
     }
   }

@@ -33,9 +33,7 @@ function validateJsxHeadings(src: string, relPath: string): Violation[] {
 
   const h1Count = found.filter((h) => h.level === 1).length;
   if (h1Count === 0) {
-    violations.push(
-      error('no-h1', 'File has headings but no h1.', { file: relPath }),
-    );
+    violations.push(error('no-h1', 'File has headings but no h1.', { file: relPath }));
   } else if (h1Count > 1) {
     violations.push(
       error('multiple-h1', `File has ${h1Count} h1 elements (must be 1).`, {
@@ -48,15 +46,11 @@ function validateJsxHeadings(src: string, relPath: string): Violation[] {
   for (const { level, line } of found) {
     if (prev > 0 && level > prev + 1) {
       violations.push(
-        error(
-          'skipped-heading-level',
-          `Heading jumps from h${prev} to h${level}.`,
-          {
-            file: relPath,
-            line,
-            hint: 'Use the next heading level without skipping.',
-          },
-        ),
+        error('skipped-heading-level', `Heading jumps from h${prev} to h${level}.`, {
+          file: relPath,
+          line,
+          hint: 'Use the next heading level without skipping.',
+        }),
       );
     }
     prev = level;
@@ -97,11 +91,16 @@ function validateContentHeadings(src: string, relPath: string): Violation[] {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  // Rule 1: jsx headings within tool components.
+  // Rule 1: jsx headings within tool Page.tsx only (sub-components
+  // legitimately contain h2/h3 without h1; the parent provides the h1).
   const tsxFiles = await walkFiles(PATHS.srcTools, { extensions: ['.tsx'] });
   for (const file of tsxFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
+    if (!relPath.endsWith('/Page.tsx')) continue;
     const src = await readText(file);
     violations.push(...validateJsxHeadings(src, relPath));
   }
@@ -109,15 +108,16 @@ export async function run(): Promise<Violation[]> {
   // Rule 2: static pages must have h1.
   const pageFiles = await walkFiles(PATHS.srcPages, { extensions: ['.tsx'] });
   for (const file of pageFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
     const src = await readText(file);
     const h1Count = (src.match(/<h1\b/g) ?? []).length;
     // NotFound may use different convention; still must have h1.
     if (h1Count === 0) {
-      violations.push(
-        error('page-no-h1', `Page has no h1 element.`, { file: relPath }),
-      );
+      violations.push(error('page-no-h1', `Page has no h1 element.`, { file: relPath }));
     } else if (h1Count > 1) {
       violations.push(
         error('page-multiple-h1', `Page has ${h1Count} h1 elements.`, {
@@ -128,11 +128,14 @@ export async function run(): Promise<Violation[]> {
   }
 
   // Rule 3: content constants.
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     violations.push(...validateContentHeadings(src, relPath));
   }

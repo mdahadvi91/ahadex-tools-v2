@@ -16,8 +16,16 @@ const FORBIDDEN_PATTERNS: Array<{ name: string; regex: RegExp; severity: 'error'
   { name: 'lorem-ipsum', regex: /\blorem ipsum\b/i, severity: 'error' },
   { name: 'todo-marker', regex: /\bTODO\b|\bFIXME\b|\bXXX\b/, severity: 'warning' },
   { name: 'coming-soon', regex: /\bcoming soon\b|\bunder construction\b/i, severity: 'error' },
-  { name: 'marketing-superlative', regex: /\b(?:the )?best (?:image|compressor|tool|way to)\b/i, severity: 'warning' },
-  { name: 'false-guarantee', regex: /\bguaranteed (?:results?|to work|success)\b/i, severity: 'error' },
+  {
+    name: 'marketing-superlative',
+    regex: /\b(?:the )?best (?:image|compressor|tool|way to)\b/i,
+    severity: 'warning',
+  },
+  {
+    name: 'false-guarantee',
+    regex: /\bguaranteed (?:results?|to work|success)\b/i,
+    severity: 'error',
+  },
   { name: 'world-best', regex: /\bworld'?s (?:best|leading|first)\b/i, severity: 'warning' },
   { name: 'revolutionary', regex: /\brevolutionary\b/i, severity: 'warning' },
   { name: 'placeholder-text', regex: /\bplaceholder\b|\bdummy text\b/i, severity: 'error' },
@@ -55,12 +63,15 @@ function splitSentences(text: string): string[] {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
 
     // Rule 1: forbidden patterns.
@@ -71,27 +82,19 @@ export async function run(): Promise<Violation[]> {
         const line = lineNumberAt(src, m.index);
         if (pattern.severity === 'error') {
           violations.push(
-            error(
-              `content-${pattern.name}`,
-              `Forbidden pattern: ${pattern.name}.`,
-              {
-                file: relPath,
-                line,
-                hint: `Matched: "${m[0].slice(0, 60)}"`,
-              },
-            ),
+            error(`content-${pattern.name}`, `Forbidden pattern: ${pattern.name}.`, {
+              file: relPath,
+              line,
+              hint: `Matched: "${m[0].slice(0, 60)}"`,
+            }),
           );
         } else {
           violations.push(
-            warning(
-              `content-${pattern.name}`,
-              `Suspicious pattern: ${pattern.name}.`,
-              {
-                file: relPath,
-                line,
-                hint: `Matched: "${m[0].slice(0, 60)}"`,
-              },
-            ),
+            warning(`content-${pattern.name}`, `Suspicious pattern: ${pattern.name}.`, {
+              file: relPath,
+              line,
+              hint: `Matched: "${m[0].slice(0, 60)}"`,
+            }),
           );
         }
         if (m.index === re.lastIndex) re.lastIndex += 1;
@@ -103,15 +106,11 @@ export async function run(): Promise<Violation[]> {
     for (const p of paragraphs) {
       if (p.text.length < MIN_PARAGRAPH_LENGTH) {
         violations.push(
-          warning(
-            'paragraph-too-short',
-            `Paragraph is only ${p.text.length} chars.`,
-            {
-              file: relPath,
-              line: p.line,
-              hint: 'Short paragraphs may indicate thin content.',
-            },
-          ),
+          warning('paragraph-too-short', `Paragraph is only ${p.text.length} chars.`, {
+            file: relPath,
+            line: p.line,
+            hint: 'Short paragraphs may indicate thin content.',
+          }),
         );
       }
     }
@@ -148,11 +147,10 @@ export async function run(): Promise<Violation[]> {
     }
     for (const dup of duplicates) {
       violations.push(
-        warning(
-          'duplicate-sentence',
-          `Sentence appears more than once: "${dup.slice(0, 60)}..."`,
-          { file: relPath, hint: 'Duplicate sentences indicate thin or stuffed content.' },
-        ),
+        warning('duplicate-sentence', `Sentence appears more than once: "${dup.slice(0, 60)}..."`, {
+          file: relPath,
+          hint: 'Duplicate sentences indicate thin or stuffed content.',
+        }),
       );
     }
   }

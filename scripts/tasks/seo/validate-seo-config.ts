@@ -44,11 +44,9 @@ export async function run(): Promise<Violation[]> {
       }
       if (!manifest.short_name) {
         violations.push(
-          warning(
-            'webmanifest-no-short-name',
-            'site.webmanifest should have a "short_name".',
-            { file: 'public/site.webmanifest' },
-          ),
+          warning('webmanifest-no-short-name', 'site.webmanifest should have a "short_name".', {
+            file: 'public/site.webmanifest',
+          }),
         );
       }
       if (!manifest.start_url) {
@@ -94,11 +92,9 @@ export async function run(): Promise<Violation[]> {
     }
     if (!/sitemap:/i.test(robots)) {
       violations.push(
-        warning(
-          'robots-no-sitemap',
-          'robots.txt should reference a Sitemap.',
-          { file: 'public/robots.txt' },
-        ),
+        warning('robots-no-sitemap', 'robots.txt should reference a Sitemap.', {
+          file: 'public/robots.txt',
+        }),
       );
     }
   }

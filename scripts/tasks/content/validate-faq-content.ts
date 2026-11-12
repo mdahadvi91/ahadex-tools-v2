@@ -25,7 +25,8 @@ function extractFAQ(src: string): FAQPair[] {
   const body = m[1];
   const pairs: FAQPair[] = [];
   // Match each `{ question: '...', answer: '...' }` block.
-  const re = /\{\s*question\s*:\s*['"`]([^'"`]+)['"`]\s*,\s*answer\s*:\s*['"`]([^'"`]+)['"`]\s*,?\s*\}/g;
+  const re =
+    /\{\s*question\s*:\s*['"`]([^'"`]+)['"`]\s*,\s*answer\s*:\s*['"`]([^'"`]+)['"`]\s*,?\s*\}/g;
   let match: RegExpExecArray | null;
   while ((match = re.exec(body)) !== null) {
     pairs.push({ question: match[1], answer: match[2] });
@@ -36,37 +37,34 @@ function extractFAQ(src: string): FAQPair[] {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1] ?? 'unknown';
     const src = await readText(file);
     const faq = extractFAQ(src);
 
     if (faq.length === 0) {
       violations.push(
-        error(
-          'faq-missing',
-          `Tool "${slug}" has no FAQ items.`,
-          {
-            file: relPath,
-            hint: 'Add 5+ real questions and answers.',
-          },
-        ),
+        error('faq-missing', `Tool "${slug}" has no FAQ items.`, {
+          file: relPath,
+          hint: 'Add 5+ real questions and answers.',
+        }),
       );
       continue;
     }
 
     if (faq.length < 5) {
       violations.push(
-        warning(
-          'faq-few-items',
-          `Tool "${slug}" has only ${faq.length} FAQ items (target 5+).`,
-          { file: relPath },
-        ),
+        warning('faq-few-items', `Tool "${slug}" has only ${faq.length} FAQ items (target 5+).`, {
+          file: relPath,
+        }),
       );
     }
 
@@ -76,11 +74,9 @@ export async function run(): Promise<Violation[]> {
 
       if (seen.has(normalizedQ)) {
         violations.push(
-          error(
-            'faq-duplicate-question',
-            `Duplicate FAQ: "${pair.question.slice(0, 40)}..."`,
-            { file: relPath },
-          ),
+          error('faq-duplicate-question', `Duplicate FAQ: "${pair.question.slice(0, 40)}..."`, {
+            file: relPath,
+          }),
         );
       }
       seen.add(normalizedQ);

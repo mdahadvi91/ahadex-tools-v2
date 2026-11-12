@@ -38,15 +38,18 @@ function extractMetadata(src: string): SeoMetadata | null {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const seoFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/seo.ts'),
+  const seoFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/seo.ts'),
   );
 
   const { tools } = await discoverTools();
   const toolBySlug = new Map(tools.map((t) => [t.manifest.slug, t]));
 
   for (const file of seoFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     const meta = extractMetadata(src);
 

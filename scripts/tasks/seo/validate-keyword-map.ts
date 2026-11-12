@@ -50,12 +50,15 @@ function extractKeywords(src: string): KeywordMapShape | null {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const files = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/keywords.ts'),
+  const files = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/keywords.ts'),
   );
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     const kw = extractKeywords(src);
 
@@ -109,11 +112,7 @@ export async function run(): Promise<Violation[]> {
     for (const intent of kw.intents ?? []) {
       if (!approvedIntents.has(intent)) {
         violations.push(
-          warning(
-            'keywords-unknown-intent',
-            `Unknown intent "${intent}".`,
-            { file: relPath },
-          ),
+          warning('keywords-unknown-intent', `Unknown intent "${intent}".`, { file: relPath }),
         );
       }
     }
@@ -126,11 +125,9 @@ export async function run(): Promise<Violation[]> {
     for (const k of allKeywords) {
       if (seen.has(k)) {
         violations.push(
-          warning(
-            'keywords-duplicate',
-            `Duplicate keyword "${k}" within same tool.`,
-            { file: relPath },
-          ),
+          warning('keywords-duplicate', `Duplicate keyword "${k}" within same tool.`, {
+            file: relPath,
+          }),
         );
       }
       seen.add(k);

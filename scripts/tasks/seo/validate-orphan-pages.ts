@@ -28,7 +28,10 @@ async function buildLinkCorpus(): Promise<string> {
   const files = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx', '.tsx'] });
   let corpus = '';
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
     corpus += (await readText(file)) + '\n';
   }
@@ -46,14 +49,10 @@ export async function run(): Promise<Violation[]> {
     const pattern = new RegExp(`['"]${path.replace(/\//g, '\\/')}['"]`);
     if (!pattern.test(corpus)) {
       violations.push(
-        warning(
-          'orphan-static-route',
-          `Static route "${path}" is not linked from anywhere.`,
-          {
-            file: 'src/config/navigation.ts',
-            hint: 'Add a link from Header, Footer or Home.',
-          },
-        ),
+        warning('orphan-static-route', `Static route "${path}" is not linked from anywhere.`, {
+          file: 'src/config/navigation.ts',
+          hint: 'Add a link from Header, Footer or Home.',
+        }),
       );
     }
   }
@@ -67,14 +66,10 @@ export async function run(): Promise<Violation[]> {
     const pattern = new RegExp(`['"]${path.replace(/\//g, '\\/')}['"]`);
     if (!pattern.test(corpus)) {
       violations.push(
-        warning(
-          'orphan-tool-route',
-          `Tool "${tool.manifest.slug}" is not linked from anywhere.`,
-          {
-            file: tool.filePath.replace(PATHS.root + '/', ''),
-            hint: 'Home and Tools pages should link to live tools.',
-          },
-        ),
+        warning('orphan-tool-route', `Tool "${tool.manifest.slug}" is not linked from anywhere.`, {
+          file: tool.filePath.replace(PATHS.root + '/', ''),
+          hint: 'Home and Tools pages should link to live tools.',
+        }),
       );
     }
   }

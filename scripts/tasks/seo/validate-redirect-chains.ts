@@ -74,11 +74,10 @@ export async function run(): Promise<Violation[]> {
     // Rule 1: redirect to self.
     if (redirect.from === redirect.to) {
       violations.push(
-        error(
-          'redirect-self',
-          `Redirect target equals source: ${redirect.from}.`,
-          { file: 'public/_redirects', line: redirect.line },
-        ),
+        error('redirect-self', `Redirect target equals source: ${redirect.from}.`, {
+          file: 'public/_redirects',
+          line: redirect.line,
+        }),
       );
       continue;
     }
@@ -93,26 +92,21 @@ export async function run(): Promise<Violation[]> {
       hops++;
       if (chain[0] === current.to) {
         violations.push(
-          error(
-            'redirect-loop',
-            `Loop detected: ${[...chain, current.to].join(' -> ')}.`,
-            { file: 'public/_redirects', line: redirect.line },
-          ),
+          error('redirect-loop', `Loop detected: ${[...chain, current.to].join(' -> ')}.`, {
+            file: 'public/_redirects',
+            line: redirect.line,
+          }),
         );
         break;
       }
     }
     if (hops > 0 && chain[0] !== current.to) {
       violations.push(
-        warning(
-          'redirect-chain',
-          `Redirect chain: ${[...chain, current.to].join(' -> ')}.`,
-          {
-            file: 'public/_redirects',
-            line: redirect.line,
-            hint: `Flatten by redirecting "${redirect.from}" directly to "${current.to}".`,
-          },
-        ),
+        warning('redirect-chain', `Redirect chain: ${[...chain, current.to].join(' -> ')}.`, {
+          file: 'public/_redirects',
+          line: redirect.line,
+          hint: `Flatten by redirecting "${redirect.from}" directly to "${current.to}".`,
+        }),
       );
     }
   }

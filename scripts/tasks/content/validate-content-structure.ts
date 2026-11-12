@@ -14,7 +14,10 @@ import { error, warning, type Violation } from '../../utils/validation-result';
 /** Counts words in all string literals of a content.ts file. */
 function countWords(src: string): number {
   const literals = [...src.matchAll(/['"`]([^'"`]{20,})['"`]/g)].map((m) => m[1]);
-  return literals.join(' ').split(/\s+/).filter((w) => w.length > 0).length;
+  return literals
+    .join(' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 0).length;
 }
 
 function countSections(src: string): number {
@@ -27,51 +30,42 @@ function countSections(src: string): number {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1] ?? 'unknown';
     const src = await readText(file);
 
     const sections = countSections(src);
     if (sections < 4) {
       violations.push(
-        error(
-          'content-few-sections',
-          `Tool "${slug}" has only ${sections} sections (target 4+).`,
-          {
-            file: relPath,
-            hint: 'Add substantive sections: what, how, when, formats, limits, privacy.',
-          },
-        ),
+        error('content-few-sections', `Tool "${slug}" has only ${sections} sections (target 4+).`, {
+          file: relPath,
+          hint: 'Add substantive sections: what, how, when, formats, limits, privacy.',
+        }),
       );
     }
 
     const words = countWords(src);
     if (words < 800) {
       violations.push(
-        error(
-          'content-too-thin',
-          `Tool "${slug}" has ~${words} words (target 800+).`,
-          {
-            file: relPath,
-            hint: 'Thin content hurts AdSense approval and SEO ranking.',
-          },
-        ),
+        error('content-too-thin', `Tool "${slug}" has ~${words} words (target 800+).`, {
+          file: relPath,
+          hint: 'Thin content hurts AdSense approval and SEO ranking.',
+        }),
       );
     } else if (words > 3500) {
       violations.push(
-        warning(
-          'content-too-long',
-          `Tool "${slug}" has ~${words} words (target under 3500).`,
-          {
-            file: relPath,
-            hint: 'Very long pages may lose reader attention.',
-          },
-        ),
+        warning('content-too-long', `Tool "${slug}" has ~${words} words (target under 3500).`, {
+          file: relPath,
+          hint: 'Very long pages may lose reader attention.',
+        }),
       );
     }
 

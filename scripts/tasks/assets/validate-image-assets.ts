@@ -26,19 +26,18 @@ export async function run(): Promise<Violation[]> {
 
     const images = await walkFiles(dir, { extensions: IMAGE_EXTS });
     for (const file of images) {
-      const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+      const relPath = file
+        .substring(PATHS.root.length + 1)
+        .split('\\')
+        .join('/');
       const ext = '.' + (file.split('.').pop() ?? '').toLowerCase();
 
       if (FORBIDDEN_EXTENSIONS.has(ext)) {
         violations.push(
-          error(
-            'forbidden-image-format',
-            `Forbidden image format "${ext}".`,
-            {
-              file: relPath,
-              hint: 'Convert to WebP, PNG, JPEG or AVIF.',
-            },
-          ),
+          error('forbidden-image-format', `Forbidden image format "${ext}".`, {
+            file: relPath,
+            hint: 'Convert to WebP, PNG, JPEG or AVIF.',
+          }),
         );
         continue;
       }
@@ -64,9 +63,7 @@ export async function run(): Promise<Violation[]> {
   }
 
   if (violations.length === 0) {
-    violations.push(
-      info('image-assets-ok', 'All image assets are within limits.'),
-    );
+    violations.push(info('image-assets-ok', 'All image assets are within limits.'));
   }
 
   return violations;

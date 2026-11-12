@@ -29,8 +29,8 @@ async function hasToolWidget(slugDir: string): Promise<boolean> {
 }
 
 async function getContentWordCount(slugDir: string): Promise<number> {
-  const contentFile = (await walkFiles(slugDir, { extensions: ['.ts'] })).find(
-    (f) => f.endsWith('/content.ts'),
+  const contentFile = (await walkFiles(slugDir, { extensions: ['.ts'] })).find((f) =>
+    f.endsWith('/content.ts'),
   );
   if (!contentFile) return 0;
 
@@ -52,12 +52,15 @@ export async function run(): Promise<Violation[]> {
   }
 
   // Find tool directories that have a keywords.ts.
-  const keywordFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/keywords.ts'),
+  const keywordFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/keywords.ts'),
   );
 
   for (const kwFile of keywordFiles) {
-    const relPath = kwFile.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = kwFile
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1];
     if (!slug) continue;
 
@@ -99,11 +102,7 @@ export async function run(): Promise<Violation[]> {
 
     if (intents.length === 0) {
       violations.push(
-        warning(
-          'intent-missing',
-          `Tool "${slug}" declares no search intents.`,
-          { file: relPath },
-        ),
+        warning('intent-missing', `Tool "${slug}" declares no search intents.`, { file: relPath }),
       );
     }
   }

@@ -48,8 +48,8 @@ once committed.
 While implementing the Image Compressor tool, the following additional
 files were added to the baseline:
 
-| File | Reason |
-|---|---|
-| `src/tools/image-compressor/assets/og-image.png` | Placeholder OG image (copy of site logo). Replaced with a designed image before launch. |
+| File                                                   | Reason                                                                                                        |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `src/tools/image-compressor/assets/og-image.png`       | Placeholder OG image (copy of site logo). Replaced with a designed image before launch.                       |
 | `scripts/tasks/architecture/validate-module-purity.ts` | Updated to strip function bodies before matching top-level statements (fixes false positives on inner await). |
-| `scripts/tasks/security/file-upload-security.ts` | Detector now matches real File consumers only (input handlers, drag/drop, FileReader). |
+| `scripts/tasks/security/file-upload-security.ts`       | Detector now matches real File consumers only (input handlers, drag/drop, FileReader).                        |

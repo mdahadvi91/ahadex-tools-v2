@@ -76,7 +76,10 @@ export async function run(): Promise<Violation[]> {
   });
 
   for (const file of sourceFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
     // Skip config files (they hold reference paths intentionally).
     if (relPath.startsWith('src/config/')) continue;
@@ -99,15 +102,11 @@ export async function run(): Promise<Violation[]> {
         );
         if (!isSubPath) {
           violations.push(
-            error(
-              'broken-internal-link',
-              `Internal link "${path}" does not match any route.`,
-              {
-                file: relPath,
-                line,
-                hint: 'Check the path against src/router/routes.tsx and tool manifests.',
-              },
-            ),
+            error('broken-internal-link', `Internal link "${path}" does not match any route.`, {
+              file: relPath,
+              line,
+              hint: 'Check the path against src/router/routes.tsx and tool manifests.',
+            }),
           );
         }
       }
@@ -115,13 +114,15 @@ export async function run(): Promise<Violation[]> {
   }
 
   // Warn if any tool page has no internal links to other tools.
-  const toolDirs = [...new Set(
-    sourceFiles.map((f) => f.match(/tools\/([^/]+)\//)?.[1]).filter((x): x is string => !!x),
-  )];
+  const toolDirs = [
+    ...new Set(
+      sourceFiles.map((f) => f.match(/tools\/([^/]+)\//)?.[1]).filter((x): x is string => !!x),
+    ),
+  ];
   for (const slug of toolDirs) {
-    const contentFile = (await walkFiles(`${PATHS.srcTools}/${slug}`, { extensions: ['.ts'] })).find(
-      (f) => f.endsWith('/content.ts'),
-    );
+    const contentFile = (
+      await walkFiles(`${PATHS.srcTools}/${slug}`, { extensions: ['.ts'] })
+    ).find((f) => f.endsWith('/content.ts'));
     if (!contentFile) continue;
     const src = await readText(contentFile);
     if (!/INTERNAL_LINKS|internalLinks/.test(src)) {
@@ -130,7 +131,10 @@ export async function run(): Promise<Violation[]> {
           'tool-no-internal-links',
           `Tool "${slug}" declares no internal links to other tools.`,
           {
-            file: contentFile.substring(PATHS.root.length + 1).split('\\').join('/'),
+            file: contentFile
+              .substring(PATHS.root.length + 1)
+              .split('\\')
+              .join('/'),
             hint: 'Add cross-tool links to build topical authority.',
           },
         ),

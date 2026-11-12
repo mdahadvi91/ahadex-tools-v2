@@ -144,7 +144,11 @@ export const TASKS: TaskRegistry = Object.freeze({
       { name: 'validate-canonical', group: 'seo', run: validateCanonicalRun },
       { name: 'validate-social-meta', group: 'seo', run: validateSocialMetaRun },
       { name: 'validate-keyword-map', group: 'seo', run: validateKeywordMapRun },
-      { name: 'validate-keyword-cannibalization', group: 'seo', run: validateKeywordCannibalizationRun },
+      {
+        name: 'validate-keyword-cannibalization',
+        group: 'seo',
+        run: validateKeywordCannibalizationRun,
+      },
       { name: 'validate-search-intent', group: 'seo', run: validateSearchIntentRun },
       { name: 'validate-internal-links', group: 'seo', run: validateInternalLinksRun },
       { name: 'validate-orphan-pages', group: 'seo', run: validateOrphanPagesRun },
@@ -166,7 +170,11 @@ export const TASKS: TaskRegistry = Object.freeze({
       { name: 'validate-content-freshness', group: 'content', run: validateContentFreshnessRun },
       { name: 'validate-content-sources', group: 'content', run: validateContentSourcesRun },
       { name: 'validate-topic-clusters', group: 'content', run: validateTopicClustersRun },
-      { name: 'validate-editorial-attribution', group: 'content', run: validateEditorialAttributionRun },
+      {
+        name: 'validate-editorial-attribution',
+        group: 'content',
+        run: validateEditorialAttributionRun,
+      },
     ],
   },
   geo: {

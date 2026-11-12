@@ -48,14 +48,10 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(contactPath);
     if (!src.includes(CONTACT_EMAIL) && !/mailto:/.test(src)) {
       violations.push(
-        error(
-          'contact-no-email',
-          'Contact page has no real contact method (mailto or email).',
-          {
-            file: 'src/pages/Contact.tsx',
-            hint: `Include ${CONTACT_EMAIL} or a mailto link.`,
-          },
-        ),
+        error('contact-no-email', 'Contact page has no real contact method (mailto or email).', {
+          file: 'src/pages/Contact.tsx',
+          hint: `Include ${CONTACT_EMAIL} or a mailto link.`,
+        }),
       );
     }
   }
@@ -72,11 +68,9 @@ export async function run(): Promise<Violation[]> {
     const src = await readText(aboutPath);
     if (!/AHADEX|ahadex/i.test(src)) {
       violations.push(
-        warning(
-          'about-no-publisher',
-          'About page does not identify the publisher.',
-          { file: 'src/pages/About.tsx' },
-        ),
+        warning('about-no-publisher', 'About page does not identify the publisher.', {
+          file: 'src/pages/About.tsx',
+        }),
       );
     }
   }
@@ -84,7 +78,10 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: content files must not contain placeholder authors.
   const contentFiles = await walkFiles(PATHS.src, { extensions: ['.ts', '.tsx'] });
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.ts') || relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -92,14 +89,16 @@ export async function run(): Promise<Violation[]> {
 
     for (const placeholder of PLACEHOLDER_AUTHORS) {
       // Only flag when used as an "author" attribution.
-      const pattern = new RegExp(`author\\s*:\\s*['"\`]${placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
+      const pattern = new RegExp(
+        `author\\s*:\\s*['"\`]${placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+        'i',
+      );
       if (pattern.test(src)) {
         violations.push(
-          error(
-            'placeholder-author',
-            `Placeholder author "${placeholder}" found.`,
-            { file: relPath, hint: 'Use a real editorial attribution.' },
-          ),
+          error('placeholder-author', `Placeholder author "${placeholder}" found.`, {
+            file: relPath,
+            hint: 'Use a real editorial attribution.',
+          }),
         );
       }
     }
@@ -108,14 +107,10 @@ export async function run(): Promise<Violation[]> {
     for (const marker of AI_DISCLOSURE_MARKERS) {
       if (lower.includes(marker)) {
         violations.push(
-          error(
-            'ai-authorship-claim',
-            `Content claims AI authorship: "${marker}".`,
-            {
-              file: relPath,
-              hint: 'Google and AdSense penalize AI-authored bulk content.',
-            },
-          ),
+          error('ai-authorship-claim', `Content claims AI authorship: "${marker}".`, {
+            file: relPath,
+            hint: 'Google and AdSense penalize AI-authored bulk content.',
+          }),
         );
       }
     }

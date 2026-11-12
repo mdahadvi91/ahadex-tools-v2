@@ -44,15 +44,18 @@ function extractKeywords(src: string): KeywordMapShape | null {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const files = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/keywords.ts'),
+  const files = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/keywords.ts'),
   );
 
   if (files.length < 2) return violations;
 
   const maps: KeywordMapEntry[] = [];
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1] ?? '';
     const src = await readText(file);
     const kw = extractKeywords(src);

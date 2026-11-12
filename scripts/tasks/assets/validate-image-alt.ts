@@ -25,7 +25,10 @@ export async function run(): Promise<Violation[]> {
   const files = await walkFiles(PATHS.src, { extensions: ['.tsx'] });
 
   for (const file of files) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     if (relPath.endsWith('.test.tsx')) continue;
 
     const src = await readText(file);
@@ -38,15 +41,11 @@ export async function run(): Promise<Violation[]> {
 
       if (!hasAlt && !isSvg) {
         violations.push(
-          error(
-            'img-missing-alt',
-            '<img> tag missing alt attribute.',
-            {
-              file: relPath,
-              line: lineNumberAt(src, m.index),
-              hint: 'Add alt="" for decorative, or a descriptive alt for informative images.',
-            },
-          ),
+          error('img-missing-alt', '<img> tag missing alt attribute.', {
+            file: relPath,
+            line: lineNumberAt(src, m.index),
+            hint: 'Add alt="" for decorative, or a descriptive alt for informative images.',
+          }),
         );
       }
       if (m.index === IMG_TAG_RE.lastIndex) IMG_TAG_RE.lastIndex += 1;
@@ -54,9 +53,7 @@ export async function run(): Promise<Violation[]> {
   }
 
   if (violations.length === 0) {
-    violations.push(
-      info('image-alt-ok', 'All <img> tags have alt attributes.'),
-    );
+    violations.push(info('image-alt-ok', 'All <img> tags have alt attributes.'));
   }
 
   return violations;

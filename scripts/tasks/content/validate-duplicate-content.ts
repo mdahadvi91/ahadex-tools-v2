@@ -41,15 +41,18 @@ function extractParagraphs(src: string): string[] {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   if (contentFiles.length < 2) return violations;
 
   const tools: ToolContent[] = [];
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1] ?? 'unknown';
     const src = await readText(file);
     tools.push({

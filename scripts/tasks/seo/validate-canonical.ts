@@ -60,12 +60,15 @@ export async function run(): Promise<Violation[]> {
   }
 
   // Rule 2: no hardcoded canonical URLs in tool source (must go through canonical builder).
-  const seoFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
-    f.endsWith('/seo.ts') || f.endsWith('/schema.ts'),
+  const seoFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
+    (f) => f.endsWith('/seo.ts') || f.endsWith('/schema.ts'),
   );
 
   for (const file of seoFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
 
     // Look for hardcoded canonical hostnames.

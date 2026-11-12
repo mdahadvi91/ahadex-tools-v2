@@ -45,8 +45,8 @@ export async function run(): Promise<Violation[]> {
     return violations;
   }
 
-  const seoFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/seo.ts'),
+  const seoFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/seo.ts'),
   );
   const titles = new Map<string, string>();
   const descriptions = new Map<string, string>();
@@ -54,7 +54,10 @@ export async function run(): Promise<Violation[]> {
   const toolBySlug = new Map(tools.map((t) => [t.manifest.slug, t]));
 
   for (const file of seoFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     const meta = extractMetadata(src);
 
@@ -75,11 +78,10 @@ export async function run(): Promise<Violation[]> {
       );
     } else if (meta.title.length < 40 || meta.title.length > 70) {
       violations.push(
-        warning(
-          'metadata-title-length',
-          `Title is ${meta.title.length} chars (target 40-70).`,
-          { file: relPath, hint: 'Longer titles may be truncated in search results.' },
-        ),
+        warning('metadata-title-length', `Title is ${meta.title.length} chars (target 40-70).`, {
+          file: relPath,
+          hint: 'Longer titles may be truncated in search results.',
+        }),
       );
     }
 
@@ -114,11 +116,9 @@ export async function run(): Promise<Violation[]> {
       }
       if (manifest.indexable && meta.noIndex) {
         violations.push(
-          error(
-            'metadata-noindex-conflict',
-            'Manifest says indexable but metadata sets noIndex.',
-            { file: relPath },
-          ),
+          error('metadata-noindex-conflict', 'Manifest says indexable but metadata sets noIndex.', {
+            file: relPath,
+          }),
         );
       }
     }

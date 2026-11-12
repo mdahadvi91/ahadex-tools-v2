@@ -61,20 +61,19 @@ export async function run(): Promise<Violation[]> {
   const seoFilesFiltered = seoFiles.filter((f) => f.endsWith('/seo.ts'));
 
   for (const file of seoFilesFiltered) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const src = await readText(file);
     const refs = extractOgImageRefs(src);
 
     if (refs.length === 0) {
       violations.push(
-        error(
-          'og-image-not-declared',
-          'Tool SEO metadata does not declare an og:image.',
-          {
-            file: relPath,
-            hint: 'Add image: "/path/to/og.png" to metadata.',
-          },
-        ),
+        error('og-image-not-declared', 'Tool SEO metadata does not declare an og:image.', {
+          file: relPath,
+          hint: 'Add image: "/path/to/og.png" to metadata.',
+        }),
       );
       continue;
     }
@@ -83,15 +82,11 @@ export async function run(): Promise<Violation[]> {
       const resolved = await resolvePublicPath(ref.path);
       if (!resolved) {
         violations.push(
-          error(
-            'og-image-missing',
-            `og:image "${ref.path}" not found.`,
-            {
-              file: relPath,
-              line: ref.line,
-              hint: 'The image must exist in public/ or tool assets.',
-            },
-          ),
+          error('og-image-missing', `og:image "${ref.path}" not found.`, {
+            file: relPath,
+            line: ref.line,
+            hint: 'The image must exist in public/ or tool assets.',
+          }),
         );
         continue;
       }

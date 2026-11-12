@@ -30,7 +30,20 @@ export async function run(): Promise<Violation[]> {
 
   // Collect all public files.
   const publicFiles = await walkFiles(PATHS.public, {
-    extensions: ['.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.otf'],
+    extensions: [
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.webp',
+      '.avif',
+      '.gif',
+      '.svg',
+      '.ico',
+      '.woff',
+      '.woff2',
+      '.ttf',
+      '.otf',
+    ],
   });
 
   if (publicFiles.length === 0) return violations;
@@ -66,7 +79,10 @@ export async function run(): Promise<Violation[]> {
   }
 
   for (const file of publicFiles) {
-    const relPath = file.substring(PATHS.public.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.public.length + 1)
+      .split('\\')
+      .join('/');
     const basename = relPath.split('/').pop() ?? '';
 
     if (EXEMPT.has(relPath) || EXEMPT.has(basename)) continue;
@@ -75,28 +91,20 @@ export async function run(): Promise<Violation[]> {
     const pathRef = `/${relPath}`;
     const basenameRef = `/${basename}`;
     const isReferenced =
-      corpus.includes(pathRef) ||
-      corpus.includes(basenameRef) ||
-      corpus.includes(`"${basename}"`);
+      corpus.includes(pathRef) || corpus.includes(basenameRef) || corpus.includes(`"${basename}"`);
 
     if (!isReferenced) {
       violations.push(
-        warning(
-          'unused-asset',
-          `Asset "${relPath}" is not referenced anywhere.`,
-          {
-            file: `public/${relPath}`,
-            hint: 'Remove if unused, or reference it in code/HTML.',
-          },
-        ),
+        warning('unused-asset', `Asset "${relPath}" is not referenced anywhere.`, {
+          file: `public/${relPath}`,
+          hint: 'Remove if unused, or reference it in code/HTML.',
+        }),
       );
     }
   }
 
   if (violations.length === 0) {
-    violations.push(
-      info('unused-assets-ok', `All ${publicFiles.length} assets are referenced.`),
-    );
+    violations.push(info('unused-assets-ok', `All ${publicFiles.length} assets are referenced.`));
   }
 
   return violations;

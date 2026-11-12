@@ -50,11 +50,10 @@ export async function run(): Promise<Violation[]> {
     const parts = line.split(/\s+/);
     if (parts.length < 2) {
       violations.push(
-        error(
-          'redirect-malformed',
-          `Line ${i + 1}: expected "from to [status]".`,
-          { file: 'public/_redirects', line: i + 1 },
-        ),
+        error('redirect-malformed', `Line ${i + 1}: expected "from to [status]".`, {
+          file: 'public/_redirects',
+          line: i + 1,
+        }),
       );
       continue;
     }
@@ -63,11 +62,10 @@ export async function run(): Promise<Violation[]> {
 
     if (!from.startsWith('/')) {
       violations.push(
-        error(
-          'redirect-from-invalid',
-          `Line ${i + 1}: source "${from}" must start with /.`,
-          { file: 'public/_redirects', line: i + 1 },
-        ),
+        error('redirect-from-invalid', `Line ${i + 1}: source "${from}" must start with /.`, {
+          file: 'public/_redirects',
+          line: i + 1,
+        }),
       );
     }
 

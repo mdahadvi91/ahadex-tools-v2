@@ -38,15 +38,18 @@ function extractInternalLinks(src: string): string[] {
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter(
-    (f) => f.endsWith('/content.ts'),
+  const contentFiles = (await walkFiles(PATHS.srcTools, { extensions: ['.ts'] })).filter((f) =>
+    f.endsWith('/content.ts'),
   );
 
   if (contentFiles.length === 0) return violations;
 
   const tools: ToolInfo[] = [];
   for (const file of contentFiles) {
-    const relPath = file.substring(PATHS.root.length + 1).split('\\').join('/');
+    const relPath = file
+      .substring(PATHS.root.length + 1)
+      .split('\\')
+      .join('/');
     const slug = relPath.match(/tools\/([^/]+)\//)?.[1] ?? 'unknown';
     const src = await readText(file);
     tools.push({
@@ -91,9 +94,7 @@ export async function run(): Promise<Violation[]> {
   for (const [category, list] of clusters) {
     if (list.length < 2) continue;
     for (const tool of list) {
-      const siblingPaths = list
-        .filter((t) => t.slug !== tool.slug)
-        .map((t) => `/tools/${t.slug}`);
+      const siblingPaths = list.filter((t) => t.slug !== tool.slug).map((t) => `/tools/${t.slug}`);
       const linkedSiblings = siblingPaths.filter((p) => tool.internalLinks.includes(p));
       if (linkedSiblings.length === 0) {
         violations.push(
