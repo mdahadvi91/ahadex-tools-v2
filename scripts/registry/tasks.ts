@@ -82,6 +82,12 @@ import { run as validateSchemaTypesRun } from '../tasks/schema/validate-schema-t
 import { run as validateSchemaUrlsRun } from '../tasks/schema/validate-schema-urls';
 import { run as validateSchemaDuplicatesRun } from '../tasks/schema/validate-schema-duplicates';
 import { run as validateSchemaConsistencyRun } from '../tasks/schema/validate-schema-consistency';
+
+import { run as validateEntityConsistencyRun } from '../tasks/geo/validate-entity-consistency';
+import { run as validateAnswerStructureRun } from '../tasks/geo/validate-answer-structure';
+import { run as validateAiReadabilityRun } from '../tasks/geo/validate-ai-readability';
+import { run as validateFactualContentRun } from '../tasks/geo/validate-factual-content';
+import { run as validateEntityCoverageRun } from '../tasks/geo/validate-entity-coverage';
 import { run as validateWebVitalsRun } from '../tasks/performance/validate-web-vitals';
 import { run as validateResourceBudgetRun } from '../tasks/performance/validate-resource-budget';
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
@@ -186,7 +192,13 @@ export const TASKS: TaskRegistry = Object.freeze({
   geo: {
     name: 'geo',
     description: 'Entity consistency, answer structure, AI readability.',
-    tasks: NO_TASKS,
+    tasks: [
+      { name: 'validate-entity-consistency', group: 'geo', run: validateEntityConsistencyRun },
+      { name: 'validate-answer-structure', group: 'geo', run: validateAnswerStructureRun },
+      { name: 'validate-ai-readability', group: 'geo', run: validateAiReadabilityRun },
+      { name: 'validate-factual-content', group: 'geo', run: validateFactualContentRun },
+      { name: 'validate-entity-coverage', group: 'geo', run: validateEntityCoverageRun },
+    ],
   },
   schema: {
     name: 'schema',
