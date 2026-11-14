@@ -219,7 +219,11 @@ export default function Tool() {
                     onClick={() => setMode(m)}
                     disabled={processing}
                   >
-                    {m === 'dimensions' ? 'Dimensions' : m === 'percentage' ? 'Percentage' : 'Preset'}
+                    {m === 'dimensions'
+                      ? 'Dimensions'
+                      : m === 'percentage'
+                        ? 'Percentage'
+                        : 'Preset'}
                   </Button>
                 ))}
               </div>

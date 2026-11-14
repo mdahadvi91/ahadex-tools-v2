@@ -40,15 +40,10 @@ export interface InternalLink {
 
 export const HERO = {
   h1: 'Image Resizer',
-  tagline:
-    'Resize JPG, PNG, WebP, GIF and AVIF images to exact pixel dimensions in your browser.',
+  tagline: 'Resize JPG, PNG, WebP, GIF and AVIF images to exact pixel dimensions in your browser.',
   subtitle:
     'No account required. Files are processed in browser memory and never transmitted to a server.',
-  trustSignals: [
-    'Runs in your browser',
-    'No account required',
-    'No file upload',
-  ],
+  trustSignals: ['Runs in your browser', 'No account required', 'No file upload'],
 } as const;
 
 export const DIRECT_ANSWER =
@@ -81,9 +76,7 @@ export const SECTIONS: readonly ContentSection[] = [
   },
   {
     heading: 'When to use which size',
-    paragraphs: [
-      'The right size depends on where the image will be displayed.',
-    ],
+    paragraphs: ['The right size depends on where the image will be displayed.'],
     list: [
       'Website hero image: 1920 to 2560 px wide. Keep under 500 KB.',
       'Blog inline image: 800 to 1200 px wide. 60 to 150 KB.',
@@ -161,11 +154,41 @@ export const USE_CASES: readonly UseCase[] = [
 ];
 
 export const SUPPORTED_INPUT_FORMATS: readonly FormatInfo[] = [
-  { name: 'JPEG', mime: 'image/jpeg', lossy: true, transparency: false, note: 'Standard for photos.' },
-  { name: 'PNG', mime: 'image/png', lossy: false, transparency: true, note: 'Lossless, supports alpha.' },
-  { name: 'WebP', mime: 'image/webp', lossy: true, transparency: true, note: 'Modern format, small files.' },
-  { name: 'GIF', mime: 'image/gif', lossy: false, transparency: true, note: 'Single-frame output only.' },
-  { name: 'AVIF', mime: 'image/avif', lossy: true, transparency: true, note: 'Input only; output pending.' },
+  {
+    name: 'JPEG',
+    mime: 'image/jpeg',
+    lossy: true,
+    transparency: false,
+    note: 'Standard for photos.',
+  },
+  {
+    name: 'PNG',
+    mime: 'image/png',
+    lossy: false,
+    transparency: true,
+    note: 'Lossless, supports alpha.',
+  },
+  {
+    name: 'WebP',
+    mime: 'image/webp',
+    lossy: true,
+    transparency: true,
+    note: 'Modern format, small files.',
+  },
+  {
+    name: 'GIF',
+    mime: 'image/gif',
+    lossy: false,
+    transparency: true,
+    note: 'Single-frame output only.',
+  },
+  {
+    name: 'AVIF',
+    mime: 'image/avif',
+    lossy: true,
+    transparency: true,
+    note: 'Input only; output pending.',
+  },
 ];
 
 export const PRIVACY = {
@@ -223,8 +246,7 @@ export const FAQ: readonly FAQItem[] = [
   },
   {
     question: 'Is there a watermark or signup?',
-    answer:
-      'No watermark and no signup. The tool is free to use and does not require an account.',
+    answer: 'No watermark and no signup. The tool is free to use and does not require an account.',
   },
   {
     question: 'What are common social media sizes?',

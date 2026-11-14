@@ -5,16 +5,16 @@ explicit approval. This file is the index.
 
 ## Decision log
 
-| # | Title | Status | Date |
-|---|---|---|---|
-| 001 | Toolchain version policy | Accepted | 2026-11-11 |
-| 002 | Baseline extensions | Accepted | 2026-11-11 |
+| #   | Title                     | Status                          | Date       |
+| --- | ------------------------- | ------------------------------- | ---------- |
+| 001 | Toolchain version policy  | Accepted                        | 2026-11-11 |
+| 002 | Baseline extensions       | Accepted                        | 2026-11-11 |
 | 003 | Static rendering strategy | Accepted (SPA); SSG POC pending | 2026-11-15 |
-| 004 | Web Worker processing | Accepted | 2026-11-15 |
-| 005 | Test boundaries | Accepted | 2026-11-15 |
-| 006 | Consent management | Accepted (provider deferred) | 2026-11-15 |
-| 007 | Deployment platform | Accepted | 2026-11-15 |
-| 008 | Shared UI boundaries | Accepted | 2026-11-15 |
+| 004 | Web Worker processing     | Accepted                        | 2026-11-15 |
+| 005 | Test boundaries           | Accepted                        | 2026-11-15 |
+| 006 | Consent management        | Accepted (provider deferred)    | 2026-11-15 |
+| 007 | Deployment platform       | Accepted                        | 2026-11-15 |
+| 008 | Shared UI boundaries      | Accepted                        | 2026-11-15 |
 
 ## ADR format
 
@@ -39,7 +39,7 @@ Each ADR has:
 
 ## Purpose
 
-ADRs record *why* structural decisions were made so that future
+ADRs record _why_ structural decisions were made so that future
 readers do not have to reverse-engineer intent from code. They also
 prevent ad-hoc restructuring: any change to a frozen decision needs
 a new ADR.

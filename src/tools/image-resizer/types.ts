@@ -2,12 +2,7 @@
  * Image Resizer types. Shared between UI, engine and worker.
  */
 
-export type SupportedMime =
-  | 'image/png'
-  | 'image/jpeg'
-  | 'image/webp'
-  | 'image/gif'
-  | 'image/avif';
+export type SupportedMime = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/gif' | 'image/avif';
 
 export type OutputFormat = 'jpeg' | 'webp' | 'png';
 
@@ -83,7 +78,10 @@ export function computeOutputDimensions(
   }
 
   // targetH !== null
-  return { width: Math.max(1, Math.round((targetH as number) * aspect)), height: targetH as number };
+  return {
+    width: Math.max(1, Math.round((targetH as number) * aspect)),
+    height: targetH as number,
+  };
 }
 
 export function formatBytes(bytes: number): string {
@@ -92,10 +90,7 @@ export function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-export function dimensionsChanged(
-  original: ImageDimensions,
-  output: ImageDimensions,
-): boolean {
+export function dimensionsChanged(original: ImageDimensions, output: ImageDimensions): boolean {
   return original.width !== output.width || original.height !== output.height;
 }
 

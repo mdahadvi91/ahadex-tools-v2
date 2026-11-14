@@ -5,8 +5,7 @@
 import type { ResizeInput, ResizeResult, WorkerErrorCode } from '../types';
 
 export type WorkerInbound =
-  | { kind: 'resize'; id: number; input: ResizeInput }
-  | { kind: 'ping'; id: number };
+  { kind: 'resize'; id: number; input: ResizeInput } | { kind: 'ping'; id: number };
 
 export type WorkerOutbound =
   | { kind: 'result'; id: number; result: ResizeResult }
@@ -19,8 +18,6 @@ export function isResizeRequest(
   return msg.kind === 'resize';
 }
 
-export function isPingRequest(
-  msg: WorkerInbound,
-): msg is Extract<WorkerInbound, { kind: 'ping' }> {
+export function isPingRequest(msg: WorkerInbound): msg is Extract<WorkerInbound, { kind: 'ping' }> {
   return msg.kind === 'ping';
 }

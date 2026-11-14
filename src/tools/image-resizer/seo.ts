@@ -14,7 +14,6 @@ export const metadata: PageMetadata = {
   noIndex: false,
 };
 
-export const ogImageAlt =
-  'Image Resizer tool preview showing before and after dimensions';
+export const ogImageAlt = 'Image Resizer tool preview showing before and after dimensions';
 
 export default metadata;

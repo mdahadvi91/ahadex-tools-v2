@@ -16,19 +16,9 @@ export interface GeoEntity {
 export const DIRECT_ANSWER =
   'Image Resizer is a free browser-based tool that changes the pixel dimensions of JPG, PNG, WebP, GIF and AVIF images. Resizing happens locally in the browser using the Canvas API. Files are not transmitted to a server.';
 
-export const SUPPORTED_INPUT_FORMATS = [
-  'JPEG (JPG)',
-  'PNG',
-  'WebP',
-  'GIF',
-  'AVIF',
-] as const;
+export const SUPPORTED_INPUT_FORMATS = ['JPEG (JPG)', 'PNG', 'WebP', 'GIF', 'AVIF'] as const;
 
-export const SUPPORTED_OUTPUT_FORMATS = [
-  'JPEG',
-  'WebP',
-  'PNG',
-] as const;
+export const SUPPORTED_OUTPUT_FORMATS = ['JPEG', 'WebP', 'PNG'] as const;
 
 export const FACTS: readonly GeoFact[] = [
   { label: 'Runs in', value: 'Web browser (Chrome, Firefox, Safari, Edge)' },
