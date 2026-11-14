@@ -36,9 +36,7 @@ test.describe('Performance: loading', () => {
 
     await page.goto('/', { waitUntil: 'networkidle' });
     // Filter out Cloudflare challenge noise if present
-    const realErrors = errors.filter(
-      (e) => !e.includes('challenge') && !e.includes('Cloudflare'),
-    );
+    const realErrors = errors.filter((e) => !e.includes('challenge') && !e.includes('Cloudflare'));
     expect(realErrors).toEqual([]);
   });
 

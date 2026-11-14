@@ -4,7 +4,11 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { presetToOptions, formatBytes, savingsPercent } from '../../src/tools/image-compressor/types';
+import {
+  presetToOptions,
+  formatBytes,
+  savingsPercent,
+} from '../../src/tools/image-compressor/types';
 
 function bench(fn: () => void, iterations: number): number {
   const start = performance.now();

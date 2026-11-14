@@ -39,10 +39,7 @@ describe('security: invalid file rejection', () => {
   });
 
   it('rejects batch with duplicate handling', () => {
-    const files = [
-      makeFile('a.png', 'image/png', 100),
-      makeFile('a.png', 'image/png', 100),
-    ];
+    const files = [makeFile('a.png', 'image/png', 100), makeFile('a.png', 'image/png', 100)];
     const result = validateSingleFile(files[0], 'image');
     // Batch duplicate check is a higher-level concern; single-file pass OK
     expect(typeof result.ok).toBe('boolean');

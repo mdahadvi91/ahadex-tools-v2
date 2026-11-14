@@ -22,9 +22,7 @@ describe('security: memory exhaustion prevention', () => {
   });
 
   it('accepts batch within limits', () => {
-    const files = Array.from({ length: 5 }, (_, i) =>
-      makeFile(`photo-${i}.png`, 'image/png', 100),
-    );
+    const files = Array.from({ length: 5 }, (_, i) => makeFile(`photo-${i}.png`, 'image/png', 100));
     const result = validateBatch(files, 'image');
     expect(result.ok).toBe(true);
   });
@@ -36,9 +34,7 @@ describe('security: memory exhaustion prevention', () => {
 
   it('does not allocate unbounded arrays on bad input', () => {
     // The validator returns violations, not array of arbitrary size
-    const files = Array.from({ length: 100 }, () =>
-      makeFile('photo.png', 'image/png', 100),
-    );
+    const files = Array.from({ length: 100 }, () => makeFile('photo.png', 'image/png', 100));
     const result = validateBatch(files, 'image');
     // Violations should be small and bounded
     expect(result.violations.length).toBeLessThan(files.length * 2);

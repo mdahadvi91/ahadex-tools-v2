@@ -44,7 +44,7 @@ describe('performance: bundle budget', () => {
     if (size.js === 0) return; // skip if not built
 
     // Our budget is in KB gzip. Raw size ~3x gzip. Approximate check.
-    const estimatedGzipKb = (size.js / 1024) / 3;
+    const estimatedGzipKb = size.js / 1024 / 3;
     const budgetKb = BUILD_BUDGET.initialJsKb;
     expect(estimatedGzipKb).toBeLessThanOrEqual(budgetKb * 1.2); // 20% tolerance
   });
@@ -53,7 +53,7 @@ describe('performance: bundle budget', () => {
     const size = await getDistSize();
     if (size.css === 0) return;
 
-    const estimatedGzipKb = (size.css / 1024) / 3;
+    const estimatedGzipKb = size.css / 1024 / 3;
     expect(estimatedGzipKb).toBeLessThanOrEqual(50); // 50 KB CSS budget
   });
 
@@ -61,7 +61,7 @@ describe('performance: bundle budget', () => {
     const size = await getDistSize();
     if (size.total === 0) return;
 
-    const estimatedGzipKb = (size.total / 1024) / 3;
+    const estimatedGzipKb = size.total / 1024 / 3;
     const budgetKb = BUILD_BUDGET.initialTotalKb;
     expect(estimatedGzipKb).toBeLessThanOrEqual(budgetKb * 1.2);
   });

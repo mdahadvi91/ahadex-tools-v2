@@ -8,9 +8,7 @@ import { validateInput } from '../../src/tools/image-compressor/engine/validatio
 
 function makeFile(name: string, type: string, content: string | Uint8Array): File {
   const blob =
-    typeof content === 'string'
-      ? new Blob([content], { type })
-      : new Blob([content], { type });
+    typeof content === 'string' ? new Blob([content], { type }) : new Blob([content], { type });
   return new File([blob], name, { type });
 }
 
