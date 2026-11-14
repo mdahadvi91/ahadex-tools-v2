@@ -43,8 +43,15 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Generate sitemap
+        run: npm run generate:sitemap
+        env:
+          VITE_SITE_URL: https://ahadex.online
+
       - name: Full validator suite
         run: npm run check:all
+        env:
+          VITE_SITE_URL: https://ahadex.online
 
       - name: Upload reports
         if: always()
