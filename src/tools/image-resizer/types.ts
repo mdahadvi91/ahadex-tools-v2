@@ -98,3 +98,11 @@ export function dimensionsChanged(
 ): boolean {
   return original.width !== output.width || original.height !== output.height;
 }
+
+export type WorkerErrorCode =
+  | 'decode-failed'
+  | 'encode-failed'
+  | 'canvas-unavailable'
+  | 'unsupported-format'
+  | 'invalid-dimensions'
+  | 'internal';

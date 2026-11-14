@@ -97,6 +97,14 @@ export const SECTIONS: readonly ContentSection[] = [
     ],
   },
   {
+    heading: 'File size vs image dimensions',
+    paragraphs: [
+      'File size and pixel dimensions are different. Dimensions control how many pixels the image contains; file size is how many bytes those pixels take up. Reducing dimensions usually reduces file size, but not always proportionally.',
+      'For example, a 4000x3000 JPEG at quality 85 might be 2 MB. Resizing it to 2000x1500 (half the width and height) gives roughly one quarter the pixel count and a correspondingly smaller file, often 400 to 700 KB. Re-encoding at a different quality can change this further.',
+      'If file size is your primary concern, use the Image Compressor tool instead. If dimensions are your primary concern, this is the right tool. If both matter, resize first, then compress the result.',
+    ],
+  },
+  {
     heading: 'Privacy and data handling',
     paragraphs: [
       'Your image is read from your device into browser memory and processed by code running locally in the tab. The file is not sent to a server for processing. When you close the tab or reload the page, the reference to the file in memory is released.',
