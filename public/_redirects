@@ -1,2 +1,9 @@
-# SPA fallback — catch-all (Cloudflare's built-in handles this too)
-/*  /index.html  200
+# 1. Prerendered static routes (must come first)
+/tools/image-compressor /tools/image-compressor/index.html 200
+/tools/image-resizer /tools/image-resizer/index.html 200
+/about /about/index.html 200
+/contact /contact/index.html 200
+/tools /tools/index.html 200
+
+# 2. SPA fallback for any other route
+/* /index.html 200
