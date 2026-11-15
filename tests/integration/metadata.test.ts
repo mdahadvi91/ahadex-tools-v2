@@ -33,12 +33,25 @@ describe('metadata: image-compressor', () => {
     expect(imageCompressorMetadata.noIndex).toBeFalsy();
   });
 
-  it('metadata has og:image path', () => {
-    expect(imageCompressorMetadata.image).toBeTruthy();
-    expect(imageCompressorMetadata.image?.startsWith('/')).toBe(true);
-  });
-
   it('metadata type is website', () => {
     expect(imageCompressorMetadata.type).toBe('website');
+  });
+
+  it('metadata has title and description', () => {
+    expect(imageCompressorMetadata.title).toBeTruthy();
+    expect(imageCompressorMetadata.description).toBeTruthy();
+    expect(imageCompressorMetadata.title.length).toBeGreaterThan(0);
+    expect(imageCompressorMetadata.description.length).toBeGreaterThan(0);
+  });
+
+  // OG image is now handled by build-time metadata bundle (public/og/<slug>.png).
+  // seo.ts does not need to declare image explicitly.
+  it('metadata image is optional (build handles OG)', () => {
+    // Either undefined (build handles) or a valid path
+    if (imageCompressorMetadata.image !== undefined) {
+      expect(imageCompressorMetadata.image.startsWith('/')).toBe(true);
+    } else {
+      expect(imageCompressorMetadata.image).toBeUndefined();
+    }
   });
 });

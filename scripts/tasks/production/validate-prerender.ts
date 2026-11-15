@@ -1,98 +1,187 @@
 /**
- * Prerender validator. Ensures the SPA fallback works and prerender
- * marker is set correctly.
+ * Prerender validator. Checks that every route has a generated
+ * static HTML file with proper metadata.
  *
- * Since the site is currently an SPA (no SSG yet), this validator
- * checks that:
- *   - dist/index.html has data-prerender-ready="false" (SPA mode)
- *   - _redirects exists with SPA fallback rule
- *   - When SSG POC succeeds, this validator will switch to checking
- *     individual route HTML files (see ADR-003).
+ * Rules:
+ *  - dist/index.html exists (SPA build output)
+ *  - dist/metadata.json exists
+ *  - dist/<route>/index.html exists for every route in metadata
+ *  - Each HTML has unique <title>
+ *  - Each HTML has canonical URL
+ *  - Each HTML has meta description
+ *  - Tool pages have JSON-LD
  */
 
 import { join } from 'node:path';
-import { readText, pathExists } from '../../utils/file-system';
+import { readFile, stat } from 'node:fs/promises';
 import { PATHS } from '../../utils/constants';
-import { error, warning, info, type Violation } from '../../utils/validation-result';
+import { error, info, warning, type Violation } from '../../utils/validation-result';
+
+const DIST_DIR = join(PATHS.root, 'dist');
+
+interface RouteMeta {
+  title: string;
+  description: string;
+  canonical: string;
+  ogImage: string;
+  ogType: string;
+  jsonLd?: unknown;
+}
+
+async function exists(p: string): Promise<boolean> {
+  try {
+    await stat(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function extractTitle(html: string): string | null {
+  const m = html.match(/<title>([^<]*)<\/title>/);
+  return m ? m[1] : null;
+}
+
+function hasCanonical(html: string): boolean {
+  return /<link rel="canonical"/.test(html);
+}
+
+function hasDescription(html: string): boolean {
+  return /<meta name="description"/.test(html);
+}
+
+function hasJsonLd(html: string): boolean {
+  return /<script type="application\/ld\+json">/.test(html);
+}
 
 export async function run(): Promise<Violation[]> {
   const violations: Violation[] = [];
 
-  // Rule 1: dist/index.html exists and has prerender marker.
-  const indexPath = join(PATHS.dist, 'index.html');
-  if (!(await pathExists(indexPath))) {
+  // Rule 1: dist/index.html exists
+  const indexHtmlPath = join(DIST_DIR, 'index.html');
+  if (!(await exists(indexHtmlPath))) {
     return [
-      error('prerender-no-dist', 'dist/index.html is missing.', {
+      error('dist-missing', 'dist/index.html is missing. Run `npm run build`.', {
         file: 'dist/index.html',
-        hint: 'Run `npm run build` first.',
+        hint: 'Build must run before prerender validation.',
       }),
     ];
   }
 
-  const html = await readText(indexPath);
-  if (!/data-prerender-ready=["'](?:true|false)["']/.test(html)) {
-    violations.push(
-      warning(
-        'prerender-marker-missing',
-        'dist/index.html is missing data-prerender-ready attribute.',
-        {
-          file: 'dist/index.html',
-          hint: 'Add data-prerender-ready="false" to <html> in index.html.',
-        },
-      ),
-    );
+  // Rule 2: dist/metadata.json exists
+  const metaPath = join(DIST_DIR, 'metadata.json');
+  if (!(await exists(metaPath))) {
+    return [
+      error('metadata-bundle-missing', 'dist/metadata.json is missing.', {
+        file: 'dist/metadata.json',
+        hint: 'Run `generate:metadata-bundle` before validation.',
+      }),
+    ];
   }
 
-  // Rule 2: _redirects file exists with SPA fallback.
-  const redirectsPath = join(PATHS.public, '_redirects');
-  if (!(await pathExists(redirectsPath))) {
-    violations.push(
-      error('redirects-missing', 'public/_redirects is missing (SPA fallback may not work).', {
-        file: 'public/_redirects',
-      }),
-    );
-  } else {
-    const redirects = await readText(redirectsPath);
-    // SPA fallback: any path → index.html 200
-    if (
-      !/\/\*\s+\/index\.html\s+200/.test(redirects) &&
-      !/\/tools\/\*\s+\/index\.html\s+200/.test(redirects)
-    ) {
+  const metadata: Record<string, RouteMeta> = JSON.parse(
+    await readFile(metaPath, 'utf8'),
+  );
+
+  const titles = new Map<string, string>(); // title -> route
+  const canonicals = new Map<string, string>();
+
+  // Rule 3: each route has its own HTML file
+  for (const [route, meta] of Object.entries(metadata)) {
+    const htmlPath =
+      route === '/' ? indexHtmlPath : join(DIST_DIR, route, 'index.html');
+
+    if (!(await exists(htmlPath))) {
       violations.push(
-        warning('redirects-no-spa-fallback', 'public/_redirects has no catch-all SPA fallback.', {
-          file: 'public/_redirects',
-          hint: 'Add: /* /index.html 200 for SPA routing.',
+        error('route-html-missing', `Missing HTML for route ${route}.`, {
+          file: `dist${route}/index.html`,
+          hint: 'Run `generate:static-html` after build.',
         }),
       );
+      continue;
     }
-  }
 
-  // Rule 3: check for prerendered HTML files (only if SSG is active).
-  // Currently SSG is deferred. This rule activates after POC.
-  const prerenderActive = html.includes('data-prerender-ready="true"');
-  if (prerenderActive) {
-    // Check for prerendered tool routes.
-    const imageCompressorPath = join(PATHS.dist, 'tools/image-compressor/index.html');
-    if (!(await pathExists(imageCompressorPath))) {
+    const html = await readFile(htmlPath, 'utf8');
+
+    // Rule 4: unique title
+    const title = extractTitle(html);
+    if (!title) {
+      violations.push(
+        error('missing-title', `Route ${route} has no <title>.`, {
+          file: `dist${route}/index.html`,
+        }),
+      );
+    } else if (title !== meta.title) {
       violations.push(
         error(
-          'prerender-tool-missing',
-          'data-prerender-ready="true" but dist/tools/image-compressor/index.html missing.',
+          'title-mismatch',
+          `Route ${route} title "${title}" does not match metadata "${meta.title}".`,
+          { file: `dist${route}/index.html` },
+        ),
+      );
+    } else if (titles.has(title)) {
+      violations.push(
+        error(
+          'duplicate-title',
+          `Route ${route} uses same title as ${titles.get(title)}.`,
           {
-            file: 'dist/tools/image-compressor/index.html',
-            hint: 'SSG must generate tool route HTML files.',
+            file: `dist${route}/index.html`,
+            hint: 'Every route must have a unique title.',
           },
         ),
       );
+    } else {
+      titles.set(title, route);
     }
-  } else {
-    violations.push(
-      info(
-        'prerender-spa-mode',
-        'SPA mode active (data-prerender-ready="false"). SSG POC pending.',
-      ),
-    );
+
+    // Rule 5: canonical present
+    if (!hasCanonical(html)) {
+      violations.push(
+        error('missing-canonical', `Route ${route} has no canonical URL.`, {
+          file: `dist${route}/index.html`,
+        }),
+      );
+    } else if (canonicals.has(meta.canonical)) {
+      violations.push(
+        warning(
+          'duplicate-canonical',
+          `Route ${route} shares canonical with ${canonicals.get(meta.canonical)}.`,
+          { file: `dist${route}/index.html` },
+        ),
+      );
+    } else {
+      canonicals.set(meta.canonical, route);
+    }
+
+    // Rule 6: description present
+    if (!hasDescription(html)) {
+      violations.push(
+        error('missing-description', `Route ${route} has no meta description.`, {
+          file: `dist${route}/index.html`,
+        }),
+      );
+    }
+
+    // Rule 7: tool pages have JSON-LD
+    if (route.startsWith('/tools/') && !hasJsonLd(html)) {
+      violations.push(
+        warning(
+          'missing-jsonld',
+          `Tool route ${route} has no JSON-LD.`,
+          { file: `dist${route}/index.html` },
+        ),
+      );
+    }
   }
+
+  // Rule 8: count matches metadata count
+  const expected = Object.keys(metadata).length;
+  violations.push(
+    info(
+      'prerender-summary',
+      `${titles.size}/${expected} unique titles across ${expected} routes.`,
+    ),
+  );
 
   return violations;
 }

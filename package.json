@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run generate:static-html",
     "preview": "vite preview",
     "type-check": "tsc -b",
     "lint": "eslint .",
@@ -36,11 +36,17 @@
     "check:production": "tsx scripts/orchestrators/production.orchestrator.ts",
     "check:all": "tsx scripts/orchestrators/all.orchestrator.ts",
     "generate:sitemap": "tsx scripts/tasks/indexing/generate-sitemap.ts",
-    "prebuild": "tsx scripts/tasks/indexing/generate-sitemap.ts",
+    "prebuild": "npm run generate:sitemap && npm run generate:tool-icons && npm run generate:og-images && npm run generate:metadata-bundle",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "test:e2e:install": "playwright install --with-deps"
+    "test:e2e:install": "playwright install --with-deps",
+    "generate:tool-icons": "tsx scripts/tasks/production/generate-tool-icons.ts",
+    "generate:og-images": "tsx scripts/tasks/production/generate-og-images.ts",
+    "generate:metadata-bundle": "tsx scripts/tasks/production/generate-metadata-bundle.ts",
+    "generate:static-html": "tsx scripts/tasks/production/generate-static-html.ts",
+    "validate:prerender": "tsx scripts/tasks/production/validate-prerender.ts",
+    "postbuild": "npm run validate:prerender && npm test"
   },
   "dependencies": {
     "react": "19.3.1",

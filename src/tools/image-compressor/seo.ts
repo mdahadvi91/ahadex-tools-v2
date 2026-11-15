@@ -14,7 +14,7 @@ export const metadata: PageMetadata = {
   description:
     'Compress images without uploading. Works on JPG, PNG, WebP, GIF and AVIF. Free, no signup, no tracking. Files stay on your device.',
   path: '/tools/image-compressor',
-  image: '/images/logo.png',
+
   type: 'website',
   noIndex: false,
 };

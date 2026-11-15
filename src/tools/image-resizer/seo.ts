@@ -9,7 +9,7 @@ export const metadata: PageMetadata = {
   description:
     'Resize images to exact pixel dimensions without uploading. Works on JPG, PNG, WebP, GIF and AVIF. Free, no signup. Files stay on your device.',
   path: '/tools/image-resizer',
-  image: '/images/logo.png',
+
   type: 'website',
   noIndex: false,
 };
