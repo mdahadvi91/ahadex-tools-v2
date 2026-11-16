@@ -1,3 +1,8 @@
+import { generateMetadataBundle } from '../tasks/production/generate-metadata-bundle';
+import { generateOgImages } from '../tasks/production/generate-og-images';
+import { generateStaticHtml } from '../tasks/production/generate-static-html';
+import { generateToolIcons } from '../tasks/production/generate-tool-icons';
+
 /**
  * Task registry. Maps each validation group to its ordered list of
  * validators.

@@ -1,3 +1,6 @@
 # Cloudflare Pages serves flat .html files directly
 # (/about -> /about.html, /tools/image-compressor -> /tools/image-compressor.html)
 # No SPA fallback or trailing-slash redirect needed.
+
+# SPA fallback for /tools sub-routes
+/tools/* /index.html 200
