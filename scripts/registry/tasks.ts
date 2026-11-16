@@ -1,7 +1,8 @@
-import { generateMetadataBundle } from '../tasks/production/generate-metadata-bundle';
-import { generateOgImages } from '../tasks/production/generate-og-images';
-import { generateStaticHtml } from '../tasks/production/generate-static-html';
-import { generateToolIcons } from '../tasks/production/generate-tool-icons';
+import { run as generateMetadataBundle } from '../tasks/production/generate-metadata-bundle';
+import { run as generateOgImages } from '../tasks/production/generate-og-images';
+import { run as generateStaticHtml } from '../tasks/production/generate-static-html';
+import { run as generateToolIcons } from '../tasks/production/generate-tool-icons';
+
 
 /**
  * Task registry. Maps each validation group to its ordered list of
