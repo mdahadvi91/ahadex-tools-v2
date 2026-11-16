@@ -9,3 +9,4 @@ blob-report/
 .wrangler/
 reports/
 package-lock.json
+public/metadata.json
