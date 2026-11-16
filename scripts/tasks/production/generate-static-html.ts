@@ -55,9 +55,7 @@ function buildHeadTags(meta: RouteMeta): string {
   ];
 
   if (meta.jsonLd) {
-    tags.push(
-      `<script type="application/ld+json">${JSON.stringify(meta.jsonLd)}</script>`,
-    );
+    tags.push(`<script type="application/ld+json">${JSON.stringify(meta.jsonLd)}</script>`);
   }
 
   return tags.join('\n    ');
@@ -65,15 +63,9 @@ function buildHeadTags(meta: RouteMeta): string {
 
 function injectIntoHtml(spaHtml: string, meta: RouteMeta): string {
   // Replace <title>AHADEX Tools</title> with metadata-injected head
-  let html = spaHtml.replace(
-    /<title>[^<]*<\/title>/,
-    '',
-  );
+  let html = spaHtml.replace(/<title>[^<]*<\/title>/, '');
   // Inject after <meta name="viewport" ... />
-  html = html.replace(
-    /(<meta name="viewport"[^>]*\/>)/,
-    `$1\n    ${buildHeadTags(meta)}`,
-  );
+  html = html.replace(/(<meta name="viewport"[^>]*\/>)/, `$1\n    ${buildHeadTags(meta)}`);
   return html;
 }
 
@@ -99,9 +91,7 @@ export async function run(): Promise<void> {
   }
 
   const spaHtml = await readFile(SPA_HTML_PATH, 'utf8');
-  const metadata: Record<string, RouteMeta> = JSON.parse(
-    await readFile(METADATA_PATH, 'utf8'),
-  );
+  const metadata: Record<string, RouteMeta> = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
 
   for (const [route, meta] of Object.entries(metadata)) {
     const html = injectIntoHtml(spaHtml, meta);

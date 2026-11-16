@@ -79,17 +79,14 @@ export async function run(): Promise<Violation[]> {
     ];
   }
 
-  const metadata: Record<string, RouteMeta> = JSON.parse(
-    await readFile(metaPath, 'utf8'),
-  );
+  const metadata: Record<string, RouteMeta> = JSON.parse(await readFile(metaPath, 'utf8'));
 
   const titles = new Map<string, string>(); // title -> route
   const canonicals = new Map<string, string>();
 
   // Rule 3: each route has its own HTML file
   for (const [route, meta] of Object.entries(metadata)) {
-    const htmlPath =
-      route === '/' ? indexHtmlPath : join(DIST_DIR, `${route.slice(1)}.html`);
+    const htmlPath = route === '/' ? indexHtmlPath : join(DIST_DIR, `${route.slice(1)}.html`);
 
     if (!(await exists(htmlPath))) {
       violations.push(
@@ -121,14 +118,10 @@ export async function run(): Promise<Violation[]> {
       );
     } else if (titles.has(title)) {
       violations.push(
-        error(
-          'duplicate-title',
-          `Route ${route} uses same title as ${titles.get(title)}.`,
-          {
-            file: `dist${route}/index.html`,
-            hint: 'Every route must have a unique title.',
-          },
-        ),
+        error('duplicate-title', `Route ${route} uses same title as ${titles.get(title)}.`, {
+          file: `dist${route}/index.html`,
+          hint: 'Every route must have a unique title.',
+        }),
       );
     } else {
       titles.set(title, route);
@@ -165,11 +158,9 @@ export async function run(): Promise<Violation[]> {
     // Rule 7: tool pages have JSON-LD
     if (route.startsWith('/tools/') && !hasJsonLd(html)) {
       violations.push(
-        warning(
-          'missing-jsonld',
-          `Tool route ${route} has no JSON-LD.`,
-          { file: `dist${route}/index.html` },
-        ),
+        warning('missing-jsonld', `Tool route ${route} has no JSON-LD.`, {
+          file: `dist${route}/index.html`,
+        }),
       );
     }
   }

@@ -100,8 +100,15 @@ export async function run(): Promise<void> {
     const toolSeo = await import(`../../../src/tools/${slug}/seo.ts`).catch(() => null);
     const toolSchema = await import(`../../../src/tools/${slug}/schema.ts`).catch(() => null);
 
-    const meta = (toolSeo as { metadata?: { title: string; description: string; path: string; image?: string } } | null)?.metadata;
-    const schemaFn = (toolSchema as { buildSchema?: (siteUrl: string) => unknown; default?: (siteUrl: string) => unknown } | null);
+    const meta = (
+      toolSeo as {
+        metadata?: { title: string; description: string; path: string; image?: string };
+      } | null
+    )?.metadata;
+    const schemaFn = toolSchema as {
+      buildSchema?: (siteUrl: string) => unknown;
+      default?: (siteUrl: string) => unknown;
+    } | null;
     const jsonLd = schemaFn?.buildSchema
       ? schemaFn.buildSchema(SITE_URL)
       : schemaFn?.default
