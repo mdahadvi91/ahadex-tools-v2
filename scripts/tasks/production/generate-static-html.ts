@@ -106,7 +106,7 @@ export async function run(): Promise<void> {
   for (const [route, meta] of Object.entries(metadata)) {
     const html = injectIntoHtml(spaHtml, meta);
     const outputPath =
-      route === '/' ? join(DIST_DIR, 'index.html') : join(DIST_DIR, route, 'index.html');
+      route === '/' ? join(DIST_DIR, 'index.html') : join(DIST_DIR, `${route.slice(1)}.html`);
 
     await mkdir(dirname(outputPath), { recursive: true });
     await writeFile(outputPath, html, 'utf8');

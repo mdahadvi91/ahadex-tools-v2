@@ -89,7 +89,7 @@ export async function run(): Promise<Violation[]> {
   // Rule 3: each route has its own HTML file
   for (const [route, meta] of Object.entries(metadata)) {
     const htmlPath =
-      route === '/' ? indexHtmlPath : join(DIST_DIR, route, 'index.html');
+      route === '/' ? indexHtmlPath : join(DIST_DIR, `${route.slice(1)}.html`);
 
     if (!(await exists(htmlPath))) {
       violations.push(
