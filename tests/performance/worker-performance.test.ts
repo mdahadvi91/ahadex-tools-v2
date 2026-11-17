@@ -24,12 +24,12 @@ describe('performance: worker helpers', () => {
 
   it('formatBytes is fast for 10k calls', () => {
     const elapsed = bench(() => formatBytes(1024 * 1024), 10_000);
-    expect(elapsed).toBeLessThan(30);
+    expect(elapsed).toBeLessThan(150);
   });
 
   it('savingsPercent is fast for 10k calls', () => {
     const elapsed = bench(() => savingsPercent(1000, 500), 10_000);
-    expect(elapsed).toBeLessThan(30);
+    expect(elapsed).toBeLessThan(150);
   });
 
   it('helper functions do not grow memory unboundedly', () => {

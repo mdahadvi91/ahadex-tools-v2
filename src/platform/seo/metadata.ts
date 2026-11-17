@@ -6,9 +6,10 @@ export interface PageMetadata {
   title: string;
   description: string;
   path: string;
-  image?: string;
+  ogImage?: string; // Added for Open Graph
   type?: 'website' | 'article';
   noIndex?: boolean;
+  jsonLd?: Record<string, any> | Record<string, any>[]; // Added for Google Rich Results
 }
 
 const MAX_TITLE = 60;

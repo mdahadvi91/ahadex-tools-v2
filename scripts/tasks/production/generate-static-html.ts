@@ -1,19 +1,25 @@
 /**
- * Generate static HTML shells for every route with metadata injected.
- *
- * Reads dist/index.html (Vite SPA shell) and dist/metadata.json bundle,
- * then writes dist/<route>/index.html for every route with the correct
- * <title>, <meta>, canonical, OG, Twitter, and JSON-LD.
- *
- * The <div id="root"></div> remains empty - React hydrates on client.
- * This gives AdSense/Google a fully described HTML document without
- * requiring server-side React rendering.
+ * Generate static HTML for every route with React SSR content and metadata.
+ * Uses dynamic imports to ensure React is available in the Node.js global scope.
  */
 
 import { join, dirname } from 'node:path';
 import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
 import { PATHS } from '../../utils/constants';
 import { logger } from '../../utils/logger';
+
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
+
+// Polyfill for Vite's import.meta.env in Node.js
+(globalThis as any).import_meta_env = {
+  PROD: true,
+  DEV: false,
+  MODE: 'production',
+  BASE_URL: '/',
+  SSR: true,
+};
 
 const DIST_DIR = join(PATHS.root, 'dist');
 const SPA_HTML_PATH = join(DIST_DIR, 'index.html');
@@ -61,14 +67,6 @@ function buildHeadTags(meta: RouteMeta): string {
   return tags.join('\n    ');
 }
 
-function injectIntoHtml(spaHtml: string, meta: RouteMeta): string {
-  // Replace <title>AHADEX Tools</title> with metadata-injected head
-  let html = spaHtml.replace(/<title>[^<]*<\/title>/, '');
-  // Inject after <meta name="viewport" ... />
-  html = html.replace(/(<meta name="viewport"[^>]*\/>)/, `$1\n    ${buildHeadTags(meta)}`);
-  return html;
-}
-
 async function pathExists(p: string): Promise<boolean> {
   try {
     await stat(p);
@@ -79,7 +77,11 @@ async function pathExists(p: string): Promise<boolean> {
 }
 
 export async function run(): Promise<void> {
-  logger.heading('Generating static HTML per route');
+  logger.heading('Generating static HTML (SSR) per route');
+
+  // Set global React for JSX in Node.js
+  (globalThis as any).React = React;
+  (globalThis as any).import_meta = { env: (globalThis as any).import_meta_env };
 
   if (!(await pathExists(SPA_HTML_PATH))) {
     logger.error('dist/index.html not found. Run vite build first.');
@@ -93,14 +95,31 @@ export async function run(): Promise<void> {
   const spaHtml = await readFile(SPA_HTML_PATH, 'utf8');
   const metadata: Record<string, RouteMeta> = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
 
+  // Dynamically import App AFTER setting global React
+  const AppModule = await import('../../../src/App');
+  const App = AppModule.default;
+
   for (const [route, meta] of Object.entries(metadata)) {
-    const html = injectIntoHtml(spaHtml, meta);
-    const outputPath =
-      route === '/' ? join(DIST_DIR, 'index.html') : join(DIST_DIR, `${route.slice(1)}.html`);
+    let appHtml = '';
+    try {
+      appHtml = renderToString(
+        React.createElement(MemoryRouter, { initialEntries: [route] }, React.createElement(App)),
+      );
+    } catch (error) {
+      logger.warn(`SSR failed for ${route}. Falling back to empty root. Error: ${error}`);
+      appHtml = '';
+    }
+
+    let html = spaHtml.replace(/<title>[^<]*<\/title>/, '');
+    html = html.replace(/(<meta name="viewport"[^>]*\/>)/, `$1\n    ${buildHeadTags(meta)}`);
+    html = html.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+
+    const outputDir = route === '/' ? DIST_DIR : join(DIST_DIR, route.slice(1));
+    const outputPath = join(outputDir, 'index.html');
 
     await mkdir(dirname(outputPath), { recursive: true });
     await writeFile(outputPath, html, 'utf8');
-    logger.success(`html: ${route}`);
+    logger.success(`html: ${route}/index.html`);
   }
 
   logger.success(`${Object.keys(metadata).length} static HTML file(s) generated.`);

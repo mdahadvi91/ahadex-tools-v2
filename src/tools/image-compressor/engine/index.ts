@@ -6,7 +6,20 @@
  * worker and resolves when the worker replies.
  */
 
-import CompressionWorker from './worker?worker';
+// Safe import for SSR (Node.js) and Browser (Vite)
+let CompressionWorker: any;
+if (typeof window === 'undefined') {
+  CompressionWorker = class DummyWorker {
+    constructor() {}
+    postMessage() {}
+    addEventListener() {}
+    removeEventListener() {}
+    terminate() {}
+  };
+} else {
+  // @ts-ignore - Vite specific
+  CompressionWorker = (await import('./worker?worker')).default;
+}
 import type { WorkerInbound, WorkerOutbound } from './worker.types';
 import type { CompressionInput, CompressionResult } from '../types';
 

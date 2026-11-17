@@ -2,7 +2,20 @@
  * Public engine API for the Image Resizer tool.
  */
 
-import ResizeWorker from './worker?worker';
+// Safe import for SSR (Node.js) and Browser (Vite)
+let ResizeWorker: any;
+if (typeof window === 'undefined') {
+  ResizeWorker = class DummyWorker {
+    constructor() {}
+    postMessage() {}
+    addEventListener() {}
+    removeEventListener() {}
+    terminate() {}
+  };
+} else {
+  // @ts-ignore - Vite specific
+  ResizeWorker = (await import('./worker?worker')).default;
+}
 import type { WorkerInbound, WorkerOutbound } from './worker.types';
 import type { ResizeInput, ResizeResult } from '../types';
 

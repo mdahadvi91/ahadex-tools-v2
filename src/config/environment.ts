@@ -50,14 +50,19 @@ function readOptionalId(raw: string | undefined): string | null {
 }
 
 function buildEnvironment(): Environment {
-  const isProduction = import.meta.env.PROD === true;
-  const isDevelopment = import.meta.env.DEV === true;
+  // Safely access import.meta.env (works in Vite, falls back for Node.js/SSR)
+  const env = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env : ({} as any);
 
-  const rawSiteUrl = (import.meta.env.VITE_SITE_URL ?? '').trim();
+  const isProduction =
+    env.PROD === true || (typeof process !== 'undefined' && process.env.NODE_ENV === 'production');
+  const isDevelopment =
+    env.DEV === true || (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production');
+
+  const rawSiteUrl = (env.VITE_SITE_URL ?? 'https://ahadex.online').trim();
   const siteUrl = rawSiteUrl === '' && isDevelopment ? DEV_FALLBACK_SITE_URL : rawSiteUrl;
 
-  const gaMeasurementId = readOptionalId(import.meta.env.VITE_GA_MEASUREMENT_ID);
-  const adsensePublisherId = readOptionalId(import.meta.env.VITE_ADSENSE_PUBLISHER_ID);
+  const gaMeasurementId = readOptionalId(env.VITE_GA_MEASUREMENT_ID);
+  const adsensePublisherId = readOptionalId(env.VITE_ADSENSE_PUBLISHER_ID);
 
   return Object.freeze({
     siteUrl,
