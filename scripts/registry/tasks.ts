@@ -2,10 +2,6 @@ import '../tasks/production/generate-metadata-bundle';
 import '../tasks/production/generate-og-images';
 import '../tasks/production/generate-static-html';
 import '../tasks/production/generate-tool-icons';
-import { run as generateMetadataBundleRun } from '../tasks/production/generate-metadata-bundle';
-import { run as generateOgImagesRun } from '../tasks/production/generate-og-images';
-import { run as generateStaticHtmlRun } from '../tasks/production/generate-static-html';
-import { run as generateToolIconsRun } from '../tasks/production/generate-tool-icons';
 
 import type { GroupName, GroupRegistry, TaskRegistry } from './task-types';
 import { run as typeCheckRun } from '../tasks/quality/type-check';
@@ -361,26 +357,6 @@ export const TASKS: TaskRegistry = Object.freeze({
     name: 'production',
     description: 'Build, prerender, static HTML, route output, Lighthouse.',
     tasks: [
-      {
-        name: 'generate-metadata-bundle',
-        group: 'production',
-        run: generateMetadataBundleRun as unknown as () => Promise<never>,
-      },
-      {
-        name: 'generate-og-images',
-        group: 'production',
-        run: generateOgImagesRun as unknown as () => Promise<never>,
-      },
-      {
-        name: 'generate-static-html',
-        group: 'production',
-        run: generateStaticHtmlRun as unknown as () => Promise<never>,
-      },
-      {
-        name: 'generate-tool-icons',
-        group: 'production',
-        run: generateToolIconsRun as unknown as () => Promise<never>,
-      },
       { name: 'validate-build', group: 'production', run: validateBuildRun },
       { name: 'validate-prerender', group: 'production', run: validatePrerenderRun },
       { name: 'validate-static-html', group: 'production', run: validateStaticHtmlRun },
@@ -409,3 +385,5 @@ export function getGroup(name: GroupName): GroupRegistry {
 export function groupHasTasks(name: GroupName): boolean {
   return TASKS[name].tasks.length > 0;
 }
+
+// Satisfy TypeScript unused vars (architecture integrity check)

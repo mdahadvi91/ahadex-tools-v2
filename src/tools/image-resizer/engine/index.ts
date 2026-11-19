@@ -6,6 +6,10 @@ import type { WorkerInbound, WorkerOutbound } from './worker.types';
 import type { ResizeInput, ResizeResult } from '../types';
 
 // Safe import for SSR (Node.js) and Browser (Vite)
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+
 let ResizeWorker: new () => Worker;
 
 if (typeof window === 'undefined') {
@@ -22,7 +26,7 @@ if (typeof window === 'undefined') {
     }
   } as unknown as new () => Worker;
 } else {
-  ResizeWorker = (await import('./worker?worker')).default as unknown as new () => Worker;
+  ResizeWorker = require('./worker?worker') as unknown as new () => Worker;
 }
 
 export class ImageResizerEngine {
