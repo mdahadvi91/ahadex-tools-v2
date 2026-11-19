@@ -279,7 +279,6 @@ export const REFERENCES: readonly Reference[] = [
 
 export const INTERNAL_LINKS: readonly InternalLink[] = [
   { label: 'Image Resizer', path: '/tools/image-resizer' },
-  { label: 'Merge PDF', path: '/tools/merge-pdf' },
   { label: 'About AHADEX Tools', path: '/about' },
   { label: 'Privacy Policy', path: '/privacy' },
 ];

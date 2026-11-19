@@ -27,8 +27,8 @@ export function buildOpenGraphTags(meta: PageMetadata): OpenGraphTags {
     'og:site_name': site.name,
     'og:locale': site.locale,
   };
-  if (meta.image) {
-    tags['og:image'] = meta.image;
+  if (meta.ogImage) {
+    tags['og:image'] = meta.ogImage;
   }
   return tags;
 }

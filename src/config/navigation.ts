@@ -26,7 +26,6 @@ export const FOOTER_SECTIONS: readonly FooterSection[] = Object.freeze([
     items: [
       { label: 'Image Compressor', href: '/tools/image-compressor' },
       { label: 'Image Resizer', href: '/tools/image-resizer' },
-      { label: 'Merge PDF', href: '/tools/merge-pdf' },
     ],
   },
   {

@@ -17,11 +17,11 @@ export function buildTwitterCardTags(meta: PageMetadata): TwitterCardTags {
   const site = getSiteConfig();
   const normalized = normalizeMetadata(meta);
   const tags: TwitterCardTags = {
-    'twitter:card': meta.image ? 'summary_large_image' : 'summary',
+    'twitter:card': meta.ogImage ? 'summary_large_image' : 'summary',
     'twitter:title': normalized.title,
     'twitter:description': normalized.description,
   };
-  if (meta.image) tags['twitter:image'] = meta.image;
+  if (meta.ogImage) tags['twitter:image'] = meta.ogImage;
   if (site.twitterHandle) tags['twitter:site'] = site.twitterHandle;
   return tags;
 }

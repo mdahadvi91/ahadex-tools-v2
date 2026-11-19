@@ -3,6 +3,8 @@
  * Uses fs in Node.js (SSR) and import.meta.glob in Vite (Browser).
  */
 
+declare const process: { env: Record<string, string | undefined>; versions?: { node?: string } };
+
 import type { AppRoute, RouteMeta } from './route-types';
 
 export interface ToolManifest {
