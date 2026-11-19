@@ -1,6 +1,5 @@
 /**
  * Generate static HTML for every route with React SSR content and metadata.
- * Uses dynamic imports to ensure React is available in the Node.js global scope.
  */
 
 import { join, dirname } from 'node:path';
@@ -12,15 +11,6 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 
-// Polyfill for Vite's import.meta.env in Node.js
-(globalThis as any).import_meta_env = {
-  PROD: true,
-  DEV: false,
-  MODE: 'production',
-  BASE_URL: '/',
-  SSR: true,
-};
-
 const DIST_DIR = join(PATHS.root, 'dist');
 const SPA_HTML_PATH = join(DIST_DIR, 'index.html');
 const METADATA_PATH = join(DIST_DIR, 'metadata.json');
@@ -31,7 +21,7 @@ interface RouteMeta {
   canonical: string;
   ogImage: string;
   ogType: string;
-  jsonLd?: unknown;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 function escapeHtml(s: string): string {
@@ -40,6 +30,11 @@ function escapeHtml(s: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function serializeJsonLd(data: RouteMeta['jsonLd']): string {
+  // Escape "<" so content can never close the surrounding <script> tag.
+  return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
 function buildHeadTags(meta: RouteMeta): string {
@@ -61,7 +56,7 @@ function buildHeadTags(meta: RouteMeta): string {
   ];
 
   if (meta.jsonLd) {
-    tags.push(`<script type="application/ld+json">${JSON.stringify(meta.jsonLd)}</script>`);
+    tags.push(`<script type="application/ld+json">${serializeJsonLd(meta.jsonLd)}</script>`);
   }
 
   return tags.join('\n    ');
@@ -76,12 +71,21 @@ async function pathExists(p: string): Promise<boolean> {
   }
 }
 
+function renderRoute(App: React.ComponentType, route: string): string {
+  try {
+    return renderToString(
+      React.createElement(MemoryRouter, { initialEntries: [route] }, React.createElement(App)),
+    );
+  } catch (error) {
+    logger.warn(`SSR failed for ${route}. Falling back to empty root. Error: ${error}`);
+    return '';
+  }
+}
+
 export async function run(): Promise<void> {
   logger.heading('Generating static HTML (SSR) per route');
 
-  // Set global React for JSX in Node.js
-  (globalThis as any).React = React;
-  (globalThis as any).import_meta = { env: (globalThis as any).import_meta_env };
+  (globalThis as unknown as { React: typeof React }).React = React;
 
   if (!(await pathExists(SPA_HTML_PATH))) {
     logger.error('dist/index.html not found. Run vite build first.');
@@ -95,24 +99,20 @@ export async function run(): Promise<void> {
   const spaHtml = await readFile(SPA_HTML_PATH, 'utf8');
   const metadata: Record<string, RouteMeta> = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
 
-  // Dynamically import App AFTER setting global React
   const AppModule = await import('../../../src/App');
   const App = AppModule.default;
 
   for (const [route, meta] of Object.entries(metadata)) {
-    let appHtml = '';
-    try {
-      appHtml = renderToString(
-        React.createElement(MemoryRouter, { initialEntries: [route] }, React.createElement(App)),
-      );
-    } catch (error) {
-      logger.warn(`SSR failed for ${route}. Falling back to empty root. Error: ${error}`);
-      appHtml = '';
-    }
+    const appHtml = renderRoute(App, route);
 
-    let html = spaHtml.replace(/<title>[^<]*<\/title>/, '');
-    html = html.replace(/(<meta name="viewport"[^>]*\/>)/, `$1\n    ${buildHeadTags(meta)}`);
-    html = html.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+    // Function replacers: a string replacement would interpret "$&", "$1" etc.
+    // inside page content and silently corrupt the output.
+    let html = spaHtml.replace(/<title>[^<]*<\/title>/, () => '');
+    html = html.replace(
+      /(<meta name="viewport"[^>]*\/>)/,
+      (match) => `${match}\n    ${buildHeadTags(meta)}`,
+    );
+    html = html.replace('<div id="root"></div>', () => `<div id="root">${appHtml}</div>`);
 
     const outputDir = route === '/' ? DIST_DIR : join(DIST_DIR, route.slice(1));
     const outputPath = join(outputDir, 'index.html');

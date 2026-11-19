@@ -1,7 +1,3 @@
-/**
- * Environment configuration and validation.
- */
-
 export interface Environment {
   readonly siteUrl: string;
   readonly isProduction: boolean;
@@ -34,18 +30,24 @@ function readOptionalId(raw: string | undefined): string | null {
   return trimmed === '' ? null : trimmed;
 }
 
+// Vite exposes PROD/DEV as booleans, other runtimes may pass strings.
+function isFlagSet(value: unknown): boolean {
+  return value === true || value === 'true';
+}
+
 function buildEnvironment(): Environment {
-  // Safe access for Vite (import.meta.env) and Node.js ((globalThis as any).process.env)
+  // Keep the literal `import.meta.env` expression: Vite replaces it statically in
+  // production builds, so an aliased `import.meta` would be undefined at runtime.
   const metaEnv =
-    typeof import.meta !== 'undefined' && (import.meta as any).env ? (import.meta as any).env : {};
-  const isNode =
-    typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env;
-  const nodeEnv = isNode ? (globalThis as any).process.env : {};
+    (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
 
-  const isProduction = metaEnv.PROD === true || nodeEnv.NODE_ENV === 'production';
-  const isDevelopment = metaEnv.DEV === true || nodeEnv.NODE_ENV !== 'production';
+  const glob = globalThis as unknown as { process?: { env?: Record<string, string | undefined> } };
+  const nodeEnv = glob.process?.env || {};
 
-  const rawSiteUrl = (metaEnv.VITE_SITE_URL ?? nodeEnv.VITE_SITE_URL ?? '').trim();
+  const isProduction = isFlagSet(metaEnv.PROD) || nodeEnv.NODE_ENV === 'production';
+  const isDevelopment = isFlagSet(metaEnv.DEV) || nodeEnv.NODE_ENV !== 'production';
+
+  const rawSiteUrl = String(metaEnv.VITE_SITE_URL ?? nodeEnv.VITE_SITE_URL ?? '').trim();
   const siteUrl = rawSiteUrl === '' && isDevelopment ? DEV_FALLBACK_SITE_URL : rawSiteUrl;
 
   const gaMeasurementId = readOptionalId(
@@ -77,20 +79,16 @@ export function assertValidEnvironment(): void {
   const env = getEnvironment();
 
   if (env.isProduction) {
-    if (env.siteUrl === '') {
-      throw new Error('VITE_SITE_URL is required in production builds.');
-    }
+    if (env.siteUrl === '') throw new Error('VITE_SITE_URL is required in production builds.');
     if (!isValidHttpsUrl(env.siteUrl)) {
       throw new Error(
         `VITE_SITE_URL must be an https URL without trailing slash. Received: "${env.siteUrl}".`,
       );
     }
   }
-
   if (env.gaMeasurementId !== null && !GA_ID_PATTERN.test(env.gaMeasurementId)) {
     throw new Error(`VITE_GA_MEASUREMENT_ID is malformed: "${env.gaMeasurementId}".`);
   }
-
   if (env.adsensePublisherId !== null && !ADSENSE_ID_PATTERN.test(env.adsensePublisherId)) {
     throw new Error(`VITE_ADSENSE_PUBLISHER_ID is malformed: "${env.adsensePublisherId}".`);
   }

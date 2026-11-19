@@ -1,16 +1,7 @@
-// @ts-ignore - Imported to satisfy registry integrity validation
 import '../tasks/production/generate-metadata-bundle';
-// @ts-ignore - Imported to satisfy registry integrity validation
 import '../tasks/production/generate-og-images';
-// @ts-ignore - Imported to satisfy registry integrity validation
 import '../tasks/production/generate-static-html';
-// @ts-ignore - Imported to satisfy registry integrity validation
 import '../tasks/production/generate-tool-icons';
-
-/**
- * Task registry. Maps each validation group to its ordered list of
- * validators.
- */
 
 import type { GroupName, GroupRegistry, TaskRegistry } from './task-types';
 import { run as typeCheckRun } from '../tasks/quality/type-check';

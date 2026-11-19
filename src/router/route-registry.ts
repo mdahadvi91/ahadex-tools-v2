@@ -1,8 +1,9 @@
 /**
- * Route registry. Static non-tool routes plus tool routes.
- * Uses fs in Node.js (SSR) and import.meta.glob in Vite (Browser).
+ * Route registry.
  */
 
+import type * as NodeFs from 'node:fs';
+import type * as NodePath from 'node:path';
 import type { AppRoute, RouteMeta } from './route-types';
 
 export interface ToolManifest {
@@ -23,21 +24,22 @@ export interface ToolEntry {
 }
 
 const isNodeEnv =
-  typeof (globalThis as any).process !== 'undefined' &&
-  (globalThis as any).process.versions != null &&
-  (globalThis as any).process.versions.node != null;
+  typeof (globalThis as unknown as { process?: { versions?: { node?: string } } }).process?.versions
+    ?.node !== 'undefined';
+
+// Built at runtime so the browser bundler never tries to resolve Node built-ins.
+const nodeBuiltin = (name: string): string => `node:${name}`;
 
 async function loadToolModules(): Promise<
   Record<string, { manifest: ToolManifest; default: AppRoute['Component'] }>
 > {
+  const modules: Record<string, { manifest: ToolManifest; default: AppRoute['Component'] }> = {};
+
   if (isNodeEnv) {
-    // Node.js Environment (SSR)
-    // @ts-ignore
-    const fs = await import('node:fs');
-    // @ts-ignore
-    const path = await import('node:path');
-    const toolsDir = path.resolve((globalThis as any).process.cwd(), 'src/tools');
-    const modules: Record<string, any> = {};
+    const nodeProcess = (globalThis as unknown as { process: { cwd: () => string } }).process;
+    const fs = (await import(/* @vite-ignore */ nodeBuiltin('fs'))) as typeof NodeFs;
+    const path = (await import(/* @vite-ignore */ nodeBuiltin('path'))) as typeof NodePath;
+    const toolsDir = path.resolve(nodeProcess.cwd(), 'src/tools');
 
     if (fs.existsSync(toolsDir)) {
       const toolDirs = fs
@@ -45,25 +47,26 @@ async function loadToolModules(): Promise<
         .filter((f: string) => fs.statSync(path.join(toolsDir, f)).isDirectory());
       for (const dir of toolDirs) {
         try {
-          const mod = await import(`../tools/${dir}/index.ts`);
-          modules[`../tools/${dir}/index.ts`] = mod;
+          const mod = await import(/* @vite-ignore */ `../tools/${dir}/index.ts`);
+          modules[`../tools/${dir}/index.ts`] = mod as {
+            manifest: ToolManifest;
+            default: AppRoute['Component'];
+          };
         } catch (e) {
           console.warn(`⚠️ Failed to load tool module: ${dir}`, e);
         }
       }
     }
-    return modules;
   } else {
-    // Vite Environment (Browser)
-    // @ts-ignore - Vite specific
-    return import.meta.glob<{ manifest: ToolManifest; default: AppRoute['Component'] }>(
-      '../tools/*/index.ts',
-      { eager: true },
-    );
+    const globModules = import.meta.glob<{
+      manifest: ToolManifest;
+      default: AppRoute['Component'];
+    }>('../tools/*/index.ts', { eager: true });
+    Object.assign(modules, globModules);
   }
+  return modules;
 }
 
-// Top-level await (supported in Node 14+ ESM)
 const toolModules = await loadToolModules();
 
 export const toolRoutes: AppRoute[] = Object.values(toolModules)

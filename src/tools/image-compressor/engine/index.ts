@@ -1,27 +1,29 @@
 /**
- * Public engine API for the Image Compressor tool. The UI imports
- * from here, never from the worker directly.
- *
- * Provides a Promise-based compress() that posts a message to the
- * worker and resolves when the worker replies.
+ * Public engine API for the Image Compressor tool.
  */
 
+import type { WorkerInbound, WorkerOutbound } from './worker.types';
+import type { CompressionInput, CompressionResult } from '../types';
+
 // Safe import for SSR (Node.js) and Browser (Vite)
-let CompressionWorker: any;
+let CompressionWorker: new () => Worker;
+
 if (typeof window === 'undefined') {
-  CompressionWorker = class DummyWorker {
-    constructor() {}
+  CompressionWorker = class DummyWorker implements Worker {
+    onerror = null;
+    onmessage = null;
+    onmessageerror = null;
     postMessage() {}
     addEventListener() {}
     removeEventListener() {}
     terminate() {}
-  };
+    dispatchEvent() {
+      return true;
+    }
+  } as unknown as new () => Worker;
 } else {
-  // @ts-ignore - Vite specific
-  CompressionWorker = (await import('./worker?worker')).default;
+  CompressionWorker = (await import('./worker?worker')).default as unknown as new () => Worker;
 }
-import type { WorkerInbound, WorkerOutbound } from './worker.types';
-import type { CompressionInput, CompressionResult } from '../types';
 
 export class ImageCompressorEngine {
   private worker: Worker;

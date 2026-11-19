@@ -1,15 +1,11 @@
-/**
- * Types and helpers for per-route SEO metadata.
- */
-
 export interface PageMetadata {
   title: string;
   description: string;
   path: string;
-  ogImage?: string; // Added for Open Graph
+  ogImage?: string;
   type?: 'website' | 'article';
   noIndex?: boolean;
-  jsonLd?: Record<string, any> | Record<string, any>[]; // Added for Google Rich Results
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const MAX_TITLE = 60;
