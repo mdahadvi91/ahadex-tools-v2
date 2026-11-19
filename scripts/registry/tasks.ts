@@ -125,6 +125,8 @@ import { run as validateResourceBudgetRun } from '../tasks/performance/validate-
 import { run as validateThirdPartyBudgetRun } from '../tasks/performance/validate-third-party-budget';
 import { run as validateLazyLoadingRun } from '../tasks/performance/validate-lazy-loading';
 
+// Import the new production tasks
+
 export const TASKS: TaskRegistry = Object.freeze({
   architecture: {
     name: 'architecture',

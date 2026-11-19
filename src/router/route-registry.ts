@@ -2,8 +2,6 @@
  * Route registry.
  */
 
-import type * as NodeFs from 'node:fs';
-import type * as NodePath from 'node:path';
 import type { AppRoute, RouteMeta } from './route-types';
 
 export interface ToolManifest {
@@ -27,19 +25,18 @@ const isNodeEnv =
   typeof (globalThis as unknown as { process?: { versions?: { node?: string } } }).process?.versions
     ?.node !== 'undefined';
 
-// Built at runtime so the browser bundler never tries to resolve Node built-ins.
-const nodeBuiltin = (name: string): string => `node:${name}`;
+const nodeModules: Record<string, { manifest: ToolManifest; default: AppRoute['Component'] }> = {};
 
-async function loadToolModules(): Promise<
-  Record<string, { manifest: ToolManifest; default: AppRoute['Component'] }>
-> {
-  const modules: Record<string, { manifest: ToolManifest; default: AppRoute['Component'] }> = {};
-
-  if (isNodeEnv) {
+if (isNodeEnv) {
+  try {
     const nodeProcess = (globalThis as unknown as { process: { cwd: () => string } }).process;
-    const fs = (await import(/* @vite-ignore */ nodeBuiltin('fs'))) as typeof NodeFs;
-    const path = (await import(/* @vite-ignore */ nodeBuiltin('path'))) as typeof NodePath;
-    const toolsDir = path.resolve(nodeProcess.cwd(), 'src/tools');
+    const toolsDir = nodeProcess.cwd() + '/src/tools';
+
+    // Use createRequire to satisfy ESLint and avoid top-level await
+    const { createRequire } = await import('node:module');
+    const require = createRequire(import.meta.url);
+    const fs = require('node:fs');
+    const path = require('node:path');
 
     if (fs.existsSync(toolsDir)) {
       const toolDirs = fs
@@ -47,27 +44,27 @@ async function loadToolModules(): Promise<
         .filter((f: string) => fs.statSync(path.join(toolsDir, f)).isDirectory());
       for (const dir of toolDirs) {
         try {
-          const mod = await import(/* @vite-ignore */ `../tools/${dir}/index.ts`);
-          modules[`../tools/${dir}/index.ts`] = mod as {
-            manifest: ToolManifest;
-            default: AppRoute['Component'];
-          };
+          const mod = require(`../tools/${dir}/index.ts`);
+          nodeModules[`../tools/${dir}/index.ts`] = mod;
         } catch (e) {
           console.warn(`⚠️ Failed to load tool module: ${dir}`, e);
         }
       }
     }
-  } else {
-    const globModules = import.meta.glob<{
-      manifest: ToolManifest;
-      default: AppRoute['Component'];
-    }>('../tools/*/index.ts', { eager: true });
-    Object.assign(modules, globModules);
+  } catch (e) {
+    console.warn('⚠️ Node.js module loading failed', e);
   }
-  return modules;
 }
 
-const toolModules = await loadToolModules();
+// Vite environment (browser)
+const viteModules = !isNodeEnv
+  ? import.meta.glob<{ manifest: ToolManifest; default: AppRoute['Component'] }>(
+      '../tools/*/index.ts',
+      { eager: true },
+    )
+  : {};
+
+const toolModules = isNodeEnv ? nodeModules : viteModules;
 
 export const toolRoutes: AppRoute[] = Object.values(toolModules)
   .filter((mod) => mod.manifest && mod.manifest.status === 'live')
