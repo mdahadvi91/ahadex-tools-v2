@@ -2,8 +2,6 @@
  * Environment configuration and validation.
  */
 
-declare const process: { env: Record<string, string | undefined>; versions?: { node?: string } };
-
 export interface Environment {
   readonly siteUrl: string;
   readonly isProduction: boolean;
@@ -37,10 +35,12 @@ function readOptionalId(raw: string | undefined): string | null {
 }
 
 function buildEnvironment(): Environment {
-  // Safe access for both Vite (import.meta.env) and Node.js (process.env)
+  // Safe access for Vite (import.meta.env) and Node.js ((globalThis as any).process.env)
   const metaEnv =
     typeof import.meta !== 'undefined' && (import.meta as any).env ? (import.meta as any).env : {};
-  const nodeEnv = typeof process !== 'undefined' && process.env ? process.env : {};
+  const isNode =
+    typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env;
+  const nodeEnv = isNode ? (globalThis as any).process.env : {};
 
   const isProduction = metaEnv.PROD === true || nodeEnv.NODE_ENV === 'production';
   const isDevelopment = metaEnv.DEV === true || nodeEnv.NODE_ENV !== 'production';

@@ -3,8 +3,6 @@
  * Uses fs in Node.js (SSR) and import.meta.glob in Vite (Browser).
  */
 
-declare const process: { env: Record<string, string | undefined>; versions?: { node?: string } };
-
 import type { AppRoute, RouteMeta } from './route-types';
 
 export interface ToolManifest {
@@ -24,16 +22,21 @@ export interface ToolEntry {
   Page: AppRoute['Component'];
 }
 
-const isNode =
-  typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
+const isNodeEnv =
+  typeof (globalThis as any).process !== 'undefined' &&
+  (globalThis as any).process.versions != null &&
+  (globalThis as any).process.versions.node != null;
 
 async function loadToolModules(): Promise<
   Record<string, { manifest: ToolManifest; default: AppRoute['Component'] }>
 > {
-  if (isNode) {
+  if (isNodeEnv) {
+    // Node.js Environment (SSR)
+    // @ts-ignore
     const fs = await import('node:fs');
+    // @ts-ignore
     const path = await import('node:path');
-    const toolsDir = path.resolve(process.cwd(), 'src/tools');
+    const toolsDir = path.resolve((globalThis as any).process.cwd(), 'src/tools');
     const modules: Record<string, any> = {};
 
     if (fs.existsSync(toolsDir)) {
@@ -51,6 +54,7 @@ async function loadToolModules(): Promise<
     }
     return modules;
   } else {
+    // Vite Environment (Browser)
     // @ts-ignore - Vite specific
     return import.meta.glob<{ manifest: ToolManifest; default: AppRoute['Component'] }>(
       '../tools/*/index.ts',
@@ -59,7 +63,7 @@ async function loadToolModules(): Promise<
   }
 }
 
-// Since this is a module-level operation, we need to use top-level await (supported in ESM/Node 14+)
+// Top-level await (supported in Node 14+ ESM)
 const toolModules = await loadToolModules();
 
 export const toolRoutes: AppRoute[] = Object.values(toolModules)
