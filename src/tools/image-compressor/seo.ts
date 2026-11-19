@@ -15,6 +15,7 @@ export const metadata: PageMetadata = {
     'Compress images without uploading. Works on JPG, PNG, WebP, GIF and AVIF. Free, no signup, no tracking. Files stay on your device.',
   path: '/tools/image-compressor',
   ogImage: 'https://ahadex.online/og/image-compressor.png',
+  image: '/og/image-compressor.png',
 
   type: 'website',
   noIndex: false,

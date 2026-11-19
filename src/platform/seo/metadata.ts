@@ -3,6 +3,7 @@ export interface PageMetadata {
   description: string;
   path: string;
   ogImage?: string;
+  image?: string;
   type?: 'website' | 'article';
   noIndex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];

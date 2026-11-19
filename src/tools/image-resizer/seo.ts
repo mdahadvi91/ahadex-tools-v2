@@ -10,6 +10,7 @@ export const metadata: PageMetadata = {
     'Resize images to exact pixel dimensions without uploading. Works on JPG, PNG, WebP, GIF and AVIF. Free, no signup. Files stay on your device.',
   path: '/tools/image-resizer',
   ogImage: 'https://ahadex.online/og/image-resizer.png',
+  image: '/og/image-resizer.png',
 
   type: 'website',
   noIndex: false,
