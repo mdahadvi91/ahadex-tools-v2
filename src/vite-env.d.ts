@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="node" />
 
 interface ImportMetaEnv {
   readonly VITE_SITE_URL: string;
@@ -8,6 +9,10 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+  readonly glob: <T = unknown>(
+    pattern: string | readonly string[],
+    options?: { eager?: boolean; import?: string },
+  ) => Record<string, T>;
 }
 
 declare module '*?worker' {

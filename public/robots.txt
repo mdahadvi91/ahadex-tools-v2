@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /tools/*/preview
 
-Sitemap: https://ahadex.online/sitemap.xml
+Sitemap: https://www.ahadex.online/sitemap.xml

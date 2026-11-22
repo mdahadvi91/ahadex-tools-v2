@@ -1,46 +1,13 @@
-# Dependencies
 node_modules/
-
-# Build output
+.build/
 dist/
-dist-ssr/
-.vite/
-*.tsbuildinfo
+coverage/
 
-# Environment and secrets
-.env
-.env.*
+.env*
 !.env.example
 
-# Test and audit output
-coverage/
-.vitest/
+*.log
+.DS_Store
+
 playwright-report/
 test-results/
-blob-report/
-.lighthouseci/
-reports/
-
-# Cloudflare local state
-.wrangler/
-.dev.vars
-
-# Caches
-.eslintcache
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-
-# Editor and OS
-.idea/
-.vscode/*
-!.vscode/extensions.json
-.DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-*.temp
-public/sitemap.xml

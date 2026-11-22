@@ -1,43 +1,31 @@
+import type { ToolManifest } from '../config/tools';
 import type { AppRoute, RouteMeta } from './route-types';
 
-export interface ToolManifest {
-  slug: string;
-  path: string;
-  title: string;
-  description: string;
-  indexable: boolean;
-  sitemap: boolean;
-  status: 'draft' | 'live' | 'deprecated';
-  launchOrder: number;
-  requiresConsent: boolean;
-}
-
-export interface ToolEntry {
+interface ToolModule {
   manifest: ToolManifest;
-  Page: AppRoute['Component'];
+  default: AppRoute['Component'];
 }
 
-// Vite environment (browser)
-const toolModules = import.meta.glob<{ manifest: ToolManifest; default: AppRoute['Component'] }>(
-  '../tools/*/index.ts',
-  { eager: true },
-);
+function loadToolModules(): ToolModule[] {
+  const modules = import.meta.glob<ToolModule>('../tools/*/index.ts', { eager: true });
+  return Object.values(modules);
+}
 
-export const toolRoutes: AppRoute[] = Object.values(toolModules)
-  .filter((mod) => mod.manifest && mod.manifest.status === 'live')
+export const toolRoutes: AppRoute[] = loadToolModules()
+  .filter((mod): mod is ToolModule => Boolean(mod && mod.manifest && mod.manifest.status === 'live'))
   .sort((a, b) => a.manifest.launchOrder - b.manifest.launchOrder)
-  .map((mod) => ({
-    path: mod.manifest.path,
-    Component: mod.default,
-    meta: {
+  .map((mod) => {
+    const meta: RouteMeta = {
       path: mod.manifest.path,
       title: mod.manifest.title,
       description: mod.manifest.description,
       indexable: mod.manifest.indexable,
       sitemap: mod.manifest.sitemap,
-    } satisfies RouteMeta,
-  }));
+    };
 
-export function getToolRoutes(): readonly AppRoute[] {
-  return toolRoutes;
-}
+    return {
+      path: mod.manifest.path,
+      Component: mod.default,
+      meta,
+    };
+  });

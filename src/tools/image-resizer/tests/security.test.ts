@@ -37,7 +37,7 @@ describe('image-resizer file policy', () => {
   it('rejects oversized file', () => {
     const r = validateSingleFile(makeFile('huge.png', 'image/png', MAX_INPUT_BYTES + 1), 'image');
     expect(r.ok).toBe(false);
-    expect(r.violations.map((v) => v.code)).toContain('too-large');
+    expect(r.violations.map((v: { code: string }) => v.code)).toContain('too-large');
   });
 
   it('rejects batch over limit', () => {

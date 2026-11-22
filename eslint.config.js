@@ -6,9 +6,37 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  globalIgnores(['dist', 'dist-ssr', 'coverage', 'playwright-report', 'test-results', '.wrangler']),
+  globalIgnores([
+    'node_modules/**',
+    '.build/**',
+    'dist/**',
+    'dist-ssr/**',
+    'coverage/**',
+    'playwright-report/**',
+    'test-results/**',
+    '.wrangler/**',
+  ]),
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.js'],
+    extends: [js.configs.recommended, prettier],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: {
+        ...globals.browser,
+        ...globals.worker,
+      },
+    },
+  },
+  {
+    files: ['**/*.{mjs,cjs}', '*.js'],
+    extends: [js.configs.recommended, prettier],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: globals.node,
+    },
+  },
+  {
+    files: ['src/**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -19,11 +47,25 @@ export default defineConfig([
       ecmaVersion: 2022,
       globals: globals.browser,
     },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
   },
   {
-    files: ['vite.config.ts', 'vitest.config.ts', 'scripts/**/*.ts'],
+    files: [
+      'vite.config.ts',
+      'vitest.config.ts',
+      'playwright.config.ts',
+      'scripts/**/*.ts',
+      'tests/**/*.ts',
+    ],
+    extends: [js.configs.recommended, tseslint.configs.recommended, prettier],
     languageOptions: {
+      ecmaVersion: 2022,
       globals: globals.node,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
 ]);

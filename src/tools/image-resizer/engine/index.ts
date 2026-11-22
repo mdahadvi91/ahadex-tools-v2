@@ -5,14 +5,14 @@
 import type { WorkerInbound, WorkerOutbound } from './worker.types';
 import type { ResizeInput, ResizeResult } from '../types';
 
-// Safe import for SSR (Node.js) and Browser (Vite)
+// Vite native worker import — browser-only chunk
+import ResizeWorkerClass from './worker?worker';
 
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-
+// SSR-safe worker factory
 let ResizeWorker: new () => Worker;
 
-if (typeof window === 'undefined') {
+if (typeof window === 'undefined' || typeof Worker === 'undefined') {
+  // SSR / Node: dummy worker
   ResizeWorker = class DummyWorker implements Worker {
     onerror = null;
     onmessage = null;
@@ -26,7 +26,8 @@ if (typeof window === 'undefined') {
     }
   } as unknown as new () => Worker;
 } else {
-  ResizeWorker = require('./worker?worker') as unknown as new () => Worker;
+  // Browser: real worker
+  ResizeWorker = ResizeWorkerClass as unknown as new () => Worker;
 }
 
 export class ImageResizerEngine {

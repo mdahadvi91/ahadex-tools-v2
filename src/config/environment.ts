@@ -40,12 +40,13 @@ function buildEnvironment(): Environment {
   // production builds, so an aliased `import.meta` would be undefined at runtime.
   const metaEnv =
     (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
-
   const glob = globalThis as unknown as { process?: { env?: Record<string, string | undefined> } };
   const nodeEnv = glob.process?.env || {};
 
   const isProduction = isFlagSet(metaEnv.PROD) || nodeEnv.NODE_ENV === 'production';
-  const isDevelopment = isFlagSet(metaEnv.DEV) || nodeEnv.NODE_ENV !== 'production';
+  const isDevelopment =
+    !isProduction &&
+    (isFlagSet(metaEnv.DEV) || nodeEnv.NODE_ENV === 'development' || nodeEnv.NODE_ENV === undefined);
 
   const rawSiteUrl = String(metaEnv.VITE_SITE_URL ?? nodeEnv.VITE_SITE_URL ?? '').trim();
   const siteUrl = rawSiteUrl === '' && isDevelopment ? DEV_FALLBACK_SITE_URL : rawSiteUrl;
@@ -79,7 +80,9 @@ export function assertValidEnvironment(): void {
   const env = getEnvironment();
 
   if (env.isProduction) {
-    if (env.siteUrl === '') throw new Error('VITE_SITE_URL is required in production builds.');
+    if (env.siteUrl === '') {
+      throw new Error('VITE_SITE_URL is required in production builds.');
+    }
     if (!isValidHttpsUrl(env.siteUrl)) {
       throw new Error(
         `VITE_SITE_URL must be an https URL without trailing slash. Received: "${env.siteUrl}".`,

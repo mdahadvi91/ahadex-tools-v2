@@ -63,7 +63,7 @@ export default function Tool() {
     for (const file of incoming) {
       const check = validateSingleFile(file, 'image');
       if (!check.ok) {
-        setError(check.violations.map((v) => v.message).join(' '));
+        setError(check.violations.map((v: { message: string }) => v.message).join(' '));
         continue;
       }
       valid.push(file);

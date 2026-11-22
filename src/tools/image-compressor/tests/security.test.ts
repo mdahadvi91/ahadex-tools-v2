@@ -37,7 +37,7 @@ describe('image-compressor file policy', () => {
     const file = makeFile('empty.png', 'image/png', 0);
     const result = validateSingleFile(file, 'image');
     expect(result.ok).toBe(false);
-    expect(result.violations.map((v) => v.code)).toContain('empty');
+    expect(result.violations.map((v: { code: string }) => v.code)).toContain('empty');
   });
 
   it('rejects unsupported MIME type (PDF sent as image)', () => {
@@ -56,7 +56,7 @@ describe('image-compressor file policy', () => {
     const file = makeFile('huge.png', 'image/png', MAX_INPUT_BYTES + 1);
     const result = validateSingleFile(file, 'image');
     expect(result.ok).toBe(false);
-    expect(result.violations.map((v) => v.code)).toContain('too-large');
+    expect(result.violations.map((v: { code: string }) => v.code)).toContain('too-large');
   });
 
   it('rejects path traversal in filename', () => {
@@ -74,13 +74,13 @@ describe('image-compressor file policy', () => {
     );
     const result = validateBatch(files, 'image');
     expect(result.ok).toBe(false);
-    expect(result.violations.map((v) => v.code)).toContain('batch-too-large');
+    expect(result.violations.map((v: { code: string }) => v.code)).toContain('batch-too-large');
   });
 
   it('rejects empty batch', () => {
     const result = validateBatch([], 'image');
     expect(result.ok).toBe(false);
-    expect(result.violations.map((v) => v.code)).toContain('empty');
+    expect(result.violations.map((v: { code: string }) => v.code)).toContain('batch-empty');
   });
 
   it('accepts a batch of 5 small images', () => {
