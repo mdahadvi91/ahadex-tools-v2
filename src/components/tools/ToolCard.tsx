@@ -6,11 +6,10 @@ interface ToolCardProps {
   variant?: 'default' | 'compact';
 }
 
-// ছোট নাম তৈরি করার হেল্পার (যেমন: "Free Image Compressor - Compress JPG..." থেকে শুধু "Image Compressor" নিবে)
 function getShortTitle(title: string): string {
   const parts = title.split('-');
   if (parts.length > 1) {
-    return parts[1].replace('Compress', '').replace('Resize', '').replace('Merge', '').replace('Split', '').trim() || parts[0].replace('Free ', '').trim();
+    return parts[0].replace('Free ', '').trim(); // আগের কোডে ভুল ছিল, এবার ঠিক করা হলো
   }
   return title.replace('Free ', '').trim();
 }
@@ -19,32 +18,23 @@ export default function ToolCard({ route, variant = 'default' }: ToolCardProps) 
   const isCompact = variant === 'compact';
   const shortTitle = getShortTitle(route.meta.title);
 
-  // টুলের নাম অনুযায়ী সুন্দর রঙ ও ইমোজি আইকন
-  const getIcon = (title: string) => {
-    if (title.toLowerCase().includes('image')) return { emoji: '🖼️', bg: 'bg-blue-100', text: 'text-blue-600' };
-    if (title.toLowerCase().includes('pdf')) return { emoji: '📄', bg: 'bg-red-100', text: 'text-red-600' };
-    return { emoji: '⚙️', bg: 'bg-slate-100', text: 'text-slate-600' };
-  };
-
-  const icon = getIcon(shortTitle);
-
   return (
     <Link
       to={route.path}
       className={`group flex flex-col rounded-xl border border-slate-200 bg-white transition-all hover:border-slate-900 hover:shadow-md ${
-        isCompact ? 'p-4' : 'p-5'
+        isCompact ? 'p-3' : 'p-4 sm:p-5'
       }`}
     >
-      <div className={`flex items-center justify-center rounded-lg ${icon.bg} ${isCompact ? 'h-10 w-10 text-lg' : 'h-12 w-12 text-2xl'}`}>
-        {icon.emoji}
+      <div className={`flex items-center justify-center rounded-lg bg-blue-50 ${isCompact ? 'h-8 w-8 text-base' : 'h-10 w-10 sm:h-12 sm:w-12 text-xl sm:text-2xl'}`}>
+        {shortTitle.toLowerCase().includes('image') ? '🖼️' : shortTitle.toLowerCase().includes('pdf') ? '📄' : '⚙️'}
       </div>
-      <h3 className={`mt-3 font-semibold text-slate-900 group-hover:text-slate-700 ${isCompact ? 'text-sm' : 'text-base'}`}>
+      <h3 className={`mt-3 font-semibold text-slate-900 leading-tight group-hover:text-slate-700 ${isCompact ? 'text-sm' : 'text-sm sm:text-base'}`}>
         {shortTitle}
       </h3>
-      <p className={`mt-1.5 leading-relaxed text-slate-500 ${isCompact ? 'text-xs line-clamp-2' : 'text-xs line-clamp-3'}`}>
+      <p className={`mt-2 leading-relaxed text-slate-500 line-clamp-3 ${isCompact ? 'text-[11px]' : 'text-[11px] sm:text-xs'}`}>
         {route.meta.description}
       </p>
-      <span className="mt-auto pt-4 inline-block text-xs font-medium text-slate-900 group-hover:underline">
+      <span className="mt-auto pt-3 inline-block text-xs font-medium text-slate-900 group-hover:underline">
         Use Tool →
       </span>
     </Link>
