@@ -27,7 +27,7 @@
     "validate:pre": "tsx scripts/orchestrators/validate.ts --phase=pre",
     "validate:post": "tsx scripts/orchestrators/validate.ts --phase=post",
     "validate:all": "tsx scripts/orchestrators/validate.ts --phase=all",
-    "build": "tsx scripts/orchestrators/build.ts",
+    "build": "vite build",
     "audit:accessibility": "tsx scripts/tasks/accessibility.ts",
     "audit:performance": "tsx scripts/tasks/performance.ts",
     "ci": "npm run build"
