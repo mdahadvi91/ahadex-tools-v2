@@ -232,8 +232,11 @@ export default function Tool() {
             {mode === 'dimensions' && (
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-900">Width (px)</label>
+                  <label htmlFor="ir-width" className="block text-sm font-medium text-gray-900">
+                    Width (px)
+                  </label>
                   <input
+                    id="ir-width"
                     type="number"
                     min={1}
                     max={8000}
@@ -244,8 +247,11 @@ export default function Tool() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-900">Height (px)</label>
+                  <label htmlFor="ir-height" className="block text-sm font-medium text-gray-900">
+                    Height (px)
+                  </label>
                   <input
+                    id="ir-height"
                     type="number"
                     min={1}
                     max={8000}
@@ -272,10 +278,11 @@ export default function Tool() {
 
             {mode === 'percentage' && (
               <div>
-                <label className="block text-sm font-medium text-gray-900">
+                <label htmlFor="ir-scale" className="block text-sm font-medium text-gray-900">
                   Scale: {percentage}%
                 </label>
                 <input
+                  id="ir-scale"
                   type="range"
                   min={5}
                   max={200}
@@ -290,8 +297,11 @@ export default function Tool() {
 
             {mode === 'preset' && (
               <div>
-                <label className="block text-sm font-medium text-gray-900">Preset</label>
+                <label htmlFor="ir-preset" className="block text-sm font-medium text-gray-900">
+                  Preset
+                </label>
                 <select
+                  id="ir-preset"
                   value={`${width}x${height}`}
                   onChange={(e) => {
                     const [w, h] = e.target.value.split('x').map((s) => parseInt(s, 10));
@@ -312,8 +322,14 @@ export default function Tool() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-900">Output format</label>
+                <label
+                  htmlFor="ir-output-format"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  Output format
+                </label>
                 <select
+                  id="ir-output-format"
                   value={format}
                   onChange={(e) => setFormat(e.target.value as OutputFormat)}
                   disabled={processing}
@@ -328,10 +344,11 @@ export default function Tool() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900">
+                <label htmlFor="ir-quality" className="block text-sm font-medium text-gray-900">
                   Quality: {Math.round(quality * 100)}%
                 </label>
                 <input
+                  id="ir-quality"
                   type="range"
                   min={10}
                   max={100}

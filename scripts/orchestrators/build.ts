@@ -1,13 +1,8 @@
-import { execSync } from 'node:child_process';
+/**
+ * Legacy entrypoint maintained for backward compatibility.
+ * Delegates cleanly to the unified Phase 10 production SSG build orchestrator.
+ */
 
-function run(cmd: string): void {
-  console.log(`\n> ${cmd}`);
-  execSync(cmd, { stdio: 'inherit' });
-}
+import { runProductionBuild } from '../production/build-orchestrator';
 
-run('npx tsx scripts/orchestrators/validate.ts --phase=pre');
-run('npx tsx scripts/tasks/sitemap.ts --generate');
-run('npm run build:client');
-run('npx tsx scripts/prerender.ts'.replace('scripts/prerender.ts', 'scripts/build/prerender.ts'));
-run('npx tsx scripts/tasks/deployment.ts --generate');
-run('npx tsx scripts/orchestrators/validate.ts --phase=post');
+await runProductionBuild();

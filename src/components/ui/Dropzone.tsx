@@ -92,6 +92,7 @@ export default function Dropzone({
       <input
         ref={inputRef}
         type="file"
+        aria-label={multiple ? 'Choose files to upload' : 'Choose a file to upload'}
         accept={accept}
         multiple={multiple}
         disabled={disabled}

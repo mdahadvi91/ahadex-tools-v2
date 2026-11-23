@@ -1,32 +1,31 @@
 interface Benefit {
-  title: string;
-  description: string;
-  icon: 'lock' | 'bolt' | 'gift' | 'user';
+  readonly title: string;
+  readonly description: string;
+  readonly icon: 'lock' | 'bolt' | 'gift' | 'user';
 }
 
-const BENEFITS: Benefit[] = [
+const BENEFITS: readonly Benefit[] = [
   {
-    title: '100% Private',
+    title: 'Zero Server Uploads',
     description:
-      'All processing happens locally in your browser. Your files never touch our servers — no uploads, no storage, no tracking.',
+      'All processing executes in browser memory and Web Workers. Your files never leave your computer or phone.',
     icon: 'lock',
   },
   {
-    title: 'Lightning Fast',
+    title: 'Instant Local Speed',
     description:
-      'No waiting for uploads or downloads. Files are processed instantly using your device\'s native capabilities.',
+      'Skip upload queues and server round-trips. Processing starts immediately using your device CPU.',
     icon: 'bolt',
   },
   {
-    title: 'Completely Free',
-    description:
-      'Every tool is free forever. No hidden costs, no premium tiers, no watermarks added to your files.',
+    title: 'Free Without Watermarks',
+    description: 'Export clean files without forced watermarks, paywalls, or arbitrary daily caps.',
     icon: 'gift',
   },
   {
-    title: 'No Signup Required',
+    title: 'No Account Required',
     description:
-      'Use any tool without creating an account. No email, no password, no personal information needed.',
+      'Open any utility and process files immediately without email registration or login walls.',
     icon: 'user',
   },
 ];
@@ -40,44 +39,42 @@ const ICON_PATHS: Record<Benefit['icon'], string> = {
 
 export default function BenefitsSection() {
   return (
-    <section className="bg-white px-4 py-16">
-      <div className="mx-auto max-w-6xl">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-            Why Choose AHADEX Tools?
-          </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            Privacy-first file processing, built for speed and simplicity
-          </p>
-        </div>
+    <section id="benefits" className="scroll-mt-24 border-t border-slate-200 pt-12">
+      <div>
+        <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900">
+          Why Choose AHADEX Tools?
+        </h2>
+        <p className="mt-1 text-sm text-slate-600">
+          Built around verifiable client-side privacy and practical daily performance
+        </p>
+      </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {BENEFITS.map((benefit) => (
-            <div
-              key={benefit.title}
-              className="rounded-xl border border-slate-200 bg-white p-6 text-center"
-            >
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-slate-900 text-white">
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d={ICON_PATHS[benefit.icon]}
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-base font-semibold text-slate-900">{benefit.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">{benefit.description}</p>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        {BENEFITS.map((benefit) => (
+          <div
+            key={benefit.title}
+            className="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-5"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d={ICON_PATHS[benefit.icon]} />
+              </svg>
             </div>
-          ))}
-        </div>
+            <div>
+              <h3 className="font-display text-base font-semibold text-slate-900">
+                {benefit.title}
+              </h3>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">{benefit.description}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

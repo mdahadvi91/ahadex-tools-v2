@@ -1,26 +1,46 @@
 /**
  * Playwright config for E2E tests. Two projects:
- *   - e2e-dev: runs against the Vite dev server (port 5173)
- *   - e2e-prod: runs against `vite preview` (port 4173)
+ *   - e2e-dev: runs against the Vite dev server (port 3000)
+ *   - e2e-prod: runs against `vite preview` serving prerendered `dist/` (port 4173)
  */
 
-import { defineConfig, devices } from '@playwright/test';
+import fs from 'node:fs';
+import { chromium, defineConfig, devices } from '@playwright/test';
+
+const CONTAINER_SHELL_PATH = '/ms-playwright/chrome-headless-shell-linux64/chrome-headless-shell';
+
+function resolveChromiumExecutable(): string | undefined {
+  if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
+    return process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+  }
+  const defaultPath = chromium.executablePath();
+  if (fs.existsSync(defaultPath)) {
+    return undefined;
+  }
+  if (fs.existsSync(CONTAINER_SHELL_PATH)) {
+    return CONTAINER_SHELL_PATH;
+  }
+  return undefined;
+}
+
+const executablePath = resolveChromiumExecutable();
 
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : 2,
   reporter: process.env.CI ? [['github'], ['html']] : 'list',
   use: {
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    launchOptions: executablePath ? { executablePath } : undefined,
   },
   projects: [
     {
       name: 'e2e-dev',
-      use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:5173' },
+      use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:3000' },
     },
     {
       name: 'e2e-prod',
@@ -29,8 +49,8 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: 'npm run dev -- --host 127.0.0.1 --port 5173',
-      url: 'http://127.0.0.1:5173',
+      command: 'npm run dev -- --host 127.0.0.1 --port 3000',
+      url: 'http://127.0.0.1:3000',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },

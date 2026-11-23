@@ -10,7 +10,8 @@ export interface JsonLdGraph {
 }
 
 export function buildSchema(siteUrl: string): JsonLdGraph {
-  const pageUrl = `${siteUrl}/tools/image-resizer`;
+  const cleanOrigin = siteUrl.replace(/\/+$/, '');
+  const pageUrl = `${cleanOrigin}/image-resizer/`;
 
   const webApp = {
     '@type': 'WebApplication',
@@ -60,17 +61,11 @@ export function buildSchema(siteUrl: string): JsonLdGraph {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: siteUrl,
+        item: `${cleanOrigin}/`,
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Tools',
-        item: `${siteUrl}/tools`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
         name: 'Image Resizer',
         item: pageUrl,
       },

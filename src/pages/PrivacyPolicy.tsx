@@ -14,31 +14,76 @@ export default function PrivacyPolicy() {
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">1. Files You Process</h2>
         <p>
-          <strong>We do not receive, store, or have access to any files you process using our tools.</strong>{' '}
+          <strong>
+            We do not receive, store, or have access to any files you process using our tools.
+          </strong>{' '}
           All file processing happens entirely in your browser. Your files never leave your device.
         </p>
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">2. Information We Collect</h2>
         <p>We collect minimal, non-identifying information:</p>
         <ul className="list-disc space-y-1 pl-5">
-          <li><strong>Analytics data:</strong> Page views, browser type, country — used to understand site usage and improve tools</li>
-          <li><strong>Error logs:</strong> JavaScript errors — used to fix bugs</li>
-          <li><strong>Cookies:</strong> Small text files for analytics and advertising (see Section 4)</li>
+          <li>
+            <strong>Analytics data:</strong> Page views, browser type, country — used to understand
+            site usage and improve tools
+          </li>
+          <li>
+            <strong>Error logs:</strong> JavaScript errors — used to fix bugs
+          </li>
+          <li>
+            <strong>Cookies:</strong> Small text files for analytics and advertising (see Section 4)
+          </li>
         </ul>
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">3. Third-Party Services</h2>
         <p>We use the following third-party services:</p>
         <ul className="list-disc space-y-1 pl-5">
-          <li><strong>Google Analytics:</strong> Anonymous usage statistics (<a href="https://policies.google.com/privacy" className="text-slate-900 underline" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>)</li>
-          <li><strong>Google AdSense:</strong> Non-intrusive advertising that keeps our tools free (<a href="https://policies.google.com/technologies/ads" className="text-slate-900 underline" target="_blank" rel="noopener noreferrer">Google Ads Policy</a>)</li>
-          <li><strong>Cloudflare Pages:</strong> Static hosting and CDN (<a href="https://www.cloudflare.com/privacypolicy/" className="text-slate-900 underline" target="_blank" rel="noopener noreferrer">Cloudflare Privacy Policy</a>)</li>
+          <li>
+            <strong>Google Analytics:</strong> Anonymous usage statistics (
+            <a
+              href="https://policies.google.com/privacy"
+              className="text-slate-900 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Google Privacy Policy
+            </a>
+            )
+          </li>
+          <li>
+            <strong>Google AdSense:</strong> Non-intrusive advertising that keeps our tools free (
+            <a
+              href="https://policies.google.com/technologies/ads"
+              className="text-slate-900 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Google Ads Policy
+            </a>
+            )
+          </li>
+          <li>
+            <strong>Cloudflare Pages:</strong> Static hosting and CDN (
+            <a
+              href="https://www.cloudflare.com/privacypolicy/"
+              className="text-slate-900 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Cloudflare Privacy Policy
+            </a>
+            )
+          </li>
         </ul>
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">4. Cookies</h2>
         <p>
           We use cookies for analytics and advertising. You can disable cookies in your browser
           settings at any time. For more information, see our{' '}
-          <a href="/cookie-policy" className="text-slate-900 underline hover:text-slate-700">Cookie Policy</a>.
+          <a href="/cookie-policy/" className="text-brand-600 underline hover:text-brand-700">
+            Cookie Policy
+          </a>
+          .
         </p>
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">5. Your Rights</h2>
@@ -65,7 +110,10 @@ export default function PrivacyPolicy() {
         <h2 className="mt-8 text-xl font-semibold text-slate-900">8. Contact</h2>
         <p>
           Questions about this policy? Email{' '}
-          <a href="mailto:privacy@ahadex.online" className="text-slate-900 underline hover:text-slate-700">
+          <a
+            href="mailto:privacy@ahadex.online"
+            className="text-slate-900 underline hover:text-slate-700"
+          >
             privacy@ahadex.online
           </a>
         </p>

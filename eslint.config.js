@@ -14,6 +14,7 @@ export default defineConfig([
     'coverage/**',
     'playwright-report/**',
     'test-results/**',
+    'reports/**',
     '.wrangler/**',
   ]),
   {
@@ -56,6 +57,7 @@ export default defineConfig([
       'vite.config.ts',
       'vitest.config.ts',
       'playwright.config.ts',
+      'config/**/*.ts',
       'scripts/**/*.ts',
       'tests/**/*.ts',
     ],

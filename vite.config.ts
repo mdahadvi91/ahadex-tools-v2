@@ -19,16 +19,10 @@ function isValidHttpsUrl(value: string): boolean {
   }
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
 
-  if (mode === 'production') {
-    if (!env.VITE_SITE_URL || env.VITE_SITE_URL.trim() === '') {
-      throw new Error(
-        'VITE_SITE_URL is required for production builds. ' +
-          'Set it in .env or CI environment. See .env.example.',
-      );
-    }
+  if (mode === 'production' && env.VITE_SITE_URL && env.VITE_SITE_URL.trim() !== '') {
     if (!isValidHttpsUrl(env.VITE_SITE_URL.trim())) {
       throw new Error(
         `VITE_SITE_URL must be an https URL without trailing slash. ` +
@@ -47,14 +41,40 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    server: {
+      host: '0.0.0.0',
+      port: 3000,
+      allowedHosts: true,
+    },
+    preview: {
+      host: '0.0.0.0',
+      port: 4173,
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
     build: {
-      outDir: 'dist',
+      outDir: isSsrBuild ? '.build/server' : 'dist',
+      emptyOutDir: true,
       sourcemap: false,
+      rollupOptions: isSsrBuild
+        ? undefined
+        : {
+            output: {
+              manualChunks(id) {
+                if (
+                  id.includes('node_modules/react/') ||
+                  id.includes('node_modules/react-dom/') ||
+                  id.includes('node_modules/react-router')
+                ) {
+                  return 'vendor-react';
+                }
+                return undefined;
+              },
+            },
+          },
     },
   };
 });

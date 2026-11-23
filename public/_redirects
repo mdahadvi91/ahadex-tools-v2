@@ -1,0 +1,15 @@
+# Canonical host redirect (www -> apex)
+https://www.ahadex.online/* https://ahadex.online/:splat 301
+
+# Canonical trailing-slash redirects for static & tool routes
+/about /about/ 301
+/contact /contact/ 301
+/cookie-policy /cookie-policy/ 301
+/disclaimer /disclaimer/ 301
+/image-compressor /image-compressor/ 301
+/image-resizer /image-resizer/ 301
+/merge-pdf /merge-pdf/ 301
+/pdf-compressor /pdf-compressor/ 301
+/privacy-policy /privacy-policy/ 301
+/split-pdf /split-pdf/ 301
+/terms /terms/ 301

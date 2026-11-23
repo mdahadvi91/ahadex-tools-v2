@@ -278,9 +278,9 @@ export const REFERENCES: readonly Reference[] = [
 ];
 
 export const INTERNAL_LINKS: readonly InternalLink[] = [
-  { label: 'Image Resizer', path: '/tools/image-resizer' },
-  { label: 'About AHADEX Tools', path: '/about' },
-  { label: 'Privacy Policy', path: '/privacy' },
+  { label: 'Image Resizer', path: '/image-resizer/' },
+  { label: 'About AHADEX Tools', path: '/about/' },
+  { label: 'Privacy Policy', path: '/privacy-policy/' },
 ];
 
 /** Output format options for the UI select. */

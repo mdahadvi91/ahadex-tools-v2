@@ -1,0 +1,33 @@
+/*
+ * AHADEX Tools Design System Tokens (Tailwind CSS v4 @theme).
+ * Crisp neutral canvas, deep slate ink, disciplined cobalt-blue primary action accent,
+ * and strict 2+1 typography pairing (Plus Jakarta Sans, DM Sans, JetBrains Mono).
+ */
+
+@theme {
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-500: #2563eb;
+  --color-brand-600: #1d4ed8;
+  --color-brand-700: #1e40af;
+
+  --color-surface-canvas: #ffffff;
+  --color-surface-subtle: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+
+  --color-ink-primary: #0f172a;
+  --color-ink-secondary: #334155;
+  --color-ink-muted: #64748b;
+
+  --color-border-hairline: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  --color-status-success: #15803d;
+  --color-status-warning: #b45309;
+  --color-status-error: #b91c1c;
+}

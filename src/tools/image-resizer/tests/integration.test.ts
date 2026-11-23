@@ -25,7 +25,7 @@ import { DIRECT_ANSWER as GEO_DIRECT, FACTS, ENTITIES } from '../geo';
 describe('image-resizer manifest', () => {
   it('has correct slug and path', () => {
     expect(manifest.slug).toBe('image-resizer');
-    expect(manifest.path).toBe('/tools/image-resizer');
+    expect(manifest.path).toBe('/image-resizer/');
   });
 
   it('is live and indexable', () => {
@@ -196,10 +196,12 @@ describe('image-resizer JSON-LD schema', () => {
     expect(faqPage).toBeDefined();
   });
 
-  it('includes BreadcrumbList with 3 items', () => {
+  it('includes BreadcrumbList with 2 items', () => {
     const crumb = schema['@graph'].find(
       (n) => (n as { '@type'?: string })['@type'] === 'BreadcrumbList',
     );
     expect(crumb).toBeDefined();
+    const items = (crumb as { itemListElement?: unknown[] }).itemListElement;
+    expect(items?.length).toBe(2);
   });
 });

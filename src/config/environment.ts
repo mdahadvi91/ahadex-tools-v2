@@ -6,7 +6,8 @@ export interface Environment {
   readonly adsensePublisherId: string | null;
 }
 
-const DEV_FALLBACK_SITE_URL = 'http://localhost:5173';
+const PROD_FALLBACK_SITE_URL = 'https://ahadex.online';
+const DEV_FALLBACK_SITE_URL = 'http://localhost:3000';
 const ADSENSE_ID_PATTERN = /^ca-pub-\d{16}$/;
 const GA_ID_PATTERN = /^G-[A-Z0-9]{6,}$/;
 
@@ -36,27 +37,34 @@ function isFlagSet(value: unknown): boolean {
 }
 
 function buildEnvironment(): Environment {
-  // Keep the literal `import.meta.env` expression: Vite replaces it statically in
-  // production builds, so an aliased `import.meta` would be undefined at runtime.
-  const metaEnv =
-    (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
   const glob = globalThis as unknown as { process?: { env?: Record<string, string | undefined> } };
   const nodeEnv = glob.process?.env || {};
 
-  const isProduction = isFlagSet(metaEnv.PROD) || nodeEnv.NODE_ENV === 'production';
+  const viteProd = typeof import.meta !== 'undefined' && isFlagSet(import.meta.env?.PROD);
+  const viteDev = typeof import.meta !== 'undefined' && isFlagSet(import.meta.env?.DEV);
+
+  const isProduction = viteProd || nodeEnv.NODE_ENV === 'production';
   const isDevelopment =
     !isProduction &&
-    (isFlagSet(metaEnv.DEV) || nodeEnv.NODE_ENV === 'development' || nodeEnv.NODE_ENV === undefined);
+    (viteDev || nodeEnv.NODE_ENV === 'development' || nodeEnv.NODE_ENV === undefined);
 
-  const rawSiteUrl = String(metaEnv.VITE_SITE_URL ?? nodeEnv.VITE_SITE_URL ?? '').trim();
-  const siteUrl = rawSiteUrl === '' && isDevelopment ? DEV_FALLBACK_SITE_URL : rawSiteUrl;
+  const viteSiteUrl =
+    typeof import.meta !== 'undefined' ? import.meta.env?.VITE_SITE_URL : undefined;
+  const rawSiteUrl = String(viteSiteUrl ?? nodeEnv.VITE_SITE_URL ?? '').trim();
+  const siteUrl =
+    rawSiteUrl === ''
+      ? isProduction
+        ? PROD_FALLBACK_SITE_URL
+        : DEV_FALLBACK_SITE_URL
+      : rawSiteUrl;
 
-  const gaMeasurementId = readOptionalId(
-    metaEnv.VITE_GA_MEASUREMENT_ID ?? nodeEnv.VITE_GA_MEASUREMENT_ID,
-  );
-  const adsensePublisherId = readOptionalId(
-    metaEnv.VITE_ADSENSE_PUBLISHER_ID ?? nodeEnv.VITE_ADSENSE_PUBLISHER_ID,
-  );
+  const viteGaId =
+    typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GA_MEASUREMENT_ID : undefined;
+  const viteAdsenseId =
+    typeof import.meta !== 'undefined' ? import.meta.env?.VITE_ADSENSE_PUBLISHER_ID : undefined;
+
+  const gaMeasurementId = readOptionalId(viteGaId ?? nodeEnv.VITE_GA_MEASUREMENT_ID);
+  const adsensePublisherId = readOptionalId(viteAdsenseId ?? nodeEnv.VITE_ADSENSE_PUBLISHER_ID);
 
   return Object.freeze({
     siteUrl,

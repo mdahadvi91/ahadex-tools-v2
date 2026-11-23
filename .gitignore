@@ -1,7 +1,10 @@
 node_modules/
 .build/
 dist/
+dist-ssr/
 coverage/
+reports/
+.wrangler/
 
 .env*
 !.env.example

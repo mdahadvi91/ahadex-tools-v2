@@ -18,7 +18,11 @@ interface CategoryTabsProps {
 
 export default function CategoryTabs({ active, onChange }: CategoryTabsProps) {
   return (
-    <div role="tablist" aria-label="Tool categories" className="flex flex-wrap gap-2">
+    <div
+      role="tablist"
+      aria-label="Tool categories"
+      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-100 p-1"
+    >
       {TABS.map((tab) => {
         const isActive = tab.key === active;
         return (
@@ -28,10 +32,8 @@ export default function CategoryTabs({ active, onChange }: CategoryTabsProps) {
             type="button"
             aria-selected={isActive}
             onClick={() => onChange(tab.key)}
-            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-              isActive
-                ? 'bg-slate-900 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            className={`whitespace-nowrap shrink-0 rounded-md px-3.5 py-2 text-xs font-semibold transition-colors ${
+              isActive ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             {tab.label}

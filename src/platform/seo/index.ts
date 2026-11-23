@@ -22,8 +22,9 @@ export function applyRouteSeo(meta: RouteMeta): void {
 
   const env = getEnvironment();
   if (env.siteUrl) {
-    const normalizedPath = meta.path.startsWith('/') ? meta.path : `/${meta.path}`;
-    const canonicalUrl = `${env.siteUrl}${normalizedPath === '/' ? '' : normalizedPath}`;
+    const cleanOrigin = env.siteUrl.replace(/\/+$/, '');
+    const normalizedPath = meta.path === '/' ? '/' : `/${meta.path.replace(/^\/+|\/+$/g, '')}/`;
+    const canonicalUrl = `${cleanOrigin}${normalizedPath}`;
     let canonicalEl = document.querySelector('link[rel="canonical"]');
     if (!canonicalEl) {
       canonicalEl = document.createElement('link');

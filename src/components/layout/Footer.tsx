@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
+import { getShortToolName } from '../../lib/tool-display';
 import { toolRoutes } from '../../router/route-registry';
 
 const LEGAL_LINKS = [
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
-  { to: '/privacy-policy', label: 'Privacy Policy' },
-  { to: '/terms', label: 'Terms of Service' },
-  { to: '/disclaimer', label: 'Disclaimer' },
-  { to: '/cookie-policy', label: 'Cookie Policy' },
+  { to: '/about/', label: 'About Us' },
+  { to: '/contact/', label: 'Contact Us' },
+  { to: '/privacy-policy/', label: 'Privacy Policy' },
+  { to: '/terms/', label: 'Terms of Service' },
+  { to: '/disclaimer/', label: 'Disclaimer' },
+  { to: '/cookie-policy/', label: 'Cookie Policy' },
 ];
 
 export default function Footer() {
@@ -15,23 +16,28 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-slate-200 bg-slate-50 text-slate-600">
-      <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <p className="text-sm font-semibold text-slate-900">AHADEX Tools</p>
-            <p className="mt-2 text-xs text-slate-500">
-              100% browser-based file processing. Your files never leave your device — all
-              compression and conversion happens locally in your browser.
+            <Link to="/" className="font-display text-base font-bold text-slate-900 no-underline">
+              AHADEX Tools
+            </Link>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-600">
+              Privacy-first browser utilities. Every image and PDF operation runs locally on your
+              device with zero server uploads.
             </p>
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-700">Tools</p>
-            <ul className="mt-3 space-y-1.5">
+            <h2 className="text-xs font-semibold tracking-wide text-slate-900">Tools</h2>
+            <ul className="mt-3 space-y-2">
               {toolRoutes.map((route) => (
                 <li key={route.path}>
-                  <Link to={route.path} className="text-xs hover:text-slate-900 hover:underline">
-                    {route.meta.title}
+                  <Link
+                    to={route.path}
+                    className="text-sm text-slate-600 hover:text-brand-600 hover:underline"
+                  >
+                    {getShortToolName(route.meta.title)}
                   </Link>
                 </li>
               ))}
@@ -39,11 +45,16 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-700">Company</p>
-            <ul className="mt-3 space-y-1.5">
+            <h2 className="text-xs font-semibold tracking-wide text-slate-900">
+              Company &amp; Legal
+            </h2>
+            <ul className="mt-3 space-y-2">
               {LEGAL_LINKS.map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} className="text-xs hover:text-slate-900 hover:underline">
+                  <Link
+                    to={link.to}
+                    className="text-sm text-slate-600 hover:text-brand-600 hover:underline"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -52,10 +63,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-200 pt-6 text-center">
-          <p className="text-xs text-slate-500">
-            © {year} AHADEX. All rights reserved. Built with privacy in mind.
-          </p>
+        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-slate-200 pt-6 text-xs text-slate-500 sm:flex-row">
+          <p>© {year} AHADEX Tools. All rights reserved.</p>
+          <p>Client-side processing · Zero server file storage</p>
         </div>
       </div>
     </footer>

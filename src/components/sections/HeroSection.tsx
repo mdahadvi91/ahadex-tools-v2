@@ -2,52 +2,53 @@ import { Link } from 'react-router-dom';
 
 export default function HeroSection() {
   return (
-    <section className="bg-gradient-to-b from-slate-50 to-white px-4 py-16 sm:py-20">
-      <div className="mx-auto max-w-4xl text-center">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-medium text-emerald-700">
-          <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
-          100% Browser-Based — Your Files Never Leave Your Device
-        </div>
-
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
-          Free Online File Tools
-          <span className="block text-slate-500 mt-2 text-3xl sm:text-4xl md:text-5xl">
-            No Upload, No Signup, No Limits
-          </span>
-        </h1>
-
-        <p className="mx-auto mt-6 max-w-2xl text-base text-slate-600 sm:text-lg">
-          Compress images, resize photos, merge PDFs, and split documents — all processed locally
-          in your browser. Complete privacy, zero uploads, unlimited usage.
+    <section className="border-b border-slate-200 bg-slate-50 px-4 py-14 sm:px-6 sm:py-20">
+      <div className="mx-auto max-w-5xl text-center">
+        <p className="text-xs font-semibold tracking-wide text-brand-700">
+          Browser-Based Utilities <span aria-hidden="true">·</span> Zero Server Uploads{' '}
+          <span aria-hidden="true">·</span> Free Access
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            to="#tools"
-            className="rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 transition-colors"
+        <h1 className="mx-auto mt-4 max-w-3xl font-display text-[clamp(2.25rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight text-slate-900">
+          Fast, Privacy-First Online File Tools
+        </h1>
+
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+          Compress and resize images directly in your browser without uploading files to any remote
+          server. Your documents and photos stay on your device from start to finish.
+        </p>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="#tools"
+            className="inline-flex h-11 items-center justify-center rounded-lg bg-brand-600 px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
           >
-            Browse All Tools →
-          </Link>
+            Explore All Tools
+          </a>
           <Link
-            to="/about"
-            className="rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+            to="/about/"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-6 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900"
           >
-            Learn More
+            How Privacy Works
           </Link>
         </div>
 
-        <dl className="mx-auto mt-14 grid max-w-2xl grid-cols-3 gap-6 text-center">
-          <div>
-            <dt className="text-xs uppercase tracking-wider text-slate-500">Files Processed</dt>
-            <dd className="mt-1 text-2xl font-bold text-slate-900">100% Local</dd>
+        <dl className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-4 border-t border-slate-200 pt-8 sm:grid-cols-3">
+          <div className="px-4 py-2">
+            <dt className="text-xs font-medium text-slate-500">Execution Model</dt>
+            <dd className="mt-1 font-display text-xl font-bold text-slate-900 tabular-nums">
+              100% Client-Side
+            </dd>
           </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wider text-slate-500">Uploads</dt>
-            <dd className="mt-1 text-2xl font-bold text-slate-900">Zero</dd>
+          <div className="px-4 py-2">
+            <dt className="text-xs font-medium text-slate-500">Server File Uploads</dt>
+            <dd className="mt-1 font-display text-xl font-bold text-slate-900 tabular-nums">
+              0 Bytes Uploaded
+            </dd>
           </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wider text-slate-500">Signup Required</dt>
-            <dd className="mt-1 text-2xl font-bold text-slate-900">Never</dd>
+          <div className="px-4 py-2">
+            <dt className="text-xs font-medium text-slate-500">Account Requirement</dt>
+            <dd className="mt-1 font-display text-xl font-bold text-slate-900">No Signup</dd>
           </div>
         </dl>
       </div>

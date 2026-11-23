@@ -1,0 +1,12 @@
+# AHADEX Tools
+
+> Fast, Privacy-First Browser Utilities. Files are processed locally in your browser without uploading to external servers.
+
+- Site: https://ahadex.online/
+
+## Available Tools
+- [Free Image Compressor - Compress JPG, PNG, WebP Without Uploading](https://ahadex.online/image-compressor/): Compress JPG, PNG, WebP, GIF and AVIF images in your browser. Your files never leave your device. No signup, no upload, no tracking.
+- [Free Image Resizer - Resize JPG, PNG, WebP Without Uploading](https://ahadex.online/image-resizer/): Resize JPG, PNG, WebP, GIF and AVIF images to exact pixel dimensions in your browser. Your files never leave your device. No signup, no tracking.
+- [Free PDF Compressor - Optimize PDF Size in Your Browser](https://ahadex.online/pdf-compressor/): Optimize and shrink PDF files locally in your browser. Strip metadata and compress object streams with no server upload or signup.
+- [Free Merge PDF - Combine Multiple PDF Files in Your Browser](https://ahadex.online/merge-pdf/): Combine multiple PDF documents in any order directly in your browser. Reorder pages, preview page counts, and download locally.
+- [Free Split PDF - Extract Pages & Split PDFs in Your Browser](https://ahadex.online/split-pdf/): Extract specific PDF page ranges or burst pages into separate PDFs directly in your browser. Zero uploads, zero signup, instant save.

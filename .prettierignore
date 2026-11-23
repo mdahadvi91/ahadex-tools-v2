@@ -1,7 +1,10 @@
 node_modules/
 .build/
 dist/
+dist-ssr/
 coverage/
+reports/
+.wrangler/
 playwright-report/
 test-results/
 package-lock.json

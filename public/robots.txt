@@ -1,4 +1,29 @@
 User-agent: *
 Allow: /
+Disallow: /404.html
 
-Sitemap: https://www.ahadex.online/sitemap.xml
+User-agent: Googlebot
+Allow: /
+Disallow: /404.html
+
+User-agent: Bingbot
+Allow: /
+Disallow: /404.html
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /404.html
+
+User-agent: GPTBot
+Allow: /
+Disallow: /404.html
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /404.html
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /404.html
+
+Sitemap: https://ahadex.online/sitemap.xml

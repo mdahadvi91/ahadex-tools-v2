@@ -8,11 +8,12 @@ export const metadata: PageMetadata = {
   title: 'Image Resizer - Resize JPG, PNG, WebP in Your Browser',
   description:
     'Resize images to exact pixel dimensions without uploading. Works on JPG, PNG, WebP, GIF and AVIF. Free, no signup. Files stay on your device.',
-  path: '/tools/image-resizer',
+  path: '/image-resizer/',
+  canonicalPath: '/image-resizer/',
   ogImage: 'https://ahadex.online/og/image-resizer.png',
   image: '/og/image-resizer.png',
-
   type: 'website',
+  indexable: true,
   noIndex: false,
 };
 

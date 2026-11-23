@@ -213,8 +213,14 @@ export default function Tool() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900">Output format</label>
+                <label
+                  htmlFor="ic-output-format"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  Output format
+                </label>
                 <select
+                  id="ic-output-format"
                   value={format}
                   onChange={(e) => setFormat(e.target.value as OutputFormat)}
                   disabled={processing}
@@ -229,10 +235,11 @@ export default function Tool() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900">
+                <label htmlFor="ic-quality" className="block text-sm font-medium text-gray-900">
                   Quality: {Math.round(quality * 100)}%
                 </label>
                 <input
+                  id="ic-quality"
                   type="range"
                   min={10}
                   max={100}
@@ -248,10 +255,14 @@ export default function Tool() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900">
+                <label
+                  htmlFor="ic-max-dimension"
+                  className="block text-sm font-medium text-gray-900"
+                >
                   Max dimension (px, optional)
                 </label>
                 <input
+                  id="ic-max-dimension"
                   type="number"
                   min={0}
                   max={8000}
