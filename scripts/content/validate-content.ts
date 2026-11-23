@@ -1,6 +1,7 @@
 /**
- * Content quality, AdSense depth (>800 words), internal-link integrity,
- * and verifiable-claims validator across all tools and static informational pages.
+ * Content quality, AdSense depth (>=800 words), source-to-rendered HTML consistency,
+ * internal-link integrity, and verifiable-claims validator across all tools and
+ * static informational pages.
  */
 
 import path from 'node:path';
@@ -9,6 +10,7 @@ import type { ValidationIssue, ValidationReport } from '../../src/types/tool';
 import { fileExists, readTextFile, resolveFromRoot } from '../utils/file-utils';
 import { discoverPublishedRoutes, discoverToolsFromFilesystem } from '../utils/route-discovery';
 import { assertReportPassed, createValidationReport } from '../utils/validation-utils';
+import { routeToDistHtmlPath } from '../validation/validate-routes';
 
 export interface ToolContentShape {
   HERO?: { h1?: string; tagline?: string; subtitle?: string };
@@ -32,6 +34,117 @@ export function countWords(text: string): number {
     .trim()
     .split(/\s+/)
     .filter((token) => token.length > 0).length;
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replaceAll('&amp;', '&')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&#39;', "'")
+    .replaceAll('&#x27;', "'")
+    .replaceAll('&apos;', "'")
+    .replaceAll('<!-- -->', '');
+}
+
+function normalizeWhitespace(value: string): string {
+  return decodeHtmlEntities(value).replace(/\s+/g, ' ').trim();
+}
+
+export function extractRenderedMainText(html: string): {
+  mainVisibleText: string;
+  h1Text: string;
+} {
+  const mainMatch = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i);
+  const mainHtml = mainMatch?.[1] ?? html;
+
+  const h1Match = mainHtml.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  const h1Text = normalizeWhitespace((h1Match?.[1] ?? '').replace(/<[^>]+>/g, ' '));
+
+  const visible = mainHtml
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ');
+
+  return {
+    mainVisibleText: normalizeWhitespace(visible),
+    h1Text,
+  };
+}
+
+export function inspectRenderedToolHtmlConsistency(
+  html: string,
+  content: ToolContentShape,
+  target: string,
+  issues: ValidationIssue[],
+): void {
+  const { mainVisibleText, h1Text } = extractRenderedMainText(html);
+
+  const expectedH1 = normalizeWhitespace(content.HERO?.h1 ?? '');
+  if (expectedH1 && h1Text !== expectedH1) {
+    issues.push({
+      code: 'CONTENT_RENDERED_H1_MISMATCH',
+      severity: 'critical',
+      target,
+      message: `Rendered <h1> ("${h1Text}") does not match source HERO.h1 ("${expectedH1}").`,
+    });
+  }
+
+  const expectedTagline = normalizeWhitespace(content.HERO?.tagline ?? '');
+  if (expectedTagline && !mainVisibleText.includes(expectedTagline)) {
+    issues.push({
+      code: 'CONTENT_RENDERED_TAGLINE_MISSING',
+      severity: 'critical',
+      target,
+      message: 'Rendered HTML does not contain source HERO.tagline text.',
+    });
+  }
+
+  const expectedDirectAnswer = normalizeWhitespace(content.DIRECT_ANSWER ?? '');
+  if (expectedDirectAnswer && !mainVisibleText.includes(expectedDirectAnswer)) {
+    issues.push({
+      code: 'CONTENT_RENDERED_DIRECT_ANSWER_MISSING',
+      severity: 'critical',
+      target,
+      message: 'Rendered HTML does not contain source DIRECT_ANSWER text.',
+    });
+  }
+
+  for (const section of content.SECTIONS ?? []) {
+    const heading = normalizeWhitespace(section.heading);
+    if (heading && !mainVisibleText.includes(heading)) {
+      issues.push({
+        code: 'CONTENT_RENDERED_SECTION_MISSING',
+        severity: 'critical',
+        target,
+        message: `Source section heading "${heading}" is missing from rendered HTML.`,
+      });
+    }
+  }
+
+  for (const item of content.FAQ ?? []) {
+    const question = normalizeWhitespace(item.question);
+    if (question && !mainVisibleText.includes(question)) {
+      issues.push({
+        code: 'CONTENT_RENDERED_FAQ_MISSING',
+        severity: 'critical',
+        target,
+        message: `Source FAQ question "${question}" is missing from rendered HTML.`,
+      });
+    }
+  }
+
+  const renderedWordCount = countWords(mainVisibleText);
+  if (renderedWordCount < 800) {
+    issues.push({
+      code: 'CONTENT_RENDERED_THIN_HTML',
+      severity: 'critical',
+      target,
+      message: `Rendered visible <main> word count (${renderedWordCount}) is below the 800-word requirement.`,
+    });
+  }
 }
 
 export function checkVerifiableClaims(
@@ -214,12 +327,25 @@ const REQUIRED_STATIC_PAGE_FILES = [
   'src/pages/CookiePolicy.tsx',
 ] as const;
 
-export async function runContentValidation(toolsRoot?: string): Promise<ValidationReport> {
+export async function runContentValidation(
+  optionsInput?:
+    | string
+    | {
+        toolsRoot?: string;
+        distDir?: string;
+        verifyDist?: boolean;
+      },
+): Promise<ValidationReport> {
+  const options =
+    typeof optionsInput === 'string' ? { toolsRoot: optionsInput } : (optionsInput ?? {});
+  const distDir = options.distDir ?? resolveFromRoot('dist');
+  const verifyDist = Boolean(options.verifyDist);
+
   const issues: ValidationIssue[] = [];
   const seenH1s = new Map<string, string>();
   let checkedCount = 0;
 
-  const publishedRoutes = await discoverPublishedRoutes(toolsRoot);
+  const publishedRoutes = await discoverPublishedRoutes(options.toolsRoot);
   const validRoutePaths = new Set(publishedRoutes.map((r) => r.path));
 
   for (const relPage of REQUIRED_STATIC_PAGE_FILES) {
@@ -253,7 +379,7 @@ export async function runContentValidation(toolsRoot?: string): Promise<Validati
     }
   }
 
-  const tools = await discoverToolsFromFilesystem(toolsRoot);
+  const tools = await discoverToolsFromFilesystem(options.toolsRoot);
   for (const tool of tools) {
     if (!tool.implemented) continue;
     checkedCount++;
@@ -285,16 +411,37 @@ export async function runContentValidation(toolsRoot?: string): Promise<Validati
         seenH1s.set(h1, target);
       }
     }
+
+    if (verifyDist) {
+      checkedCount++;
+      const distHtmlPath = routeToDistHtmlPath(tool.routePath, distDir);
+      if (!fileExists(distHtmlPath)) {
+        issues.push({
+          code: 'CONTENT_DIST_HTML_MISSING',
+          severity: 'critical',
+          target,
+          message: `Prerendered HTML missing at ${distHtmlPath} for source-vs-rendered content verification.`,
+        });
+      } else {
+        const renderedHtml = readTextFile(distHtmlPath);
+        inspectRenderedToolHtmlConsistency(renderedHtml, mod, `${target}:rendered-html`, issues);
+      }
+    }
   }
 
-  return createValidationReport('content:quality', checkedCount, issues);
+  return createValidationReport(
+    verifyDist ? 'content:source-and-rendered-html' : 'content:quality',
+    checkedCount,
+    issues,
+  );
 }
 
 const isDirectExecution =
   Boolean(process.argv[1]) && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
 if (isDirectExecution) {
+  const verifyDist = process.argv.includes('--verify-dist');
   const strict = process.argv.includes('--strict');
-  const report = await runContentValidation();
+  const report = await runContentValidation({ verifyDist });
   assertReportPassed(report, strict);
 }

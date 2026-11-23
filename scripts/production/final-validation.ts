@@ -3,17 +3,19 @@
  *
  * Verifies every emitted artifact inside `dist/` and `public/`:
  *   - Prerendered static HTML files (all routes + 404.html)
+ *   - Source-to-rendered HTML content consistency (>=800 visible words, H1, sections, FAQs)
  *   - XML Sitemap & robots/llms consistency
- *   - Branded OG PNG & SVG icon integrity
+ *   - Unique 1200x630 OG PNG, ICO favicon & per-tool SVG icon integrity
  *   - WCAG/ARIA accessibility & static security boundaries
  *   - Bundle gzip budgets
- *   - Controlled local HTTP crawler simulation (8 crawler profiles)
+ *   - Controlled local HTTP crawler simulation (8 crawler profiles across all routes)
  *   - Cloudflare Pages _headers / _redirects deployment readiness
  */
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ValidationReport } from '../../src/types/tool';
+import { runContentValidation } from '../content/validate-content';
 import { runCrawlerSimulation, type CrawlerSimulationResult } from '../crawlers/simulate-crawlers';
 import { runAssetValidation } from '../images/validate-assets';
 import { runRobotsAndLlmsValidation } from '../sitemap/validate-robots';
@@ -37,6 +39,7 @@ export async function runFinalValidation(): Promise<FinalValidationResult> {
 
   const reports: ValidationReport[] = [
     await runRouteValidation({ verifyDist: true }),
+    await runContentValidation({ verifyDist: true }),
     await runSitemapValidation({ verifyDist: true }),
     await runRobotsAndLlmsValidation(),
     await runAssetValidation({ verifyDist: true }),

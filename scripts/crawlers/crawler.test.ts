@@ -44,6 +44,7 @@ function buildValidHtmlPage(options: {
   return `<!doctype html>
 <html lang="en" data-prerender-ready="true">
   <head>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <title>${options.title}</title>
     <meta name="description" content="${options.description}" />
     <meta name="robots" content="${options.robots}" />
@@ -84,9 +85,11 @@ Disallow: /404.html
 
 User-agent: Googlebot
 Allow: /
+Disallow: /404.html
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /404.html
 
 Sitemap: https://ahadex.online/sitemap.xml
 `);
@@ -96,6 +99,7 @@ Sitemap: https://ahadex.online/sitemap.xml
     expect(isAllowedByRobots(parsed, 'PerplexityBot', '/')).toBe(true);
     expect(isAllowedByRobots(parsed, 'GPTBot', '/image-compressor/')).toBe(true);
     expect(isAllowedByRobots(parsed, 'GPTBot', '/404.html')).toBe(false);
+    expect(isAllowedByRobots(parsed, 'Googlebot', '/404.html')).toBe(false);
   });
 
   it('extracts head tags, JSON-LD errors, visible word count, and localhost leaks cleanly', () => {
@@ -124,14 +128,14 @@ Sitemap: https://ahadex.online/sitemap.xml
 });
 
 describe('Phase 8 local HTTP crawler simulation end-to-end', () => {
-  it('passes against a valid static dist fixture and catches broken internal links on defect injection', async () => {
+  it('crawls all published routes across all 8 crawler profiles and catches broken internal links on defect injection', async () => {
     const fixtureDist = createTempDir('ahadex-crawler-dist-');
     const routes = await discoverPublishedRoutes();
     const tinyPng = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
     fs.mkdirSync(path.join(fixtureDist, 'og'), { recursive: true });
-    fs.mkdirSync(path.join(fixtureDist, 'icons'), { recursive: true });
     fs.writeFileSync(path.join(fixtureDist, 'og', 'default.png'), tinyPng);
+    fs.writeFileSync(path.join(fixtureDist, 'logo.svg'), '<svg />', 'utf8');
 
     fs.writeFileSync(
       path.join(fixtureDist, 'robots.txt'),
@@ -170,7 +174,6 @@ describe('Phase 8 local HTTP crawler simulation end-to-end', () => {
           : `${SITE_CONFIG.origin}/og/default.png`;
       if (route.kind === 'tool') {
         fs.writeFileSync(path.join(fixtureDist, 'og', `${route.slug}.png`), tinyPng);
-        fs.writeFileSync(path.join(fixtureDist, 'icons', `${route.slug}.svg`), '<svg />', 'utf8');
       }
 
       fs.writeFileSync(
@@ -207,6 +210,7 @@ describe('Phase 8 local HTTP crawler simulation end-to-end', () => {
     expect(passing.report.status).toBe('PASS');
     expect(passing.crawledRoutes.length).toBe(routes.length);
     expect(passing.crawlerMatrix.length).toBe(8);
+    expect(passing.crawlerMatrix.every((row) => row.routesTested === routes.length)).toBe(true);
 
     // Inject broken internal link & localhost leak into about page to verify failure detection.
     const aboutFile = path.join(fixtureDist, 'about', 'index.html');

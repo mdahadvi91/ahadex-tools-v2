@@ -1,0 +1,70 @@
+name: AHADEX CI & Playwright Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-quality-gate:
+    name: Build, Typecheck, Lint, Unit Tests & Static SSG Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      - name: Run complete production SSG build & quality gates
+        run: npm run build
+        env:
+          VITE_SITE_URL: https://ahadex.online
+
+      - name: Upload audit reports artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-reports
+          path: reports/
+
+  e2e-playwright:
+    name: Playwright Chromium E2E Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      - name: Install Playwright Chromium browser & OS dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Build static SSG site for preview testing
+        run: npm run build:ssg
+        env:
+          VITE_SITE_URL: https://ahadex.online
+
+      - name: Run Playwright E2E tests (production preview)
+        run: npm run test:e2e -- --project=e2e-prod
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/

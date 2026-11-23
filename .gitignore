@@ -3,7 +3,8 @@ node_modules/
 dist/
 dist-ssr/
 coverage/
-reports/
+# Generated build reports only (do not ignore scripts/reports/)
+/reports/
 .wrangler/
 
 .env*

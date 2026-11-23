@@ -3,7 +3,7 @@ node_modules/
 dist/
 dist-ssr/
 coverage/
-reports/
+/reports/
 .wrangler/
 playwright-report/
 test-results/

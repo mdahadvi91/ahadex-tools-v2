@@ -1,15 +1,16 @@
 /**
- * Controlled Local HTTP Crawler Simulation for AHADEX Tools (Phase 8).
+ * Controlled Local HTTP Crawler Simulation for AHADEX Tools (Phase 8 / P2).
  *
- * Spins up an ephemeral local HTTP server backed strictly by the static `dist/`
+ * Spins up an ephemeral local HTTP server backed strictly by static `dist/`
  * build artifacts and performs real HTTP GET fetches (no JavaScript execution)
- * using Search Engine and AI Bot User-Agent headers.
+ * across ALL published routes using Search Engine and AI Bot User-Agent headers.
  *
  * Scope honesty: This validates prerendered static HTML, headers, robots.txt,
- * sitemap.xml, llms.txt, internal links, and OG/SVG assets in a local controlled
+ * sitemap.xml, llms.txt, internal links, and referenced assets in a local controlled
  * HTTP simulation. It does NOT perform external live Googlebot/Bingbot network calls.
  */
 
+import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -110,6 +111,7 @@ export interface ExtractedHtmlSignals {
   readonly jsonLdCount: number;
   readonly jsonLdErrors: readonly string[];
   readonly internalLinks: readonly string[];
+  readonly referencedAssets: readonly string[];
   readonly visibleWordCount: number;
   readonly hasLocalhostLeak: boolean;
 }
@@ -167,7 +169,8 @@ function decodeBasicEntities(value: string): string {
     .replaceAll('&lt;', '<')
     .replaceAll('&gt;', '>')
     .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'");
+    .replaceAll('&#39;', "'")
+    .replaceAll('&#x27;', "'");
 }
 
 function escapeRegExp(value: string): string {
@@ -280,7 +283,6 @@ export function isAllowedByRobots(
   }
 
   for (const rulePath of matchedRules.allow) {
-    // Standard robots.txt precedence: Allow wins on equal pattern length.
     if (urlPath.startsWith(rulePath) && rulePath.length >= bestLength) {
       bestLength = rulePath.length;
       bestAllowed = true;
@@ -331,6 +333,20 @@ export function extractHtmlSignals(html: string): ExtractedHtmlSignals {
     }
   }
 
+  const assetSet = new Set<string>();
+  const ogImage = getMetaAttrContent(html, 'property', 'og:image');
+  if (ogImage.startsWith(SITE_CONFIG.origin)) {
+    assetSet.add(new URL(ogImage).pathname);
+  }
+  for (const imgMatch of html.matchAll(/<img\s+[^>]*src=["'](\/[^"']+)["'][^>]*>/gi)) {
+    if (imgMatch[1]) assetSet.add(imgMatch[1]);
+  }
+  for (const iconMatch of html.matchAll(
+    /<link\s+[^>]*rel=["'](?:icon|preload)["'][^>]*href=["'](\/[^"']+)["'][^>]*>/gi,
+  )) {
+    if (iconMatch[1]) assetSet.add(iconMatch[1]);
+  }
+
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   const bodyHtml = bodyMatch?.[1] ?? html;
   const textOnly = decodeBasicEntities(
@@ -356,7 +372,7 @@ export function extractHtmlSignals(html: string): ExtractedHtmlSignals {
     ogTitle: getMetaAttrContent(html, 'property', 'og:title'),
     ogDescription: getMetaAttrContent(html, 'property', 'og:description'),
     ogUrl: getMetaAttrContent(html, 'property', 'og:url'),
-    ogImage: getMetaAttrContent(html, 'property', 'og:image'),
+    ogImage,
     twitterCard: getMetaAttrContent(html, 'name', 'twitter:card'),
     twitterTitle: getMetaAttrContent(html, 'name', 'twitter:title'),
     twitterImage: getMetaAttrContent(html, 'name', 'twitter:image'),
@@ -364,6 +380,7 @@ export function extractHtmlSignals(html: string): ExtractedHtmlSignals {
     jsonLdCount,
     jsonLdErrors,
     internalLinks: Array.from(linkSet),
+    referencedAssets: Array.from(assetSet),
     visibleWordCount,
     hasLocalhostLeak: /https?:\/\/(?:localhost|127\.0\.0\.1)/i.test(html),
   };
@@ -411,16 +428,9 @@ export async function startStaticDistServer(distDir: string): Promise<{
     const contentType = MIME_TYPES[ext] ?? 'application/octet-stream';
 
     if (ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.webp' || ext === '.ico') {
-      import('node:fs')
-        .then((fs) => {
-          const buffer = fs.readFileSync(resolvedFile);
-          res.writeHead(200, { 'Content-Type': contentType });
-          res.end(buffer);
-        })
-        .catch(() => {
-          res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-          res.end('Internal Error');
-        });
+      const buffer = fs.readFileSync(resolvedFile);
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(buffer);
       return;
     }
 
@@ -454,8 +464,9 @@ function validateCrawledPage(
   contentType: string,
   html: string,
   issues: ValidationIssue[],
+  crawlerLabel = 'Googlebot Desktop',
 ): ExtractedHtmlSignals {
-  const target = `crawler:${route.path}`;
+  const target = `${crawlerLabel}:${route.path}`;
   const signals = extractHtmlSignals(html);
 
   if (status !== 200) {
@@ -646,8 +657,9 @@ export async function runCrawlerSimulation(
   let checkedAssets = 0;
 
   try {
-    // 1. Verify robots.txt, sitemap.xml, and llms.txt via real HTTP GET.
     const primaryBot = CRAWLER_PROFILES[0];
+
+    // 1. Verify robots.txt, sitemap.xml, and llms.txt via real HTTP GET.
     const robotsRes = await fetchWithAgent(server.origin, '/robots.txt', primaryBot.userAgent);
     checkedCount++;
     if (robotsRes.status !== 200) {
@@ -711,37 +723,90 @@ export async function runCrawlerSimulation(
       }
     }
 
-    // 2. Crawl every published route using primary Googlebot Desktop profile and collect links/assets.
+    // 2. Crawl every published route under ALL crawler profiles and record links/assets.
     const discoveredLinks = new Set<string>();
     const discoveredAssets = new Set<string>();
 
-    for (const route of routes) {
-      checkedCount++;
-      const res = await fetchWithAgent(server.origin, route.path, primaryBot.userAgent);
-      const signals = validateCrawledPage(route, res.status, res.contentType, res.body, issues);
+    for (const profile of CRAWLER_PROFILES) {
+      const robotsAllowedHome = isAllowedByRobots(parsedRobots, profile.agentMatch, '/');
+      const robotsBlocked404 = !isAllowedByRobots(parsedRobots, profile.agentMatch, '/404.html');
+      let failedRequests = 0;
 
-      for (const link of signals.internalLinks) {
-        discoveredLinks.add(link);
+      if (!robotsAllowedHome) {
+        issues.push({
+          code: 'CRAWLER_BLOCKED_BY_ROBOTS',
+          severity: 'critical',
+          target: profile.name,
+          message: `${profile.name} is disallowed from "/" in robots.txt.`,
+        });
       }
-      if (signals.ogImage.startsWith(SITE_CONFIG.origin)) {
-        discoveredAssets.add(new URL(signals.ogImage).pathname);
-      }
-      if (route.kind === 'tool') {
-        discoveredAssets.add(`/icons/${route.slug}.svg`);
+      if (!robotsBlocked404) {
+        issues.push({
+          code: 'CRAWLER_404_NOT_DISALLOWED',
+          severity: 'warning',
+          target: profile.name,
+          message: `/404.html should be disallowed for ${profile.name} in robots.txt.`,
+        });
       }
 
-      crawledRoutes.push({
-        path: route.path,
-        kind: route.kind,
-        httpStatus: res.status,
-        indexable: route.indexable,
-        canonicalMatch: signals.canonical === route.canonicalUrl,
-        visibleWordCount: signals.visibleWordCount,
-        jsonLdCount: signals.jsonLdCount,
+      for (const route of routes) {
+        checkedCount++;
+        const allowed = isAllowedByRobots(parsedRobots, profile.agentMatch, route.path);
+        if (!allowed) {
+          failedRequests++;
+          issues.push({
+            code: 'CRAWLER_ROUTE_DISALLOWED',
+            severity: 'critical',
+            target: `${profile.name}:${route.path}`,
+            message: `${profile.name} is disallowed from crawling ${route.path}.`,
+          });
+          continue;
+        }
+
+        const res = await fetchWithAgent(server.origin, route.path, profile.userAgent);
+        const issueCountBefore = issues.length;
+        const signals = validateCrawledPage(
+          route,
+          res.status,
+          res.contentType,
+          res.body,
+          issues,
+          profile.name,
+        );
+        if (issues.length > issueCountBefore) {
+          failedRequests++;
+        }
+
+        if (profile === primaryBot) {
+          for (const link of signals.internalLinks) {
+            discoveredLinks.add(link);
+          }
+          for (const assetPath of signals.referencedAssets) {
+            discoveredAssets.add(assetPath);
+          }
+          crawledRoutes.push({
+            path: route.path,
+            kind: route.kind,
+            httpStatus: res.status,
+            indexable: route.indexable,
+            canonicalMatch: signals.canonical === route.canonicalUrl,
+            visibleWordCount: signals.visibleWordCount,
+            jsonLdCount: signals.jsonLdCount,
+          });
+        }
+      }
+
+      crawlerMatrix.push({
+        crawler: profile.name,
+        category: profile.category,
+        robotsAllowedHome,
+        robotsBlocked404,
+        routesTested: routes.length,
+        failedRequests,
       });
     }
 
-    // 3. Test every sitemap <loc> returns HTTP 200 without redirects.
+    // 3. Test every sitemap <loc> returns HTTP 200.
     for (const loc of sitemapLocs) {
       checkedCount++;
       if (!loc.startsWith(SITE_CONFIG.origin)) {
@@ -765,79 +830,7 @@ export async function runCrawlerSimulation(
       }
     }
 
-    // 4. Multi-agent crawler profile sweep (Search + AI bots).
-    const representativeRoutes = routes.filter(
-      (r) => r.path === '/' || (r.kind === 'tool' && r.indexable),
-    );
-    for (const profile of CRAWLER_PROFILES) {
-      const robotsAllowedHome = isAllowedByRobots(parsedRobots, profile.agentMatch, '/');
-      const robotsBlocked404 = !isAllowedByRobots(parsedRobots, profile.agentMatch, '/404.html');
-      let failedRequests = 0;
-
-      if (!robotsAllowedHome) {
-        issues.push({
-          code: 'CRAWLER_BLOCKED_BY_ROBOTS',
-          severity: 'critical',
-          target: profile.name,
-          message: `${profile.name} is disallowed from "/" in robots.txt.`,
-        });
-      }
-      if (!robotsBlocked404) {
-        issues.push({
-          code: 'CRAWLER_404_NOT_DISALLOWED',
-          severity: 'warning',
-          target: profile.name,
-          message: `/404.html should be disallowed for ${profile.name} in robots.txt.`,
-        });
-      }
-
-      for (const route of representativeRoutes) {
-        checkedCount++;
-        const allowed = isAllowedByRobots(parsedRobots, profile.agentMatch, route.path);
-        if (!allowed) {
-          failedRequests++;
-          issues.push({
-            code: 'CRAWLER_ROUTE_DISALLOWED',
-            severity: 'critical',
-            target: `${profile.name}:${route.path}`,
-            message: `${profile.name} is disallowed from crawling ${route.path}.`,
-          });
-          continue;
-        }
-        const res = await fetchWithAgent(server.origin, route.path, profile.userAgent);
-        if (res.status !== 200) {
-          failedRequests++;
-          issues.push({
-            code: 'CRAWLER_AGENT_HTTP_ERROR',
-            severity: 'critical',
-            target: `${profile.name}:${route.path}`,
-            message: `${profile.name} received HTTP ${res.status} on ${route.path}.`,
-          });
-          continue;
-        }
-        const signals = extractHtmlSignals(res.body);
-        if (!signals.prerenderReady || signals.canonical !== route.canonicalUrl) {
-          failedRequests++;
-          issues.push({
-            code: 'CRAWLER_AGENT_HTML_MISMATCH',
-            severity: 'critical',
-            target: `${profile.name}:${route.path}`,
-            message: `${profile.name} observed invalid prerendered HTML or canonical on ${route.path}.`,
-          });
-        }
-      }
-
-      crawlerMatrix.push({
-        crawler: profile.name,
-        category: profile.category,
-        robotsAllowedHome,
-        robotsBlocked404,
-        routesTested: representativeRoutes.length,
-        failedRequests,
-      });
-    }
-
-    // 5. Verify all internal <a href> targets resolve HTTP 200 and use trailing slashes.
+    // 4. Verify all internal <a href> targets resolve HTTP 200 and use trailing slashes.
     for (const linkPath of discoveredLinks) {
       checkedCount++;
       checkedInternalLinks++;
@@ -860,7 +853,7 @@ export async function runCrawlerSimulation(
       }
     }
 
-    // 6. Verify OG images & tool SVG icons over HTTP.
+    // 5. Verify all referenced OG banners, logos, and icons over HTTP.
     for (const assetPath of discoveredAssets) {
       checkedCount++;
       checkedAssets++;
@@ -875,7 +868,7 @@ export async function runCrawlerSimulation(
       }
     }
 
-    // 7. Verify unknown routes return genuine HTTP 404 (not soft-404 200) with noindex.
+    // 6. Verify unknown routes return genuine HTTP 404 (not soft-404 200) with noindex.
     checkedCount++;
     const missingRes = await fetchWithAgent(
       server.origin,
@@ -925,9 +918,9 @@ function printCrawlerSummary(result: CrawlerSimulationResult): void {
   console.log(`\n=== ${result.mode} ===`);
   console.log(`Scope Notice: ${result.scopeNotice}`);
   console.log(
-    `Routes crawled: ${result.crawledRoutes.length} | Internal links checked: ${result.checkedInternalLinks} | OG/Icon assets checked: ${result.checkedAssets}`,
+    `Routes crawled: ${result.crawledRoutes.length} | Internal links checked: ${result.checkedInternalLinks} | Referenced assets checked: ${result.checkedAssets}`,
   );
-  console.log('Agent Matrix:');
+  console.log('Agent Matrix (all published routes checked per agent):');
   for (const row of result.crawlerMatrix) {
     const statusLabel = row.robotsAllowedHome && row.failedRequests === 0 ? 'ALLOW+200' : 'ISSUES';
     console.log(

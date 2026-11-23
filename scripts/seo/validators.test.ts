@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { ValidationIssue } from '../../src/types/tool';
 import {
   checkVerifiableClaims,
+  inspectRenderedToolHtmlConsistency,
   inspectToolContentModule,
   runContentValidation,
 } from '../content/validate-content';
@@ -26,7 +27,7 @@ describe('Phase 5 validators against live AHADEX codebase', () => {
   });
 });
 
-describe('Phase 5 validators reject synthetic SEO and content defects', () => {
+describe('Phase 5 & P3 validators reject synthetic SEO and rendered-HTML content defects', () => {
   it('flags invalid title/description bounds cleanly', () => {
     const issues: ValidationIssue[] = [];
     validateMetadataBounds('Test', 'Short', 'Too brief', 'tool:bad', issues, {
@@ -99,5 +100,27 @@ describe('Phase 5 validators reject synthetic SEO and content defects', () => {
     );
     expect(claimIssues.some((i) => i.code === 'CONTENT_UNVERIFIED_SUPERLATIVE')).toBe(true);
     expect(claimIssues.some((i) => i.code === 'CONTENT_BARE_GUARANTEE')).toBe(true);
+  });
+
+  it('rejects prerendered HTML that diverges from source content.ts or has <800 visible words', () => {
+    const issues: ValidationIssue[] = [];
+    inspectRenderedToolHtmlConsistency(
+      '<html><body><main><h1>Wrong Tool</h1><p>Very short visible body.</p></main></body></html>',
+      {
+        HERO: { h1: 'PDF Compressor', tagline: 'Optimize PDF documents locally in your browser' },
+        DIRECT_ANSWER: 'Direct answer explanation that is rendered to crawlers.',
+        SECTIONS: [{ heading: 'How it works cleanly', paragraphs: ['Text'] }],
+        FAQ: [{ question: 'Is it safe?', answer: 'Yes.' }],
+      },
+      'tool:pdf-compressor:rendered-html',
+      issues,
+    );
+
+    const codes = new Set(issues.map((i) => i.code));
+    expect(codes.has('CONTENT_RENDERED_H1_MISMATCH')).toBe(true);
+    expect(codes.has('CONTENT_RENDERED_TAGLINE_MISSING')).toBe(true);
+    expect(codes.has('CONTENT_RENDERED_SECTION_MISSING')).toBe(true);
+    expect(codes.has('CONTENT_RENDERED_FAQ_MISSING')).toBe(true);
+    expect(codes.has('CONTENT_RENDERED_THIN_HTML')).toBe(true);
   });
 });
