@@ -68,7 +68,10 @@ export default function Terms() {
         <h2 className="mt-8 text-xl font-semibold text-slate-900">9. Contact</h2>
         <p>
           For legal matters, contact{' '}
-          <a href="mailto:legal@ahadex.online" className="text-slate-900 underline hover:text-slate-700">
+          <a
+            href="mailto:legal@ahadex.online"
+            className="text-slate-900 underline hover:text-slate-700"
+          >
             legal@ahadex.online
           </a>
         </p>

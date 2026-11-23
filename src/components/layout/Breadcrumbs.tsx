@@ -15,9 +15,7 @@ export default function Breadcrumbs() {
     { label: 'Home', to: '/' },
     ...pathSegments.map((segment, index) => {
       const to = '/' + pathSegments.slice(0, index + 1).join('/');
-      const label = segment
-        .replace(/-/g, ' ')
-        .replace(/\b\w/g, (c) => c.toUpperCase());
+      const label = segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
       return index === pathSegments.length - 1 ? { label } : { label, to };
     }),
   ];

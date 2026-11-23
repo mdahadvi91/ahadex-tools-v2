@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './app.css';
@@ -10,16 +10,34 @@ if (!rootElement) {
   throw new Error('Root element #root not found in document.');
 }
 
-const appTree = (
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>
-);
+document.documentElement.setAttribute('data-prerender-ready', 'false');
+
+function ApplicationRoot() {
+  useEffect(() => {
+    document.documentElement.setAttribute('data-prerender-ready', 'true');
+  }, []);
+
+  return (
+    <StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </StrictMode>
+  );
+}
+
+function handleRecoverableError(error: unknown): void {
+  console.error('[AHADEX] React recovered from a rendering error:', error);
+}
+
+const appTree = <ApplicationRoot />;
 
 if (rootElement.hasChildNodes()) {
-  hydrateRoot(rootElement, appTree);
+  hydrateRoot(rootElement, appTree, {
+    onRecoverableError: handleRecoverableError,
+  });
 } else {
-  createRoot(rootElement).render(appTree);
+  createRoot(rootElement, {
+    onRecoverableError: handleRecoverableError,
+  }).render(appTree);
 }

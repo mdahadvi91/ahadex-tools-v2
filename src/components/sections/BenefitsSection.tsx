@@ -14,7 +14,7 @@ const BENEFITS: Benefit[] = [
   {
     title: 'Lightning Fast',
     description:
-      'No waiting for uploads or downloads. Files are processed instantly using your device\'s native capabilities.',
+      "No waiting for uploads or downloads. Files are processed instantly using your device's native capabilities.",
     icon: 'bolt',
   },
   {
@@ -66,11 +66,7 @@ export default function BenefitsSection() {
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d={ICON_PATHS[benefit.icon]}
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d={ICON_PATHS[benefit.icon]} />
                 </svg>
               </div>
               <h3 className="mt-4 text-base font-semibold text-slate-900">{benefit.title}</h3>

@@ -52,7 +52,13 @@ const glyph: Record<Kind, ReactNode> = {
     <>
       <rect x="11" y="13" width="19" height="36" rx="6" fill="#fff" />
       <rect x="34" y="17" width="19" height="36" rx="6" fill="#fff" fillOpacity="0.7" />
-      <path d="M32 10v44" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="1 5" />
+      <path
+        d="M32 10v44"
+        stroke="#fff"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeDasharray="1 5"
+      />
     </>
   ),
   compress: (
@@ -70,17 +76,24 @@ const glyph: Record<Kind, ReactNode> = {
   ),
   image: (
     <>
-      <rect x="12" y="13" width="40" height="38" rx="9" fill="#fff" fillOpacity="0.28" stroke="#fff" strokeWidth="4" />
+      <rect
+        x="12"
+        y="13"
+        width="40"
+        height="38"
+        rx="9"
+        fill="#fff"
+        fillOpacity="0.28"
+        stroke="#fff"
+        strokeWidth="4"
+      />
       <circle cx="25" cy="25" r="4.5" fill="#fff" />
       <path d="M17 46l10-12 7 8 6-6 8 10z" fill="#fff" />
     </>
   ),
   pdf: (
     <>
-      <path
-        d="M21 9h17l11 11v28a6 6 0 0 1-6 6H21a6 6 0 0 1-6-6V15a6 6 0 0 1 6-6z"
-        fill="#fff"
-      />
+      <path d="M21 9h17l11 11v28a6 6 0 0 1-6 6H21a6 6 0 0 1-6-6V15a6 6 0 0 1 6-6z" fill="#fff" />
       <path d="M38 9v11h11z" fill="#000" fillOpacity="0.18" />
       <text
         x="32"
@@ -133,7 +146,17 @@ function ToolIcon({ title }: { title: string }) {
           d="M0 18A18 18 0 0 1 18 0h28a18 18 0 0 1 18 18v10c-14 8-34 8-64 0z"
           fill="url(#tool-gloss)"
         />
-        <rect x="1" y="1" width="62" height="62" rx="17" fill="none" stroke="#fff" strokeOpacity="0.35" strokeWidth="1.5" />
+        <rect
+          x="1"
+          y="1"
+          width="62"
+          height="62"
+          rx="17"
+          fill="none"
+          stroke="#fff"
+          strokeOpacity="0.35"
+          strokeWidth="1.5"
+        />
         <g filter="url(#tool-glyph-shadow)">{glyph[kind]}</g>
       </svg>
     </div>

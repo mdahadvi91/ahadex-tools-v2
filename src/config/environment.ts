@@ -46,7 +46,9 @@ function buildEnvironment(): Environment {
   const isProduction = isFlagSet(metaEnv.PROD) || nodeEnv.NODE_ENV === 'production';
   const isDevelopment =
     !isProduction &&
-    (isFlagSet(metaEnv.DEV) || nodeEnv.NODE_ENV === 'development' || nodeEnv.NODE_ENV === undefined);
+    (isFlagSet(metaEnv.DEV) ||
+      nodeEnv.NODE_ENV === 'development' ||
+      nodeEnv.NODE_ENV === undefined);
 
   const rawSiteUrl = String(metaEnv.VITE_SITE_URL ?? nodeEnv.VITE_SITE_URL ?? '').trim();
   const siteUrl = rawSiteUrl === '' && isDevelopment ? DEV_FALLBACK_SITE_URL : rawSiteUrl;

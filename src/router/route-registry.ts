@@ -10,7 +10,9 @@ interface ToolModule {
 const rawModules = import.meta.glob<ToolModule>('../tools/*/index.ts', { eager: true });
 
 export const toolRoutes: AppRoute[] = Object.values(rawModules)
-  .filter((mod): mod is ToolModule => Boolean(mod && mod.manifest && mod.manifest.status === 'live'))
+  .filter((mod): mod is ToolModule =>
+    Boolean(mod && mod.manifest && mod.manifest.status === 'live'),
+  )
   .sort((a, b) => a.manifest.launchOrder - b.manifest.launchOrder)
   .map((mod) => {
     const meta: RouteMeta = {

@@ -34,9 +34,7 @@ for (const route of routesToRender) {
   html = html.replace(/<title>.*?<\/title>/s, `<title>${route.title}</title>`);
 
   const targetDir =
-    route.path === '/'
-      ? distDir
-      : path.join(distDir, route.path.replace(/^\/+/, ''));
+    route.path === '/' ? distDir : path.join(distDir, route.path.replace(/^\/+/, ''));
   fs.mkdirSync(targetDir, { recursive: true });
   fs.writeFileSync(path.join(targetDir, 'index.html'), html, 'utf8');
 }
@@ -49,9 +47,7 @@ const llmsLines = [
   `- Site: ${env.siteUrl}`,
   '',
   '## Available Tools',
-  ...toolRoutes.map(
-    (r) => `- [${r.meta.title}](${env.siteUrl}${r.path}): ${r.meta.description}`,
-  ),
+  ...toolRoutes.map((r) => `- [${r.meta.title}](${env.siteUrl}${r.path}): ${r.meta.description}`),
   '',
 ];
 
