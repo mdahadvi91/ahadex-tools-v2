@@ -1,23 +1,8 @@
-# Dependencies
 node_modules/
-
-# Build outputs
 .build/
 dist/
-dist-ssr/
-.wrangler/
-
-# Test outputs
 coverage/
 playwright-report/
 test-results/
-
-# Lockfiles & auto-generated
 package-lock.json
-
-# Environment variables
-.env
-.env.*
-
-# Static assets (public folder-এ থাকা raw ফাইল)
 public/

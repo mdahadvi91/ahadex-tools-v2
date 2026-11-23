@@ -14,7 +14,8 @@ const STEPS: Step[] = [
   {
     number: 2,
     title: 'Select Your Files',
-    description: 'Drag and drop your files or click to browse. Everything stays on your device.',
+    description:
+      'Drag and drop your files or click to browse. Everything stays on your device.',
   },
   {
     number: 3,

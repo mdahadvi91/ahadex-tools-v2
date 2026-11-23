@@ -17,8 +17,8 @@ export default function HeroSection() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-base text-slate-600 sm:text-lg">
-          Compress images, resize photos, merge PDFs, and split documents — all processed locally in
-          your browser. Complete privacy, zero uploads, unlimited usage.
+          Compress images, resize photos, merge PDFs, and split documents — all processed locally
+          in your browser. Complete privacy, zero uploads, unlimited usage.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">

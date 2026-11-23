@@ -1,5 +1,9 @@
 export type PolicyViolationCode =
-  'empty' | 'too-large' | 'invalid-type' | 'batch-too-large' | 'batch-empty';
+  | 'empty'
+  | 'too-large'
+  | 'invalid-type'
+  | 'batch-too-large'
+  | 'batch-empty';
 
 export interface PolicyViolation {
   readonly code: PolicyViolationCode;
@@ -111,9 +115,7 @@ export function validateBatch(
     totalBytes += file.size;
     const single = validateSingleFile(file, policy);
     for (const v of single.violations) {
-      if (
-        !violations.some((existing) => existing.code === v.code && existing.message === v.message)
-      ) {
+      if (!violations.some((existing) => existing.code === v.code && existing.message === v.message)) {
         violations.push(v);
       }
     }

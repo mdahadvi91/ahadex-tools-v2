@@ -1,7 +1,9 @@
 export default function Disclaimer() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
-      <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Disclaimer</h1>
+      <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        Disclaimer
+      </h1>
       <p className="mt-2 text-xs text-slate-500">Last updated: November 2026</p>
 
       <div className="mt-8 space-y-4 text-sm leading-relaxed text-slate-700">
@@ -17,8 +19,8 @@ export default function Disclaimer() {
         <p>
           All files are processed locally in your browser. We do not access, review, or store your
           files. However, we are not responsible for any corruption, loss, or damage to your files
-          resulting from the use of our tools.{' '}
-          <strong>Always keep backups of your original files before processing.</strong>
+          resulting from the use of our tools. <strong>Always keep backups of your original files
+          before processing.</strong>
         </p>
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">No Professional Advice</h2>
@@ -29,8 +31,8 @@ export default function Disclaimer() {
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">External Links</h2>
         <p>
-          Our site may contain links to external websites. We are not responsible for the content or
-          privacy practices of those sites.
+          Our site may contain links to external websites. We are not responsible for the content
+          or privacy practices of those sites.
         </p>
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">Advertising</h2>
@@ -48,10 +50,7 @@ export default function Disclaimer() {
         <h2 className="mt-8 text-xl font-semibold text-slate-900">Contact</h2>
         <p>
           Questions about this disclaimer? Contact{' '}
-          <a
-            href="mailto:contact@ahadex.online"
-            className="text-slate-900 underline hover:text-slate-700"
-          >
+          <a href="mailto:contact@ahadex.online" className="text-slate-900 underline hover:text-slate-700">
             contact@ahadex.online
           </a>
         </p>

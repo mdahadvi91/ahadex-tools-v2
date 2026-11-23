@@ -15,10 +15,7 @@ export function detectBrowserCapabilities(): BrowserCapabilities {
   const hasDocument = typeof document !== 'undefined';
 
   const fileApi =
-    hasWindow &&
-    typeof File !== 'undefined' &&
-    typeof Blob !== 'undefined' &&
-    typeof FileReader !== 'undefined';
+    hasWindow && typeof File !== 'undefined' && typeof Blob !== 'undefined' && typeof FileReader !== 'undefined';
 
   const blobUrl =
     hasWindow &&

@@ -10,9 +10,9 @@ export default function SEOArticle() {
           AHADEX Tools is a collection of free online utilities designed for one purpose: to help
           you work with files — images, PDFs, and documents — without compromising your privacy.
           Unlike traditional online file converters and compressors, every tool on this site runs
-          entirely in your browser. Your files never leave your device, never touch our servers, and
-          never get stored anywhere. This isn't a marketing claim — it's a technical guarantee you
-          can verify by checking your browser's network activity while using any tool.
+          entirely in your browser. Your files never leave your device, never touch our servers,
+          and never get stored anywhere. This isn't a marketing claim — it's a technical guarantee
+          you can verify by checking your browser's network activity while using any tool.
         </p>
 
         <h3 className="mt-8 text-lg font-semibold text-slate-900">
@@ -23,8 +23,8 @@ export default function SEOArticle() {
           there, and then letting you download the result. This approach has several problems.
           First, your file leaves your control — even if the service claims to delete it after
           processing, you have no way to verify that. Second, uploads take time, especially for
-          large files or slow connections. Third, the service now has a copy of your document, which
-          may contain sensitive information like financial data, medical records, or personal
+          large files or slow connections. Third, the service now has a copy of your document,
+          which may contain sensitive information like financial data, medical records, or personal
           photos.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
@@ -37,11 +37,13 @@ export default function SEOArticle() {
           manipulation, and format conversion.
         </p>
 
-        <h3 className="mt-8 text-lg font-semibold text-slate-900">Our Available Tools</h3>
+        <h3 className="mt-8 text-lg font-semibold text-slate-900">
+          Our Available Tools
+        </h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
           AHADEX Tools currently offers image compression, image resizing, PDF compression, PDF
-          merging, and PDF splitting. Each tool is designed for a specific common task, with a clean
-          interface that doesn't require technical knowledge to use.
+          merging, and PDF splitting. Each tool is designed for a specific common task, with a
+          clean interface that doesn't require technical knowledge to use.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
           The <strong>image compressor</strong> reduces the file size of JPEG, PNG, and WebP images
@@ -52,15 +54,16 @@ export default function SEOArticle() {
         </p>
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
           For PDFs, the <strong>PDF compressor</strong> reduces file size while preserving
-          readability — useful for email attachments with size limits. The{' '}
-          <strong>PDF merger</strong>
-          combines multiple PDFs into a single document, and the <strong>PDF splitter</strong>{' '}
-          extracts specific pages or splits a large PDF into smaller files. All of these tools run
-          in your browser, so even sensitive documents like contracts, invoices, or legal files can
-          be processed safely.
+          readability — useful for email attachments with size limits. The <strong>PDF merger</strong>
+          combines multiple PDFs into a single document, and the <strong>PDF splitter</strong> extracts
+          specific pages or splits a large PDF into smaller files. All of these tools run in your
+          browser, so even sensitive documents like contracts, invoices, or legal files can be
+          processed safely.
         </p>
 
-        <h3 className="mt-8 text-lg font-semibold text-slate-900">Who Should Use These Tools?</h3>
+        <h3 className="mt-8 text-lg font-semibold text-slate-900">
+          Who Should Use These Tools?
+        </h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
           AHADEX Tools is built for anyone who values privacy and speed. Students can compress
           photos before submitting assignments. Professionals can merge PDFs without worrying about
@@ -69,21 +72,21 @@ export default function SEOArticle() {
           expensive software subscriptions.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
-          Because everything runs locally, these tools also work reliably regardless of your network
-          speed. If the page loads, the tools work — no additional requests needed. This makes
-          AHADEX Tools a practical choice for users in regions with limited bandwidth or unreliable
-          connections.
+          Because everything runs locally, these tools also work reliably regardless of your
+          network speed. If the page loads, the tools work — no additional requests needed. This
+          makes AHADEX Tools a practical choice for users in regions with limited bandwidth or
+          unreliable connections.
         </p>
 
         <h3 className="mt-8 text-lg font-semibold text-slate-900">
           No Signup, No Limits, No Hidden Costs
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
-          Every tool on AHADEX is free to use without registration. There's no daily usage limit, no
-          file size cap beyond what your device can handle, and no premium tier that unlocks basic
-          features. We believe useful tools should be available to everyone, and our pricing model
-          reflects that. The site is supported by non-intrusive advertising, allowing us to keep all
-          tools free while covering basic hosting costs.
+          Every tool on AHADEX is free to use without registration. There's no daily usage limit,
+          no file size cap beyond what your device can handle, and no premium tier that unlocks
+          basic features. We believe useful tools should be available to everyone, and our pricing
+          model reflects that. The site is supported by non-intrusive advertising, allowing us to
+          keep all tools free while covering basic hosting costs.
         </p>
 
         <h3 className="mt-8 text-lg font-semibold text-slate-900">

@@ -12,11 +12,11 @@ export default function About() {
         </p>
 
         <p>
-          Most online tools work by uploading your file to a remote server, processing it there, and
-          sending it back. This approach has real privacy implications — you have no way to verify
-          what happens to your file on someone else's server. AHADEX takes a different approach:
-          every tool runs entirely in your browser using modern JavaScript APIs. Your files are
-          processed locally, on your own device, and never transmitted anywhere.
+          Most online tools work by uploading your file to a remote server, processing it there,
+          and sending it back. This approach has real privacy implications — you have no way to
+          verify what happens to your file on someone else's server. AHADEX takes a different
+          approach: every tool runs entirely in your browser using modern JavaScript APIs. Your
+          files are processed locally, on your own device, and never transmitted anywhere.
         </p>
 
         <h2 className="mt-8 text-xl font-semibold text-slate-900">Why We Built This</h2>

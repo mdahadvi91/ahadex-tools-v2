@@ -32,7 +32,7 @@ const FAQS: FaqItem[] = [
   {
     question: 'Is there a file size limit?',
     answer:
-      "The only limit is your device's available memory. Files up to 100MB typically process fine on modern devices, though very large files may be slower.",
+      'The only limit is your device\'s available memory. Files up to 100MB typically process fine on modern devices, though very large files may be slower.',
   },
 ];
 

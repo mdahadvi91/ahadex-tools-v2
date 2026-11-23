@@ -16,16 +16,25 @@ export default defineConfig([
     'test-results/**',
     '.wrangler/**',
   ]),
-
   {
-    files: ['**/*.{js,mjs,cjs}'],
+    files: ['src/**/*.js'],
+    extends: [js.configs.recommended, prettier],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: {
+        ...globals.browser,
+        ...globals.worker,
+      },
+    },
+  },
+  {
+    files: ['**/*.{mjs,cjs}', '*.js'],
     extends: [js.configs.recommended, prettier],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.node,
     },
   },
-
   {
     files: ['src/**/*.{ts,tsx}'],
     extends: [
@@ -36,23 +45,19 @@ export default defineConfig([
     ],
     languageOptions: {
       ecmaVersion: 2022,
-      globals: {
-        ...globals.browser,
-        ...globals.worker,
-      },
+      globals: globals.browser,
     },
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-
   {
     files: [
       'vite.config.ts',
       'vitest.config.ts',
       'playwright.config.ts',
       'scripts/**/*.ts',
-      'tests/**/*.{ts,tsx}',
+      'tests/**/*.ts',
     ],
     extends: [js.configs.recommended, tseslint.configs.recommended, prettier],
     languageOptions: {

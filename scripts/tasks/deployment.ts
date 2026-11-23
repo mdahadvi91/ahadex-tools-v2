@@ -13,9 +13,5 @@ const manifest = {
   mode: env.isProduction ? 'production' : 'development',
 };
 
-fs.writeFileSync(
-  path.join(distDir, 'deployment-meta.json'),
-  JSON.stringify(manifest, null, 2),
-  'utf8',
-);
+fs.writeFileSync(path.join(distDir, 'deployment-meta.json'), JSON.stringify(manifest, null, 2), 'utf8');
 console.log(`Wrote ${path.join(distDir, 'deployment-meta.json')}`);
