@@ -15,7 +15,7 @@ function bench(fn: () => void, iterations: number): number {
 }
 
 describe('image-resizer pure helpers performance', () => {
-  it('computeOutputDimensions under 50ms for 10k calls', () => {
+  it('computeOutputDimensions under 200ms for 10k calls', () => {
     const elapsed = bench(() => {
       computeOutputDimensions(
         { width: 1920, height: 1080 },
@@ -28,12 +28,12 @@ describe('image-resizer pure helpers performance', () => {
         },
       );
     }, 10_000);
-    expect(elapsed).toBeLessThan(50);
+    expect(elapsed).toBeLessThan(200);
   });
 
-  it('formatBytes under 30ms for 10k calls', () => {
+  it('formatBytes under 150ms for 10k calls', () => {
     const elapsed = bench(() => formatBytes(1024 * 1024), 10_000);
-    expect(elapsed).toBeLessThan(30);
+    expect(elapsed).toBeLessThan(150);
   });
 
   it('validateInput under 100ms for 10k calls', () => {

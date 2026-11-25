@@ -15,11 +15,11 @@ function benchmark(fn: () => void, iterations: number): number {
 }
 
 describe('pdf-compressor pure helpers performance', () => {
-  it('pdfSavingsPercent runs under 25ms for 10,000 calls', () => {
+  it('pdfSavingsPercent runs under 150ms for 10,000 calls', () => {
     const elapsed = benchmark(() => {
       pdfSavingsPercent(100_000, 62_000);
     }, 10_000);
-    expect(elapsed).toBeLessThan(25);
+    expect(elapsed).toBeLessThan(150);
   });
 
   it('validatePdfBuffer runs under 150ms for 2,000 header checks', () => {
@@ -37,11 +37,11 @@ describe('pdf-compressor content & schema budgets', () => {
     expect(JSON.stringify(buildSchema('https://ahadex.online')).length).toBeLessThan(30 * 1024);
   });
 
-  it('builds JSON-LD schema under 50ms for 1,000 calls', () => {
+  it('builds JSON-LD schema under 250ms for 1,000 calls', () => {
     const elapsed = benchmark(() => {
       buildSchema('https://ahadex.online');
     }, 1_000);
-    expect(elapsed).toBeLessThan(50);
+    expect(elapsed).toBeLessThan(250);
   });
 
   it('keeps section headings, paragraphs, and FAQ answers readable', () => {

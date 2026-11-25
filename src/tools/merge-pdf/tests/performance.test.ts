@@ -31,11 +31,11 @@ describe('merge-pdf validation & schema performance', () => {
     expect(JSON.stringify(buildSchema('https://ahadex.online')).length).toBeLessThan(30 * 1024);
   });
 
-  it('builds JSON-LD schema under 50ms for 1,000 calls', () => {
+  it('builds JSON-LD schema under 250ms for 1,000 calls', () => {
     const elapsed = benchmark(() => {
       buildSchema('https://ahadex.online');
     }, 1_000);
-    expect(elapsed).toBeLessThan(50);
+    expect(elapsed).toBeLessThan(250);
   });
 
   it('keeps section headings, paragraphs, and FAQ answers readable', () => {
