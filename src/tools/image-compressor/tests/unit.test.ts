@@ -3,8 +3,9 @@
  * These tests run in Node (no browser APIs needed).
  */
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import { presetToOptions, formatBytes, savingsPercent } from '../types';
+import { ImageCompressorEngine } from '../engine';
 import {
   validateInput,
   isMimeSupported,
@@ -135,7 +136,62 @@ describe('isMimeSupported', () => {
 });
 
 describe('MAX_PIXEL_COUNT', () => {
-  it('is 80 megapixels', () => {
-    expect(MAX_PIXEL_COUNT).toBe(80_000_000);
+  it('is capped at 25 megapixels to keep RGBA memory conservative', () => {
+    expect(MAX_PIXEL_COUNT).toBe(25_000_000);
+  });
+});
+
+describe('ImageCompressorEngine worker lifecycle', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('cleans up message, error, and messageerror listeners when ping times out', async () => {
+    vi.useFakeTimers();
+    const target = new EventTarget();
+    const removeSpy = vi.spyOn(target, 'removeEventListener');
+    const mockWorker = Object.assign(target, {
+      postMessage: vi.fn(),
+      terminate: vi.fn(),
+      onerror: null,
+      onmessage: null,
+      onmessageerror: null,
+    }) as unknown as Worker;
+
+    const engine = new ImageCompressorEngine(mockWorker);
+    const pingPromise = engine.ping(50);
+
+    await vi.advanceTimersByTimeAsync(50);
+    await expect(pingPromise).resolves.toBe(false);
+
+    const removedEvents = removeSpy.mock.calls.map(([type]) => type);
+    expect(removedEvents).toContain('message');
+    expect(removedEvents).toContain('error');
+    expect(removedEvents).toContain('messageerror');
+
+    engine.dispose();
+  });
+
+  it('rejects pending compress jobs immediately when worker emits messageerror', async () => {
+    const target = new EventTarget();
+    const mockWorker = Object.assign(target, {
+      postMessage: vi.fn(),
+      terminate: vi.fn(),
+      onerror: null,
+      onmessage: null,
+      onmessageerror: null,
+    }) as unknown as Worker;
+
+    const engine = new ImageCompressorEngine(mockWorker);
+    const pendingJob = engine.compress({
+      bytes: new ArrayBuffer(8),
+      inputMime: 'image/png',
+      fileName: 'sample.png',
+      options: { format: 'webp', quality: 0.8, resizeToMaxDimension: null },
+    });
+
+    target.dispatchEvent(new Event('messageerror'));
+    await expect(pendingJob).rejects.toThrow(/messageerror/i);
+    engine.dispose();
   });
 });

@@ -123,6 +123,40 @@ test.describe('Homepage, search, and mobile responsiveness', () => {
     await expect(page.locator('#mobile-menu')).toBeVisible();
     await expect(page.locator('#mobile-menu a', { hasText: 'About' })).toBeVisible();
   });
+
+  test('privacy consent banner customizes preferences, persists across reload, and reopens from footer', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const consentRegion = page.getByRole('region', { name: 'Privacy and cookie preferences' });
+    await expect(consentRegion).toBeVisible();
+
+    // Clicking Customize reveals toggles without dismissing or writing preferences
+    await consentRegion.getByRole('button', { name: 'Customize' }).click();
+    const analyticsToggle = consentRegion.getByLabel(/Optional Analytics/i);
+    const adsToggle = consentRegion.getByLabel(/Optional Advertising/i);
+
+    await expect(analyticsToggle).not.toBeChecked();
+    await expect(adsToggle).not.toBeChecked();
+
+    await analyticsToggle.check();
+    await consentRegion.getByRole('button', { name: 'Save Preferences' }).click();
+    await expect(consentRegion).toBeHidden();
+
+    // Persists after reload
+    await page.reload();
+    await expect(consentRegion).toBeHidden();
+
+    // Footer button reopens customize panel with saved values intact
+    await page.getByRole('button', { name: 'Privacy & Cookie Settings' }).click();
+    await expect(consentRegion).toBeVisible();
+    await expect(consentRegion.getByLabel(/Optional Analytics/i)).toBeChecked();
+    await expect(consentRegion.getByLabel(/Optional Advertising/i)).not.toBeChecked();
+
+    await consentRegion.getByRole('button', { name: 'Reject All' }).click();
+    await expect(consentRegion).toBeHidden();
+  });
 });
 
 test.describe('Local browser-only tool workflows', () => {
@@ -188,6 +222,44 @@ test.describe('Local browser-only tool workflows', () => {
     expect(download.suggestedFilename()).toBe('square-e2e-resized.webp');
     const outputBytes = await readDownloadBuffer(download);
     expect(outputBytes.byteLength).toBeGreaterThan(20);
+  });
+
+  test('Image Resizer handles aspect-ratio lock/unlock and preset dimensions accurately', async ({
+    page,
+  }) => {
+    await page.goto('/image-resizer/');
+    const rectPng = createSamplePngBuffer(120, 60);
+
+    await page.locator('input[type="file"]').setInputFiles({
+      name: 'wide-e2e.png',
+      mimeType: 'image/png',
+      buffer: rectPng,
+    });
+
+    // 1) Aspect ratio locked (2:1 input -> width 60 produces 60x30)
+    const aspectCheckbox = page.getByLabel('Maintain aspect ratio');
+    await expect(aspectCheckbox).toBeChecked();
+    await expect(page.getByLabel('Height (px)')).toBeDisabled();
+    await page.getByLabel('Width (px)').fill('60');
+    await page.getByRole('button', { name: 'Resize 1 file' }).click();
+    await expect(page.getByText('120x60 to 60x30')).toBeVisible();
+
+    // 2) Preset mode syncs dimensions cleanly and outputs exact preset target (1200x675)
+    await page.getByRole('button', { name: 'Preset', exact: true }).click();
+    const presetSelect = page.getByLabel('Preset');
+    await expect(presetSelect).toHaveValue('150x150');
+    await presetSelect.selectOption('1200x675');
+    await page.getByRole('button', { name: 'Resize 1 file' }).click();
+    await expect(page.getByText('120x60 to 1200x675')).toBeVisible();
+
+    // 3) Aspect ratio unlocked allows independent width & height (80x50)
+    await page.getByRole('button', { name: 'Dimensions', exact: true }).click();
+    await aspectCheckbox.uncheck();
+    await expect(page.getByLabel('Height (px)')).toBeEnabled();
+    await page.getByLabel('Width (px)').fill('80');
+    await page.getByLabel('Height (px)').fill('50');
+    await page.getByRole('button', { name: 'Resize 1 file' }).click();
+    await expect(page.getByText('120x60 to 80x50')).toBeVisible();
   });
 
   test('PDF Compressor optimizes a multi-page PDF locally with zero outbound uploads', async ({

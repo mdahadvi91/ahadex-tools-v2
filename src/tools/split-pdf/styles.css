@@ -1,0 +1,17 @@
+/**
+ * Scoped styles for the Split PDF tool.
+ * All selectors are prefixed with .split-pdf- to keep tools isolated.
+ */
+
+.split-pdf-mode-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.split-pdf-mode-card-active {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}

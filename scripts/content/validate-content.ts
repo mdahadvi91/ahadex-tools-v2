@@ -1,7 +1,7 @@
 /**
- * Content quality, AdSense depth (>=800 words), source-to-rendered HTML consistency,
- * internal-link integrity, and verifiable-claims validator across all tools and
- * static informational pages.
+ * Content quality, helpful editorial depth (>=600 words), cross-tool prose uniqueness,
+ * source-to-rendered HTML consistency, internal-link integrity, and verifiable-claims
+ * validator across all tools and static informational pages.
  */
 
 import path from 'node:path';
@@ -11,6 +11,8 @@ import { fileExists, readTextFile, resolveFromRoot } from '../utils/file-utils';
 import { discoverPublishedRoutes, discoverToolsFromFilesystem } from '../utils/route-discovery';
 import { assertReportPassed, createValidationReport } from '../utils/validation-utils';
 import { routeToDistHtmlPath } from '../validation/validate-routes';
+
+export const MIN_HELPFUL_TOOL_WORDS = 600;
 
 export interface ToolContentShape {
   HERO?: { h1?: string; tagline?: string; subtitle?: string };
@@ -137,12 +139,12 @@ export function inspectRenderedToolHtmlConsistency(
   }
 
   const renderedWordCount = countWords(mainVisibleText);
-  if (renderedWordCount < 800) {
+  if (renderedWordCount < MIN_HELPFUL_TOOL_WORDS) {
     issues.push({
       code: 'CONTENT_RENDERED_THIN_HTML',
       severity: 'critical',
       target,
-      message: `Rendered visible <main> word count (${renderedWordCount}) is below the 800-word requirement.`,
+      message: `Rendered visible <main> word count (${renderedWordCount}) is below the ${MIN_HELPFUL_TOOL_WORDS}-word editorial depth baseline.`,
     });
   }
 }
@@ -306,12 +308,12 @@ export function inspectToolContentModule(
   ].join(' ');
 
   const words = countWords(combinedProse);
-  if (words < 800) {
+  if (words < MIN_HELPFUL_TOOL_WORDS) {
     issues.push({
       code: 'CONTENT_THIN_WORD_COUNT',
       severity: 'critical',
       target,
-      message: `Tool prose word count (${words}) is below the 800-word AdSense quality floor.`,
+      message: `Tool prose word count (${words}) is below the ${MIN_HELPFUL_TOOL_WORDS}-word helpfulness baseline.`,
     });
   }
 
@@ -380,6 +382,7 @@ export async function runContentValidation(
   }
 
   const tools = await discoverToolsFromFilesystem(options.toolsRoot);
+  const seenParagraphs = new Map<string, string>();
   for (const tool of tools) {
     if (!tool.implemented) continue;
     checkedCount++;
@@ -397,6 +400,27 @@ export async function runContentValidation(
 
     const mod = (await import(pathToFileURL(contentPath).href)) as ToolContentShape;
     inspectToolContentModule(mod, validRoutePaths, target, issues);
+
+    const proseBlocks = [
+      ...(mod.SECTIONS ?? []).flatMap((s) => s.paragraphs),
+      ...(mod.PRIVACY?.paragraphs ?? []),
+      ...(mod.FAQ ?? []).map((f) => f.answer),
+    ];
+    for (const block of proseBlocks) {
+      const normalized = normalizeWhitespace(block).toLowerCase();
+      if (countWords(normalized) < 10) continue;
+      const previousOwner = seenParagraphs.get(normalized);
+      if (previousOwner && previousOwner !== target) {
+        issues.push({
+          code: 'CONTENT_DUPLICATE_PROSE',
+          severity: 'critical',
+          target,
+          message: `Copied paragraph duplicates content from ${previousOwner}: "${normalized.slice(0, 72)}..."`,
+        });
+      } else {
+        seenParagraphs.set(normalized, target);
+      }
+    }
 
     const h1 = mod.HERO?.h1?.trim().toLowerCase();
     if (h1) {

@@ -1,5 +1,6 @@
 /**
- * Keyword map for the PDF Compressor tool.
+ * Keyword map for the PDF Compressor tool. Targets real organic PDF size
+ * reduction and metadata cleanup queries distinct from Merge/Split PDF.
  */
 
 export interface KeywordMap {
@@ -14,18 +15,20 @@ export const keywords: KeywordMap = {
   secondary: [
     'compress pdf online',
     'reduce pdf file size',
+    'compress pdf free',
+    'make pdf smaller',
     'optimize pdf in browser',
     'shrink pdf without uploading',
-    'private pdf compressor',
-    'browser pdf optimizer',
+    'private pdf optimizer',
   ],
   longTail: [
     'compress pdf without uploading to server',
+    'compress pdf without losing text quality',
+    'reduce pdf size for email attachment',
     'optimize pdf object streams in browser',
-    'remove pdf metadata and shrink file size',
+    'strip pdf metadata and shrink file size',
     'compress confidential pdf locally',
     'free pdf compressor no signup',
-    'reduce pdf size for email attachment',
   ],
   intents: ['transactional', 'informational'],
 };

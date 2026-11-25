@@ -15,7 +15,8 @@ const SUPPORTED_INPUT_MIMES = new Set<SupportedMime>([
 const SUPPORTED_OUTPUT_FORMATS = new Set<OutputFormat>(['jpeg', 'webp', 'png']);
 
 export const MAX_INPUT_BYTES = 25 * 1024 * 1024;
-export const MAX_PIXEL_COUNT = 80_000_000;
+/** Conservative 25 MP upper bound (~100 MB per RGBA canvas surface) to prevent browser OOM crashes. */
+export const MAX_PIXEL_COUNT = 25_000_000;
 export const MAX_DIMENSION = 8000;
 export const MIN_DIMENSION = 1;
 
@@ -82,6 +83,12 @@ export function validateInput(input: ResizeInput): ValidationIssue[] {
     issues.push({
       code: 'invalid-dimensions',
       message: 'At least one dimension (width or height) must be set.',
+    });
+  }
+  if (width !== null && height !== null && width * height > MAX_PIXEL_COUNT) {
+    issues.push({
+      code: 'invalid-dimensions',
+      message: `Target ${width}x${height} (${(width * height).toLocaleString()} pixels) exceeds the 25 MP memory safety cap.`,
     });
   }
 

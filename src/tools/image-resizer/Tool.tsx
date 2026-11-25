@@ -10,6 +10,7 @@ import FileList, { type FileListItem } from '../../components/ui/FileList';
 import ErrorMessage from '../../components/ui/ErrorMessage';
 import Spinner from '../../components/ui/Spinner';
 import { showToast } from '../../components/ui/Toast';
+import { triggerBlobDownload, triggerStaggeredDownloads } from '../../lib/download-blob';
 import { validateSingleFile } from '../../platform/security/file-policy';
 import { createEngine, type ImageResizerEngine } from './engine';
 import type { OutputFormat, ResizeMode, ResizeResult, SupportedMime } from './types';
@@ -160,21 +161,14 @@ export default function Tool() {
   }, [files, format, quality, mode, width, height, percentage, maintainAspect]);
 
   const downloadOne = useCallback((item: ProcessedItem) => {
-    const url = URL.createObjectURL(item.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = item.outputName;
-    a.rel = 'noopener';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    triggerBlobDownload(item.blob, item.outputName);
   }, []);
 
   const downloadAll = useCallback(() => {
-    for (const item of results) downloadOne(item);
-  }, [results, downloadOne]);
+    triggerStaggeredDownloads(
+      results.map((item) => ({ blob: item.blob, fileName: item.outputName })),
+    );
+  }, [results]);
 
   const fileItems: FileListItem[] = files.map((f, i) => ({
     id: `f-${i}`,
@@ -216,7 +210,18 @@ export default function Tool() {
                     key={m}
                     size="sm"
                     variant={mode === m ? 'primary' : 'secondary'}
-                    onClick={() => setMode(m)}
+                    onClick={() => {
+                      setMode(m);
+                      if (m === 'preset') {
+                        const matched = PRESETS.find(
+                          (p) => p.width === width && p.height === height,
+                        );
+                        if (!matched) {
+                          setWidth(PRESETS[0].width);
+                          setHeight(PRESETS[0].height);
+                        }
+                      }
+                    }}
                     disabled={processing}
                   >
                     {m === 'dimensions'

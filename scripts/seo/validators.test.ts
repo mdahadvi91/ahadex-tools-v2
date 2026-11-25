@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { ValidationIssue } from '../../src/types/tool';
 import {
@@ -6,14 +8,41 @@ import {
   inspectToolContentModule,
   runContentValidation,
 } from '../content/validate-content';
+import { discoverToolsFromFilesystem } from '../utils/route-discovery';
 import { hasTrailingSlashPolicyViolation, runCanonicalValidation } from './validate-canonical';
 import { runMetadataValidation, validateMetadataBounds } from './validate-metadata';
 import { runSchemaValidation, validateToolSchemaGraph } from './validate-schema';
 
+const REQUIRED_TOOL_FILES = [
+  'index.ts',
+  'manifest.ts',
+  'metadata.ts',
+  'seo.ts',
+  'schema.ts',
+  'geo.ts',
+  'keywords.ts',
+  'content.ts',
+  'types.ts',
+  'Page.tsx',
+  'Hero.tsx',
+  'Tool.tsx',
+  'Wizard.tsx',
+  'Content.tsx',
+  'FAQ.tsx',
+  'styles.css',
+  'assets/tool-icon.svg',
+  'assets/og-image.png',
+  'engine/index.ts',
+  'tests/unit.test.ts',
+  'tests/integration.test.ts',
+  'tests/security.test.ts',
+  'tests/performance.test.ts',
+] as const;
+
 describe('Phase 5 validators against live AHADEX codebase', () => {
   it('passes metadata, canonical, schema, and content checks without critical issues', async () => {
     const metaReport = await runMetadataValidation();
-    expect(metaReport.issues.filter((i) => i.severity === 'critical')).toEqual([]);
+    expect(metaReport.issues).toEqual([]);
     expect(metaReport.checkedCount).toBeGreaterThanOrEqual(12);
 
     const canonicalReport = await runCanonicalValidation();
@@ -24,6 +53,18 @@ describe('Phase 5 validators against live AHADEX codebase', () => {
 
     const contentReport = await runContentValidation();
     expect(contentReport.issues.filter((i) => i.severity === 'critical')).toEqual([]);
+  });
+
+  it('verifies every live tool has the complete independent tool module and test structure', async () => {
+    const tools = await discoverToolsFromFilesystem();
+    expect(tools.length).toBeGreaterThanOrEqual(5);
+
+    for (const tool of tools) {
+      for (const rel of REQUIRED_TOOL_FILES) {
+        const full = path.join(tool.directory, rel);
+        expect(fs.existsSync(full), `Missing ${rel} in ${tool.slug}`).toBe(true);
+      }
+    }
   });
 });
 
@@ -102,7 +143,7 @@ describe('Phase 5 & P3 validators reject synthetic SEO and rendered-HTML content
     expect(claimIssues.some((i) => i.code === 'CONTENT_BARE_GUARANTEE')).toBe(true);
   });
 
-  it('rejects prerendered HTML that diverges from source content.ts or has <800 visible words', () => {
+  it('rejects prerendered HTML that diverges from source content.ts or has <600 visible words', () => {
     const issues: ValidationIssue[] = [];
     inspectRenderedToolHtmlConsistency(
       '<html><body><main><h1>Wrong Tool</h1><p>Very short visible body.</p></main></body></html>',

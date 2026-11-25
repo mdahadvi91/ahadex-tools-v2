@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import ToastContainer from '../ui/Toast';
+import CookieConsentBanner from './CookieConsentBanner';
 import Footer from './Footer';
 import Header from './Header';
 
@@ -22,6 +23,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       </main>
       <Footer />
       <ToastContainer />
+      <CookieConsentBanner />
     </div>
   );
 }

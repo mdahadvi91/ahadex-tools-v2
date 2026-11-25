@@ -1,5 +1,6 @@
 /**
- * Keyword map for the Split PDF tool.
+ * Keyword map for the Split PDF tool. Targets real organic PDF page extraction
+ * and splitting queries without overlapping Merge PDF or PDF Compressor.
  */
 
 export interface KeywordMap {
@@ -13,6 +14,7 @@ export const keywords: KeywordMap = {
   primary: 'split pdf',
   secondary: [
     'extract pdf pages',
+    'split pdf online free',
     'separate pdf pages',
     'pdf page extractor',
     'split pdf in browser',
@@ -20,10 +22,11 @@ export const keywords: KeywordMap = {
   ],
   longTail: [
     'split pdf without uploading to server',
-    'extract page range from pdf locally',
-    'separate pdf into single pages in browser',
-    'free pdf page extractor no signup',
-    'split confidential pdf document offline',
+    'extract specific page range from pdf locally',
+    'split pdf into individual single pages',
+    'extract pages from pdf without signup',
+    'remove extra pages from pdf in browser',
+    'split confidential pdf document locally',
   ],
   intents: ['transactional', 'informational'],
 };

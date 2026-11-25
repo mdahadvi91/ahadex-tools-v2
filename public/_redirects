@@ -1,6 +1,18 @@
 # Canonical host redirect (www -> apex)
 https://www.ahadex.online/* https://ahadex.online/:splat 301
 
+# Legacy /tool/* redirects -> canonical tool URLs (301)
+/tool/image-compressor /image-compressor/ 301
+/tool/image-compressor/ /image-compressor/ 301
+/tool/image-resizer /image-resizer/ 301
+/tool/image-resizer/ /image-resizer/ 301
+/tool/merge-pdf /merge-pdf/ 301
+/tool/merge-pdf/ /merge-pdf/ 301
+/tool/pdf-compressor /pdf-compressor/ 301
+/tool/pdf-compressor/ /pdf-compressor/ 301
+/tool/split-pdf /split-pdf/ 301
+/tool/split-pdf/ /split-pdf/ 301
+
 # Canonical trailing-slash redirects for static & tool routes
 /about /about/ 301
 /contact /contact/ 301

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { getShortToolName } from '../../lib/tool-display';
+import { openConsentPreferences } from '../../platform/consent';
 import { toolRoutes } from '../../router/route-registry';
 
 const LEGAL_LINKS = [
@@ -59,6 +60,15 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => openConsentPreferences()}
+                  className="text-sm text-slate-600 hover:text-brand-600 hover:underline"
+                >
+                  Privacy &amp; Cookie Settings
+                </button>
+              </li>
             </ul>
           </div>
         </div>

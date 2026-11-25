@@ -80,10 +80,12 @@ describe('Phase 10 prebuild validation & report generation', () => {
 });
 
 describe('Phase 11 Cloudflare Pages deployment config validation', () => {
-  it('generates canonical www->apex and trailing-slash 301 redirects without SPA catch-all', () => {
+  it('generates canonical www->apex, legacy /tool/*, and trailing-slash 301 redirects without SPA catch-all', () => {
     const content = buildCloudflareRedirectsContent([
       '/',
       '/about/',
+      '/image-compressor/',
+      '/image-resizer/',
       '/pdf-compressor/',
       '/merge-pdf/',
     ]);
@@ -91,6 +93,11 @@ describe('Phase 11 Cloudflare Pages deployment config validation', () => {
     expect(content).toContain('https://www.ahadex.online/* https://ahadex.online/:splat 301');
     expect(content).toContain('/about /about/ 301');
     expect(content).toContain('/pdf-compressor /pdf-compressor/ 301');
+    expect(content).toContain('/tool/image-compressor /image-compressor/ 301');
+    expect(content).toContain('/tool/image-compressor/ /image-compressor/ 301');
+    expect(content).toContain('/tool/image-resizer /image-resizer/ 301');
+    expect(content).toContain('/tool/image-resizer/ /image-resizer/ 301');
+    expect(content).not.toContain('/tool/about');
     expect(content).not.toContain('/* /index.html 200');
   });
 

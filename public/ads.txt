@@ -1,3 +1,4 @@
 # AHADEX Tools ads.txt
-# Add your verified Google AdSense publisher line once approved:
-# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+# Placeholder file prior to Google AdSense approval.
+# Once approved, replace this comment with your verified AdSense record:
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

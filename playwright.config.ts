@@ -25,6 +25,26 @@ function resolveChromiumExecutable(): string | undefined {
 
 const executablePath = resolveChromiumExecutable();
 
+const requestedProjects = process.argv.join(' ');
+const onlyProdProject =
+  requestedProjects.includes('e2e-prod') && !requestedProjects.includes('e2e-dev');
+const onlyDevProject =
+  requestedProjects.includes('e2e-dev') && !requestedProjects.includes('e2e-prod');
+
+const devServer = {
+  command: 'npm run dev -- --host 127.0.0.1 --port 3000',
+  url: 'http://127.0.0.1:3000',
+  reuseExistingServer: !process.env.CI,
+  timeout: 120_000,
+};
+
+const previewServer = {
+  command: 'npm run preview -- --host 127.0.0.1 --port 4173',
+  url: 'http://127.0.0.1:4173',
+  reuseExistingServer: !process.env.CI,
+  timeout: 120_000,
+};
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -47,18 +67,9 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:4173' },
     },
   ],
-  webServer: [
-    {
-      command: 'npm run dev -- --host 127.0.0.1 --port 3000',
-      url: 'http://127.0.0.1:3000',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
-    },
-    {
-      command: 'npm run preview -- --host 127.0.0.1 --port 4173',
-      url: 'http://127.0.0.1:4173',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120_000,
-    },
-  ],
+  webServer: onlyProdProject
+    ? [previewServer]
+    : onlyDevProject
+      ? [devServer]
+      : [devServer, previewServer],
 });

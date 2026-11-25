@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { STATIC_PAGE_ROUTES } from '../config/static-routes';
 import MainLayout from '../components/layout/MainLayout';
 import About from '../pages/About';
@@ -48,10 +48,25 @@ export function App() {
         {toolRoutes.flatMap((route) => {
           const Component = route.Component;
           const withoutTrailing = route.path.replace(/\/$/, '');
+          const slug = withoutTrailing.replace(/^\//, '');
           const routes = [<Route key={route.path} path={route.path} element={<Component />} />];
           if (withoutTrailing && withoutTrailing !== route.path) {
             routes.push(
               <Route key={withoutTrailing} path={withoutTrailing} element={<Component />} />,
+            );
+          }
+          if (slug) {
+            routes.push(
+              <Route
+                key={`legacy-tool-${slug}`}
+                path={`/tool/${slug}`}
+                element={<Navigate to={route.path} replace />}
+              />,
+              <Route
+                key={`legacy-tool-${slug}-slash`}
+                path={`/tool/${slug}/`}
+                element={<Navigate to={route.path} replace />}
+              />,
             );
           }
           return routes;

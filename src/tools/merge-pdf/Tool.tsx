@@ -10,6 +10,7 @@ import ErrorMessage from '../../components/ui/ErrorMessage';
 import ProgressBar from '../../components/ui/ProgressBar';
 import Spinner from '../../components/ui/Spinner';
 import { showToast } from '../../components/ui/Toast';
+import { triggerBlobDownload } from '../../lib/download-blob';
 import { formatBytes } from '../../lib/format-bytes';
 import { validateBatch, validateSingleFile } from '../../platform/security/file-policy';
 import { mergePdfBuffers } from './engine';
@@ -41,8 +42,12 @@ function normalizePdfFile(file: File): File {
 
 function sanitizeOutputFilename(raw: string): string {
   const trimmed = raw.trim().replace(/[/\\?%*:|"<>]/g, '-');
-  const base = trimmed || 'merged-document';
-  return base.toLowerCase().endsWith('.pdf') ? base : `${base}.pdf`;
+  const withoutExt = trimmed
+    .replace(/\.pdf$/i, '')
+    .replace(/^\.+/, '')
+    .trim();
+  const base = withoutExt || 'merged-document';
+  return `${base}.pdf`;
 }
 
 export default function Tool() {
@@ -126,13 +131,16 @@ export default function Tool() {
     setMerged(null);
 
     try {
-      const sources = await Promise.all(
-        queue.map(async (item) => ({
+      const sources: Array<{ fileName: string; bytes: ArrayBuffer }> = [];
+      for (let i = 0; i < queue.length; i++) {
+        const item = queue[i];
+        sources.push({
           fileName: item.file.name,
           bytes: await item.file.arrayBuffer(),
-        })),
-      );
-      setProgress(60);
+        });
+        setProgress(Math.round(((i + 1) / queue.length) * 55));
+      }
+      setProgress(70);
 
       const result = await mergePdfBuffers(sources);
       setProgress(100);
@@ -160,16 +168,7 @@ export default function Tool() {
 
   const downloadMerged = useCallback(() => {
     if (!merged) return;
-    const url = URL.createObjectURL(merged.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = merged.outputName;
-    a.rel = 'noopener';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    triggerBlobDownload(merged.blob, merged.outputName);
   }, [merged]);
 
   return (

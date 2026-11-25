@@ -88,6 +88,9 @@ export async function splitPdfBuffer(input: SplitPdfInput): Promise<SplitPdfResu
         bytes,
         outputSize: bytes.byteLength,
       });
+      if (pageNum % 5 === 0 && pageNum < totalPages) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
     }
   }
 

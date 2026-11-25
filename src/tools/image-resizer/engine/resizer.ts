@@ -152,20 +152,34 @@ export async function resizeImage(input: ResizeInput): Promise<ResizeResult> {
     );
   }
 
-  const canvasInfo = makeCanvas(outputDims.width, outputDims.height);
-  try {
-    canvasInfo.ctx.drawImage(decoded.bitmap, 0, 0, outputDims.width, outputDims.height);
-  } catch (err) {
+  if (outputDims.width * outputDims.height > MAX_PIXEL_COUNT) {
     decoded.bitmap.close();
     throw new ResizeError(
-      `drawImage failed: ${err instanceof Error ? err.message : String(err)}`,
-      'internal',
+      `Output ${outputDims.width}x${outputDims.height} exceeds 25 MP memory budget.`,
+      'invalid-dimensions',
     );
   }
-  decoded.bitmap.close();
 
+  const canvasInfo = makeCanvas(outputDims.width, outputDims.height);
   const outputMime = OUTPUT_MIME[input.options.format];
-  const bytes = await encode(canvasInfo.canvas, outputMime, input.options.quality);
+  let bytes: ArrayBuffer;
+  try {
+    try {
+      canvasInfo.ctx.drawImage(decoded.bitmap, 0, 0, outputDims.width, outputDims.height);
+    } catch (err) {
+      throw new ResizeError(
+        `drawImage failed: ${err instanceof Error ? err.message : String(err)}`,
+        'internal',
+      );
+    } finally {
+      decoded.bitmap.close();
+    }
+
+    bytes = await encode(canvasInfo.canvas, outputMime, input.options.quality);
+  } finally {
+    canvasInfo.canvas.width = 0;
+    canvasInfo.canvas.height = 0;
+  }
 
   const durationMs =
     (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startedAt;

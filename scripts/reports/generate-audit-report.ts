@@ -13,12 +13,20 @@ import type { CrawlerSimulationResult } from '../crawlers/simulate-crawlers';
 import { collectDiscoverySnapshot } from '../discovery/discover-tools';
 import { resolveFromRoot, writeTextFile } from '../utils/file-utils';
 
+export interface CoverageSummaryMetrics {
+  readonly linesPct: number;
+  readonly statementsPct: number;
+  readonly functionsPct: number;
+  readonly branchesPct: number;
+}
+
 export interface BuildReportInput {
   readonly generatedAt: string;
   readonly durationMs: number;
   readonly prebuildReports: readonly ValidationReport[];
   readonly finalReports: readonly ValidationReport[];
   readonly crawlerSimulation: CrawlerSimulationResult;
+  readonly coverageSummary?: CoverageSummaryMetrics | null;
   readonly overallPassed: boolean;
 }
 
@@ -90,6 +98,8 @@ export async function generateAuditReports(
     (sum, r) => sum + r.issues.filter((i) => i.severity === 'warning').length,
     0,
   );
+  const e2eGate = allReports.find((r) => r.validator === 'e2e:playwright');
+  const e2eStatus = e2eGate ? e2eGate.status : 'NOT_RUN';
 
   writeTextFile(
     buildSummaryPath,
@@ -102,6 +112,8 @@ export async function generateAuditReports(
         durationMs: input.durationMs,
         criticalCount,
         warningCount,
+        e2eStatus,
+        coverageSummary: input.coverageSummary ?? null,
         checks: allReports.map((r) => ({
           validator: r.validator,
           status: r.status,
@@ -122,6 +134,10 @@ export async function generateAuditReports(
     )
     .join('\n');
 
+  const coverageLine = input.coverageSummary
+    ? `- **Vitest Coverage (v8)**: Lines ${input.coverageSummary.linesPct}% | Statements ${input.coverageSummary.statementsPct}% | Functions ${input.coverageSummary.functionsPct}% | Branches ${input.coverageSummary.branchesPct}%`
+    : '- **Vitest Coverage (v8)**: `NOT_RUN`';
+
   const auditMarkdown = [
     `# AHADEX Tools Build & Audit Summary`,
     '',
@@ -129,6 +145,8 @@ export async function generateAuditReports(
     `- **Target Origin**: ${SITE_CONFIG.origin}`,
     `- **Overall Local Build Status**: **${input.overallPassed ? 'PASS' : 'FAIL'}** (${input.durationMs} ms)`,
     `- **Discovered Live Tools**: ${discovery.liveToolsCount} (${discovery.routesCount} total published routes)`,
+    `- **Playwright E2E Status**: **${e2eStatus}**`,
+    coverageLine,
     `- **Crawler Mode**: \`${input.crawlerSimulation.mode}\` (\`externalNetworkVerified: ${input.crawlerSimulation.externalNetworkVerified}\`)`,
     '',
     '## Automated Verification Gate Results',

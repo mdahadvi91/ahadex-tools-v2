@@ -100,7 +100,7 @@ export const SECTIONS: readonly ContentSection[] = [
   {
     heading: 'Privacy and data handling',
     paragraphs: [
-      'Your image is read from your device into browser memory and processed by code running locally in the tab. The file is not sent to a server for processing. When you close the tab or reload the page, the reference to the file in memory is released.',
+      'Your image is decoded and resampled inside browser memory on your own device without uploading the file to any server. Closing or reloading the tab immediately clears the temporary image buffers.',
       'The site itself loads over the network like any web page. Your browser requests the HTML, JavaScript and CSS needed to run the tool. These requests do not contain your file.',
       'The site collects analytics only if you grant consent. If you grant analytics consent, aggregate usage events are recorded with an approximate file size bucket. File names, contents and exact sizes are not sent.',
     ],
@@ -110,7 +110,7 @@ export const SECTIONS: readonly ContentSection[] = [
     paragraphs: [
       'Downscaling discards information permanently. If you might need the original later, keep a copy.',
       'Upscaling cannot create detail that was not in the original. A blurry upscaled image is still blurry.',
-      'The maximum input size is 25 MB per image, and the maximum decoded pixel count is 80 megapixels. Files above these limits fail before processing begins.',
+      'The maximum input size is 25 MB per image, and the maximum decoded pixel count is 25 megapixels. Files above these limits fail before processing begins.',
       'The output format defaults to the input format. GIF animation is not preserved; only the first frame is used.',
     ],
   },
@@ -195,8 +195,8 @@ export const PRIVACY = {
   heading: 'Privacy summary',
   paragraphs: [
     'Files are loaded into browser memory and processed by a Web Worker running on your device. The file is not sent to a server for resizing.',
-    'The site collects aggregate analytics only if you grant consent. Analytics events do not include file names, file contents or exact file sizes.',
-    'Consent is stored in a single first-party cookie and can be changed at any time from the settings panel.',
+    'Optional usage analytics are recorded only with your explicit consent and contain aggregate tool-level counts rather than filenames or image dimensions.',
+    'Your preference is saved locally so you can update or withdraw consent anytime.',
   ],
 } as const;
 
@@ -204,7 +204,7 @@ export const LIMITATIONS = {
   heading: 'Limits to be aware of',
   list: [
     'Maximum input size: 25 MB per image.',
-    'Maximum decoded pixels: 80 million.',
+    'Maximum decoded pixels: 25 million.',
     'GIF output is not supported; only the first frame is used.',
     'AVIF output is not supported yet; use WebP or JPEG.',
     'Upscaling cannot add detail that was not in the original.',
@@ -222,12 +222,12 @@ export const FAQ: readonly FAQItem[] = [
   {
     question: 'What file size can I resize?',
     answer:
-      'Up to 25 MB per image. This limit is enforced before processing to protect browser memory.',
+      'Each input image may be up to 25 MB (and up to 25 megapixels decoded), preventing browser memory exhaustion during canvas resampling.',
   },
   {
     question: 'Which image formats are supported?',
     answer:
-      'Input: JPG, JPEG, PNG, WebP, GIF and AVIF. Output: JPEG, WebP and PNG. GIF animations are not preserved; only a single frame is output.',
+      'The resizer reads JPG, JPEG, PNG, WebP, GIF, and AVIF files and exports resized images as JPEG, WebP, or PNG (GIF exports use the first frame).',
   },
   {
     question: 'Will resizing reduce image quality?',
@@ -246,7 +246,8 @@ export const FAQ: readonly FAQItem[] = [
   },
   {
     question: 'Is there a watermark or signup?',
-    answer: 'No watermark and no signup. The tool is free to use and does not require an account.',
+    answer:
+      'Every resized download is completely watermark-free and requires no account or registration.',
   },
   {
     question: 'What are common social media sizes?',
@@ -256,7 +257,7 @@ export const FAQ: readonly FAQItem[] = [
   {
     question: 'Does this tool work without internet?',
     answer:
-      'After the first load, some parts of the tool may continue to work because the browser has cached the page. However, this site does not currently include a service worker, so it is not guaranteed to work offline.',
+      'Once loaded, resizing runs locally in your browser without server round-trips, though offline execution is not guaranteed because no service worker is registered.',
   },
   {
     question: 'Does resizing the same image twice reduce quality?',

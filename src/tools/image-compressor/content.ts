@@ -106,7 +106,7 @@ export const SECTIONS: readonly ContentSection[] = [
     paragraphs: [
       'Compression cannot recover quality that was lost when the original image was created or previously compressed. Re-compressing an already-compressed JPEG may produce visible artifacts or, in rare cases, a larger file.',
       'PNG is lossless. Re-encoding a PNG does not reduce visual quality, but the file may grow if the original was already well-compressed. For smaller PNG output, switch to WebP when transparency is required, or JPEG when it is not.',
-      'The maximum input size is 25 MB per image, and the maximum decoded pixel count is 80 megapixels. These limits protect browser memory. Files above these limits fail before processing begins.',
+      'The maximum input size is 25 MB per image, and the maximum decoded pixel count is 25 megapixels. These limits protect browser memory. Files above these limits fail before processing begins.',
     ],
   },
 ];
@@ -191,7 +191,7 @@ export const PRIVACY = {
   paragraphs: [
     'Files are loaded into browser memory and processed by a Web Worker running on your device. The file is not sent to a server for compression.',
     'The site collects aggregate analytics only if you grant consent. Analytics events do not include file names, file contents or exact file sizes.',
-    'Consent is stored in a single first-party cookie and can be changed at any time from the settings panel.',
+    'Your consent preference is stored locally in your browser and can be updated anytime via Privacy & Cookie Settings in the footer.',
   ],
 } as const;
 
@@ -199,7 +199,7 @@ export const LIMITATIONS = {
   heading: 'Limits to be aware of',
   list: [
     'Maximum input size: 25 MB per image.',
-    'Maximum decoded pixels: 80 million.',
+    'Maximum decoded pixels: 25 million.',
     'GIF output is not supported; only the first frame is used.',
     'AVIF output is not supported yet; use WebP or JPEG.',
     'JPEG and WebP compression are lossy. Visual quality decreases at lower quality settings.',

@@ -26,7 +26,7 @@ export default defineConfig({
     exclude: ['node_modules', '.build', 'dist', 'tests/e2e/**'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'html'],
+      reporter: ['text', 'html', 'json-summary'],
       exclude: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**', '**/tests/**'],
     },
   },

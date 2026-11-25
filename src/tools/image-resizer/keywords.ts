@@ -1,5 +1,6 @@
 /**
- * Keyword map for the Image Resizer tool.
+ * Keyword map for the Image Resizer tool. Targets pixel dimension
+ * and social-preset organic search intent without overlapping Image Compressor.
  */
 
 export interface KeywordMap {
@@ -17,17 +18,18 @@ export const keywords: KeywordMap = {
     'resize png',
     'resize webp',
     'change image dimensions',
-    'image size converter',
+    'resize photo by pixels',
+    'image dimension converter',
   ],
   longTail: [
     'resize image without uploading',
-    'private image resizer',
-    'offline image resizer',
-    'resize image to specific pixel dimensions',
-    'resize photo without losing quality',
-    'resize image for instagram',
-    'resize image in browser',
-    'resize image without signup',
+    'resize image to exact pixel dimensions',
+    'resize image keeping aspect ratio',
+    'resize image by percentage in browser',
+    'resize photo for instagram 1080x1080',
+    'youtube thumbnail resizer 1280x720',
+    'client-side image resizer no signup',
+    'resize multiple photos in browser',
   ],
   intents: ['transactional', 'informational'],
 };

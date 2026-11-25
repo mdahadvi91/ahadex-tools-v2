@@ -10,21 +10,44 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE_CONFIG } from '../../config/site.config';
+import { STATIC_PAGE_ROUTES } from '../../src/config/static-routes';
 import type { ValidationIssue, ValidationReport } from '../../src/types/tool';
 import { fileExists, readTextFile, resolveFromRoot, writeTextFile } from '../utils/file-utils';
 import { discoverPublishedRoutes } from '../utils/route-discovery';
 import { assertReportPassed, createValidationReport } from '../utils/validation-utils';
 
-export function buildCloudflareRedirectsContent(routePaths: readonly string[]): string {
+const STATIC_ROUTE_PATHS = new Set(STATIC_PAGE_ROUTES.map((r) => r.path));
+
+export function buildCloudflareRedirectsContent(
+  routePaths: readonly string[],
+  explicitToolSlugs?: readonly string[],
+): string {
   const canonicalDomain = SITE_CONFIG.domain;
   const nonTrailingRedirects = routePaths
     .filter((p) => p !== '/' && p.endsWith('/'))
     .sort()
     .map((p) => `${p.replace(/\/+$/, '')} ${p} 301`);
 
+  const toolSlugs = (
+    explicitToolSlugs ??
+    routePaths
+      .filter((p) => p !== '/' && p.endsWith('/') && !STATIC_ROUTE_PATHS.has(p))
+      .map((p) => p.replace(/^\/+|\/+$/g, ''))
+  )
+    .slice()
+    .sort();
+
+  const legacyToolRedirects = toolSlugs.flatMap((slug) => [
+    `/tool/${slug} /${slug}/ 301`,
+    `/tool/${slug}/ /${slug}/ 301`,
+  ]);
+
   return [
     '# Canonical host redirect (www -> apex)',
     `https://www.${canonicalDomain}/* ${SITE_CONFIG.origin}/:splat 301`,
+    '',
+    '# Legacy /tool/* redirects -> canonical tool URLs (301)',
+    ...legacyToolRedirects,
     '',
     '# Canonical trailing-slash redirects for static & tool routes',
     ...nonTrailingRedirects,
@@ -42,7 +65,11 @@ export async function generateDeploymentArtifacts(
   const publicDir = options.publicDir ?? resolveFromRoot('public');
   const distDir = options.distDir ?? resolveFromRoot('dist');
   const routes = await discoverPublishedRoutes(options.toolsRoot);
-  const redirectsContent = buildCloudflareRedirectsContent(routes.map((r) => r.path));
+  const toolSlugs = routes.filter((r) => r.kind === 'tool').map((r) => r.slug);
+  const redirectsContent = buildCloudflareRedirectsContent(
+    routes.map((r) => r.path),
+    toolSlugs,
+  );
 
   const redirectsPath = path.join(publicDir, '_redirects');
   writeTextFile(redirectsPath, redirectsContent);
@@ -170,6 +197,21 @@ export async function runDeploymentValidation(
           target: route.path,
           message: `_redirects is missing canonical redirect "${expectedRule}".`,
         });
+      }
+
+      if (route.kind === 'tool') {
+        for (const legacyPrefix of [`/tool/${route.slug}`, `/tool/${route.slug}/`]) {
+          checkedCount++;
+          const expectedLegacyRule = `${legacyPrefix} ${route.path} 301`;
+          if (!redirects.includes(expectedLegacyRule)) {
+            issues.push({
+              code: 'DEPLOY_MISSING_LEGACY_TOOL_REDIRECT',
+              severity: 'critical',
+              target: legacyPrefix,
+              message: `_redirects is missing legacy redirect "${expectedLegacyRule}".`,
+            });
+          }
+        }
       }
     }
   }

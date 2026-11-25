@@ -95,6 +95,7 @@ export async function runMetadataValidation(
   const issues: ValidationIssue[] = [];
   const seenTitles = new Map<string, string>();
   const seenDescriptions = new Map<string, string>();
+  const seenKeywords = new Map<string, string>();
   let checkedCount = 0;
 
   for (const staticRoute of STATIC_PAGE_ROUTES) {
@@ -334,6 +335,45 @@ export async function runMetadataValidation(
         target,
         message: 'keywords.ts must define `primary` and at least one `secondary` keyword.',
       });
+    } else {
+      if (!keywords.longTail?.length) {
+        issues.push({
+          code: 'SEO_KEYWORDS_MISSING_LONGTAIL',
+          severity: 'warning',
+          target,
+          message: 'keywords.ts should include organic `longTail` search queries.',
+        });
+      }
+
+      if (seoMeta && !seoMeta.title.toLowerCase().includes(keywords.primary.trim().toLowerCase())) {
+        issues.push({
+          code: 'SEO_PRIMARY_KEYWORD_NOT_IN_TITLE',
+          severity: 'warning',
+          target,
+          message: `SEO title does not contain primary keyword "${keywords.primary}".`,
+        });
+      }
+
+      const allKeywords = [
+        keywords.primary,
+        ...(keywords.secondary ?? []),
+        ...(keywords.longTail ?? []),
+      ];
+      for (const rawKw of allKeywords) {
+        const normKw = rawKw.trim().toLowerCase();
+        if (!normKw) continue;
+        const owner = seenKeywords.get(normKw);
+        if (owner && owner !== target) {
+          issues.push({
+            code: 'SEO_DUPLICATE_KEYWORD',
+            severity: 'critical',
+            target,
+            message: `Keyword "${rawKw}" duplicates target keyword in ${owner} (cannibalization risk).`,
+          });
+        } else {
+          seenKeywords.set(normKw, target);
+        }
+      }
     }
   }
 

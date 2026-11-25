@@ -1,0 +1,14 @@
+/**
+ * Scoped styles for the Merge PDF tool.
+ * All selectors are prefixed with .merge-pdf- to keep tools isolated.
+ */
+
+.merge-pdf-queue-item {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.merge-pdf-queue-index {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  color: #64748b;
+}

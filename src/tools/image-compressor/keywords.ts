@@ -1,6 +1,7 @@
 /**
  * Keyword map for the Image Compressor tool. Used for SEO validators
- * and content review. Not injected into the page as keyword stuffing.
+ * and content review. Targets genuine high-intent organic search queries
+ * distinct from Image Resizer and PDF tools.
  */
 
 export interface KeywordMap {
@@ -18,16 +19,17 @@ export const keywords: KeywordMap = {
     'compress png',
     'compress webp',
     'reduce image size',
+    'photo compressor',
     'image compression tool',
   ],
   longTail: [
     'compress image without uploading',
-    'private image compressor',
-    'offline image compressor',
+    'compress image to kb',
     'compress jpg without losing quality',
     'compress png without uploading',
+    'reduce photo file size in browser',
+    'shrink jpeg file size online',
     'bulk image compressor no signup',
-    'compress images in browser',
     'reduce image file size for website',
   ],
   intents: ['transactional', 'informational'],

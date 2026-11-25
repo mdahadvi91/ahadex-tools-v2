@@ -1,0 +1,20 @@
+/**
+ * Scoped styles for the PDF Compressor tool.
+ * All selectors are prefixed with .pdf-compressor- to keep tools isolated.
+ */
+
+.pdf-compressor-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+}
+
+.pdf-compressor-savings {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.pdf-compressor-growth {
+  color: #dc2626;
+  font-weight: 600;
+}

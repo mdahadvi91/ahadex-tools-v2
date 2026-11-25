@@ -14,6 +14,7 @@ import FileList, { type FileListItem } from '../../components/ui/FileList';
 import ErrorMessage from '../../components/ui/ErrorMessage';
 import Spinner from '../../components/ui/Spinner';
 import { showToast } from '../../components/ui/Toast';
+import { triggerBlobDownload, triggerStaggeredDownloads } from '../../lib/download-blob';
 import { validateSingleFile } from '../../platform/security/file-policy';
 import { createEngine, type ImageCompressorEngine } from './engine';
 import type { CompressionPreset, CompressionResult, OutputFormat, SupportedMime } from './types';
@@ -137,21 +138,14 @@ export default function Tool() {
   }, [files, format, quality, resizeMax]);
 
   const downloadOne = useCallback((item: ProcessedItem) => {
-    const url = URL.createObjectURL(item.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = item.outputName;
-    a.rel = 'noopener';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    triggerBlobDownload(item.blob, item.outputName);
   }, []);
 
   const downloadAll = useCallback(() => {
-    for (const item of results) downloadOne(item);
-  }, [results, downloadOne]);
+    triggerStaggeredDownloads(
+      results.map((item) => ({ blob: item.blob, fileName: item.outputName })),
+    );
+  }, [results]);
 
   const fileItems: FileListItem[] = useMemo(
     () => files.map((f, i) => ({ id: `f-${i}`, name: f.name, size: f.size })),

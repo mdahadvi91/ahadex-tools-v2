@@ -1,5 +1,6 @@
 /**
- * Keyword map for the Merge PDF tool.
+ * Keyword map for the Merge PDF tool. Targets real organic PDF combining
+ * and reordering search queries without overlapping PDF Compressor or Split PDF.
  */
 
 export interface KeywordMap {
@@ -13,16 +14,18 @@ export const keywords: KeywordMap = {
   primary: 'merge pdf',
   secondary: [
     'combine pdf files',
-    'join pdf online',
+    'merge pdf online free',
+    'join pdf files into one',
     'merge pdf in browser',
-    'combine multiple pdfs into one',
+    'pdf combiner no watermark',
     'private pdf merger',
   ],
   longTail: [
     'merge pdf without uploading to server',
-    'combine confidential pdf documents locally',
+    'combine multiple pdfs into one document',
+    'combine two pdf files locally',
     'reorder and merge pdf files free no signup',
-    'join pdf reports in web browser',
+    'join confidential pdf documents in browser',
     'merge invoices into one pdf locally',
   ],
   intents: ['transactional', 'informational'],

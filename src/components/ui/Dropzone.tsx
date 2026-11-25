@@ -10,13 +10,7 @@
  * File validation remains the responsibility of the caller.
  */
 
-import {
-  useId,
-  useRef,
-  useState,
-  type ChangeEvent,
-  type DragEvent,
-} from 'react';
+import { useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 
 interface DropzoneProps {
   accept?: string;
@@ -98,9 +92,7 @@ export default function Dropzone({
           dragging
             ? 'border-blue-500 bg-blue-50'
             : 'border-gray-300 bg-gray-50 hover:border-gray-400'
-        } ${
-          disabled ? 'cursor-not-allowed opacity-60' : ''
-        } ${className}`}
+        } ${disabled ? 'cursor-not-allowed opacity-60' : ''} ${className}`}
       >
         <svg
           width="40"
@@ -124,10 +116,7 @@ export default function Dropzone({
         </span>
 
         {hint && (
-          <span
-            id={hintId}
-            className="text-xs text-gray-500"
-          >
+          <span id={hintId} className="text-xs text-gray-500">
             {hint}
           </span>
         )}

@@ -11,6 +11,7 @@ import FileList, { type FileListItem } from '../../components/ui/FileList';
 import ProgressBar from '../../components/ui/ProgressBar';
 import Spinner from '../../components/ui/Spinner';
 import { showToast } from '../../components/ui/Toast';
+import { triggerBlobDownload, triggerStaggeredDownloads } from '../../lib/download-blob';
 import { formatBytes } from '../../lib/format-bytes';
 import { validateBatch, validateSingleFile } from '../../platform/security/file-policy';
 import { compressPdfBuffer } from './engine';
@@ -124,6 +125,9 @@ export default function Tool() {
         setError(err instanceof Error ? err.message : `Could not optimize ${file.name}.`);
       }
       setProgress(Math.round(((i + 1) / files.length) * 100));
+      if (i + 1 < files.length) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
     }
 
     setResults(nextResults);
@@ -137,23 +141,14 @@ export default function Tool() {
   }, [files, stripMetadata, useObjectStreams]);
 
   const downloadOne = useCallback((item: CompressedPdfItem) => {
-    const url = URL.createObjectURL(item.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = item.outputName;
-    a.rel = 'noopener';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    triggerBlobDownload(item.blob, item.outputName);
   }, []);
 
   const downloadAll = useCallback(() => {
-    for (const item of results) {
-      downloadOne(item);
-    }
-  }, [downloadOne, results]);
+    triggerStaggeredDownloads(
+      results.map((item) => ({ blob: item.blob, fileName: item.outputName })),
+    );
+  }, [results]);
 
   const fileItems: FileListItem[] = useMemo(
     () => files.map((file, i) => ({ id: `pdf-${i}`, name: file.name, size: file.size })),

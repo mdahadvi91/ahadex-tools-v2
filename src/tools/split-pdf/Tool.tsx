@@ -10,6 +10,7 @@ import ErrorMessage from '../../components/ui/ErrorMessage';
 import ProgressBar from '../../components/ui/ProgressBar';
 import Spinner from '../../components/ui/Spinner';
 import { showToast } from '../../components/ui/Toast';
+import { triggerBlobDownload, triggerStaggeredDownloads } from '../../lib/download-blob';
 import { formatBytes } from '../../lib/format-bytes';
 import { validateSingleFile } from '../../platform/security/file-policy';
 import { inspectPdfPageCount, splitPdfBuffer } from './engine';
@@ -117,23 +118,14 @@ export default function Tool() {
   }, [file, mode, rangeInput]);
 
   const downloadOne = useCallback((chunk: OutputPdfChunk) => {
-    const url = URL.createObjectURL(chunk.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = chunk.outputName;
-    a.rel = 'noopener';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    triggerBlobDownload(chunk.blob, chunk.outputName);
   }, []);
 
   const downloadAll = useCallback(() => {
-    for (const chunk of chunks) {
-      downloadOne(chunk);
-    }
-  }, [chunks, downloadOne]);
+    triggerStaggeredDownloads(
+      chunks.map((chunk) => ({ blob: chunk.blob, fileName: chunk.outputName })),
+    );
+  }, [chunks]);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">

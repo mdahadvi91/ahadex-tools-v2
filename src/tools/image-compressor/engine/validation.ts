@@ -18,8 +18,8 @@ const SUPPORTED_OUTPUT_FORMATS = new Set<OutputFormat>(['jpeg', 'webp', 'png']);
 /** 25 MB hard cap. Matches file-policy.ts. */
 export const MAX_INPUT_BYTES = 25 * 1024 * 1024;
 
-/** A sane upper bound to prevent absurd dimensions from decoding. */
-export const MAX_PIXEL_COUNT = 80_000_000;
+/** Conservative 25 MP upper bound (~100 MB per RGBA canvas surface) to prevent browser OOM crashes. */
+export const MAX_PIXEL_COUNT = 25_000_000;
 
 export interface ValidationIssue {
   code:

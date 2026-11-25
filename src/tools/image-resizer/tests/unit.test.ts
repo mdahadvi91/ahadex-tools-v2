@@ -2,8 +2,9 @@
  * Unit tests for the Image Resizer engine pure helpers.
  */
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import { computeOutputDimensions, formatBytes, dimensionsChanged, PRESETS } from '../types';
+import { ImageResizerEngine } from '../engine';
 import {
   validateInput,
   isMimeSupported,
@@ -189,8 +190,85 @@ describe('isMimeSupported', () => {
   });
 });
 
-describe('constants', () => {
-  it('MAX_PIXEL_COUNT is 80 megapixels', () => {
-    expect(MAX_PIXEL_COUNT).toBe(80_000_000);
+describe('constants & memory safety', () => {
+  it('MAX_PIXEL_COUNT is capped at 25 megapixels to keep RGBA memory conservative', () => {
+    expect(MAX_PIXEL_COUNT).toBe(25_000_000);
+  });
+
+  it('rejects explicit target dimensions exceeding the 25 MP surface limit', () => {
+    const issues = validateInput({
+      bytes: new ArrayBuffer(16),
+      inputMime: 'image/png',
+      fileName: 'huge-target.png',
+      options: {
+        format: 'webp',
+        quality: 0.85,
+        width: 8000,
+        height: 8000,
+        maintainAspectRatio: false,
+      },
+    });
+    expect(issues.some((i) => i.code === 'invalid-dimensions')).toBe(true);
+  });
+});
+
+describe('ImageResizerEngine worker lifecycle', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('cleans up message, error, and messageerror listeners when ping times out', async () => {
+    vi.useFakeTimers();
+    const target = new EventTarget();
+    const removeSpy = vi.spyOn(target, 'removeEventListener');
+    const mockWorker = Object.assign(target, {
+      postMessage: vi.fn(),
+      terminate: vi.fn(),
+      onerror: null,
+      onmessage: null,
+      onmessageerror: null,
+    }) as unknown as Worker;
+
+    const engine = new ImageResizerEngine(mockWorker);
+    const pingPromise = engine.ping(50);
+
+    await vi.advanceTimersByTimeAsync(50);
+    await expect(pingPromise).resolves.toBe(false);
+
+    const removedEvents = removeSpy.mock.calls.map(([type]) => type);
+    expect(removedEvents).toContain('message');
+    expect(removedEvents).toContain('error');
+    expect(removedEvents).toContain('messageerror');
+
+    engine.dispose();
+  });
+
+  it('rejects pending resize jobs immediately when worker emits messageerror', async () => {
+    const target = new EventTarget();
+    const mockWorker = Object.assign(target, {
+      postMessage: vi.fn(),
+      terminate: vi.fn(),
+      onerror: null,
+      onmessage: null,
+      onmessageerror: null,
+    }) as unknown as Worker;
+
+    const engine = new ImageResizerEngine(mockWorker);
+    const pendingJob = engine.resize({
+      bytes: new ArrayBuffer(8),
+      inputMime: 'image/png',
+      fileName: 'sample.png',
+      options: {
+        format: 'webp',
+        quality: 0.85,
+        width: 320,
+        height: null,
+        maintainAspectRatio: true,
+      },
+    });
+
+    target.dispatchEvent(new Event('messageerror'));
+    await expect(pendingJob).rejects.toThrow(/messageerror/i);
+    engine.dispose();
   });
 });
