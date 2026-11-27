@@ -69,7 +69,14 @@ export async function runRobotsAndLlmsValidation(
       });
     }
 
-    for (const agent of ['Googlebot', 'Bingbot', 'Yandex', 'OAI-SearchBot', 'PerplexityBot']) {
+    for (const agent of [
+      'Googlebot',
+      'Mediapartners-Google',
+      'Bingbot',
+      'Yandex',
+      'OAI-SearchBot',
+      'PerplexityBot',
+    ]) {
       checkedCount++;
       if (!robots.includes(`User-agent: ${agent}`)) {
         issues.push({

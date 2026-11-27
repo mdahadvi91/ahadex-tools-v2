@@ -164,10 +164,15 @@ interface ToolContentModuleShape {
   DIRECT_ANSWER?: string;
   HOW_IT_WORKS?: ReadonlyArray<{ title: string; body: string }>;
   TECHNICAL_LIMITS?: readonly string[];
+  LIMITATIONS?: { heading?: string; list?: readonly string[] };
   FAQ?: ReadonlyArray<{ question: string; answer: string }>;
 }
 
 interface ToolKeywordsModuleShape {
+  keywords?: {
+    primary?: string;
+    secondary?: readonly string[];
+  };
   KEYWORDS?: {
     primary?: string;
     secondary?: readonly string[];
@@ -231,10 +236,16 @@ async function generateLlmsDocuments(
       }
     }
 
+    const kw = kwMod.keywords ?? kwMod.KEYWORDS;
+    const limits = contentMod.LIMITATIONS?.list ?? contentMod.TECHNICAL_LIMITS;
+
     fullLines.push(`## ${contentMod.HERO?.h1 ?? route.title}`);
     fullLines.push(`- URL: ${route.canonicalUrl}`);
-    if (kwMod.KEYWORDS?.primary) {
-      fullLines.push(`- Primary Topic: ${kwMod.KEYWORDS.primary}`);
+    if (kw?.primary) {
+      fullLines.push(`- Primary Topic: ${kw.primary}`);
+    }
+    if (kw?.secondary && kw.secondary.length > 0) {
+      fullLines.push(`- Related Capabilities: ${kw.secondary.join(', ')}`);
     }
     if (contentMod.DIRECT_ANSWER) {
       fullLines.push(`- Summary: ${contentMod.DIRECT_ANSWER}`);
@@ -249,9 +260,9 @@ async function generateLlmsDocuments(
       });
     }
 
-    if (contentMod.TECHNICAL_LIMITS && contentMod.TECHNICAL_LIMITS.length > 0) {
+    if (limits && limits.length > 0) {
       fullLines.push('- Supported Limits & Constraints:');
-      for (const limit of contentMod.TECHNICAL_LIMITS) {
+      for (const limit of limits) {
         fullLines.push(`  - ${limit}`);
       }
     }

@@ -6,6 +6,16 @@ User-agent: Googlebot
 Allow: /
 Disallow: /404.html
 
+User-agent: Googlebot-Image
+Allow: /
+Disallow: /404.html
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
 User-agent: GoogleOther
 Allow: /
 Disallow: /404.html

@@ -187,10 +187,42 @@ export default function Contact() {
             </a>
           </p>
 
+          <h2 className="pt-4 font-display text-xl font-semibold text-slate-900">
+            Support Categories
+          </h2>
+          <ul className="list-disc space-y-1.5 pl-5">
+            <li>
+              <strong>Bug Reports:</strong> Mention the tool path (for example{' '}
+              <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">/image-compressor/</code>),
+              your browser name/version, and input file format.
+            </li>
+            <li>
+              <strong>Privacy &amp; Consent Inquiries:</strong> Email{' '}
+              <a
+                href="mailto:privacy@ahadex.online"
+                className="font-medium text-brand-600 underline hover:text-brand-700"
+              >
+                privacy@ahadex.online
+              </a>{' '}
+              for privacy questions, cookie preferences, or compliance feedback.
+            </li>
+            <li>
+              <strong>Legal &amp; Copyright Notices:</strong> Email{' '}
+              <a
+                href="mailto:legal@ahadex.online"
+                className="font-medium text-brand-600 underline hover:text-brand-700"
+              >
+                legal@ahadex.online
+              </a>{' '}
+              for terms, licensing, or takedown requests.
+            </li>
+          </ul>
+
           <h2 className="pt-4 font-display text-xl font-semibold text-slate-900">Response Time</h2>
           <p>
-            We typically respond within 2–3 business days. For urgent security or availability
-            issues, include &quot;URGENT&quot; in the subject line.
+            We review messages regularly and typically respond within 2–3 business days. For urgent
+            security, accessibility, or availability issues, include &quot;URGENT&quot; in the
+            subject line.
           </p>
         </div>
       </div>

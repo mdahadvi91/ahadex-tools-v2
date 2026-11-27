@@ -80,7 +80,38 @@ export default function PrivacyPolicy() {
             </li>
             <li>
               <strong>Google AdSense (optional, consent-gated):</strong> Reserved for non-intrusive
-              advertising once approved, configured, and consented to (
+              advertising once approved, configured, and explicitly consented to. When active,
+              third-party vendors, including Google, use cookies to serve ads based on a user&apos;s
+              prior visits to this website or other websites. Google&apos;s use of advertising
+              cookies enables it and its partners to serve ads based on visits across the internet.
+              You can review{' '}
+              <a
+                href="https://policies.google.com/technologies/partner-sites"
+                className="text-slate-900 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                how Google uses data on partner sites
+              </a>{' '}
+              or opt out of personalized advertising via{' '}
+              <a
+                href="https://adssettings.google.com/"
+                className="text-slate-900 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Google Ad Settings
+              </a>{' '}
+              and{' '}
+              <a
+                href="https://www.aboutads.info/"
+                className="text-slate-900 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                aboutads.info
+              </a>{' '}
+              (
               <a
                 href="https://policies.google.com/technologies/ads"
                 className="text-slate-900 underline"

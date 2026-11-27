@@ -22,7 +22,7 @@ const FAQS: readonly FaqItem[] = [
   {
     question: 'What file formats are supported?',
     answer:
-      'Our image utilities support JPEG, PNG, WebP, GIF, and AVIF files depending on browser codec support. Each tool page lists its exact supported formats and constraints.',
+      'Our image utilities support JPEG, PNG, WebP, GIF, and AVIF files depending on browser codec support, and our PDF suite handles standard PDF documents for compression, merging, and splitting. Each tool page lists its exact limits and outputs.',
   },
   {
     question: 'Can I use these tools on mobile devices?',

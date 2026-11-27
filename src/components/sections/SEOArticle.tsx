@@ -7,10 +7,11 @@ export default function SEOArticle() {
         </h2>
 
         <p className="text-sm leading-relaxed text-slate-700">
-          AHADEX Tools is a collection of browser-based file utilities designed to help you
-          compress, resize, and prepare media and documents without uploading private files to
-          remote servers. Every published utility runs directly inside your browser using modern Web
-          APIs, Canvas rendering, and Web Workers so your files stay on your own hardware.
+          AHADEX Tools is a collection of browser-based file utilities designed to help you compress
+          and resize images or optimize, merge, and split PDF documents without uploading private
+          files to remote servers. Every published utility runs directly inside your browser using
+          modern Web APIs, Canvas rendering, Web Workers, and local PDF object processing so your
+          files stay on your own hardware.
         </p>
 
         <h3 className="pt-2 font-display text-lg font-semibold text-slate-900">

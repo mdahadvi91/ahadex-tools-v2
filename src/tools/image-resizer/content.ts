@@ -101,8 +101,8 @@ export const SECTIONS: readonly ContentSection[] = [
     heading: 'Privacy and data handling',
     paragraphs: [
       'Your image is decoded and resampled inside browser memory on your own device without uploading the file to any server. Closing or reloading the tab immediately clears the temporary image buffers.',
-      'The site itself loads over the network like any web page. Your browser requests the HTML, JavaScript and CSS needed to run the tool. These requests do not contain your file.',
-      'The site collects analytics only if you grant consent. If you grant analytics consent, aggregate usage events are recorded with an approximate file size bucket. File names, contents and exact sizes are not sent.',
+      'Only the static page assets—markup, client script bundle, stylesheets, and interface graphics—are fetched over HTTPS when you open the page. Your source photos and resized outputs stay inside local memory.',
+      'Optional usage metrics remain turned off until you explicitly accept analytics in the privacy banner. Even when enabled, only high-level interaction events and coarse file-size ranges are logged—never pixel dimensions, filenames, or image bytes.',
     ],
   },
   {

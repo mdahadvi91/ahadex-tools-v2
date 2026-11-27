@@ -35,10 +35,12 @@ export default function About() {
 
           <h2 className="pt-4 font-display text-xl font-semibold text-slate-900">How It Works</h2>
           <p>
-            When you use an AHADEX tool, your browser performs all the processing. For image
-            compression and resizing, we use the browser&apos;s built-in Canvas API and Web Workers
-            so the interface stays responsive while files remain strictly local. No servers are
-            involved in file processing.
+            When you use an AHADEX tool, your browser performs all computation locally. Image
+            compression and resizing run via the built-in Canvas API inside isolated Web Workers so
+            your tab stays responsive. PDF compression, merging, and page splitting run using
+            client-side PDF object parsing via{' '}
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">pdf-lib</code> directly in
+            browser memory—zero servers touch your documents.
           </p>
 
           <h2 className="pt-4 font-display text-xl font-semibold text-slate-900">
@@ -52,6 +54,17 @@ export default function About() {
             <li>We don&apos;t sell or share any user data</li>
           </ul>
 
+          <h2 className="pt-4 font-display text-xl font-semibold text-slate-900">
+            Engineering &amp; Sustainability
+          </h2>
+          <p>
+            Each tool on AHADEX Tools is built as an independent module with explicit file-size and
+            memory safeguards, automated unit and browser end-to-end tests, and clear documentation
+            covering formats and technical limits. Every utility remains free to use; optional,
+            consent-gated advertising helps cover domain and build maintenance costs without locking
+            features behind paywalls.
+          </p>
+
           <h2 className="pt-4 font-display text-xl font-semibold text-slate-900">Contact</h2>
           <p>
             Questions, feedback, or issues? Reach out via our{' '}
@@ -60,6 +73,13 @@ export default function About() {
               className="font-medium text-brand-600 underline hover:text-brand-700"
             >
               contact page
+            </Link>{' '}
+            or read our{' '}
+            <Link
+              to="/privacy-policy/"
+              className="font-medium text-brand-600 underline hover:text-brand-700"
+            >
+              privacy policy
             </Link>
             .
           </p>
