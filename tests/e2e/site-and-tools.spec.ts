@@ -131,6 +131,7 @@ test.describe('Homepage, search, and mobile responsiveness', () => {
 
     const consentRegion = page.getByRole('region', { name: 'Privacy and cookie preferences' });
     await expect(consentRegion).toBeVisible();
+    await expect(page.locator('script[data-ahadex-clarity]')).toHaveCount(0);
 
     // Clicking Customize reveals toggles without dismissing or writing preferences
     await consentRegion.getByRole('button', { name: 'Customize' }).click();
@@ -143,10 +144,16 @@ test.describe('Homepage, search, and mobile responsiveness', () => {
     await analyticsToggle.check();
     await consentRegion.getByRole('button', { name: 'Save Preferences' }).click();
     await expect(consentRegion).toBeHidden();
+    await expect(page.locator('script[data-ahadex-clarity="zkc26mkuvb"]')).toHaveCount(1);
+    await expect(page.locator('script[data-ahadex-clarity="zkc26mkuvb"]')).toHaveAttribute(
+      'src',
+      'https://www.clarity.ms/tag/zkc26mkuvb?ref=bwt',
+    );
 
     // Persists after reload
     await page.reload();
     await expect(consentRegion).toBeHidden();
+    await expect(page.locator('script[data-ahadex-clarity="zkc26mkuvb"]')).toHaveCount(1);
 
     // Footer button reopens customize panel with saved values intact
     await page.getByRole('button', { name: 'Privacy & Cookie Settings' }).click();
@@ -353,5 +360,72 @@ test.describe('Local browser-only tool workflows', () => {
     const outputBytes = await readDownloadBuffer(download);
     const loaded = await PDFDocument.load(outputBytes);
     expect(loaded.getPageCount()).toBe(2);
+  });
+
+  test('CV Maker selects from 30 templates, auto-fills profession data, edits schools, and exports PDF locally', async ({
+    page,
+  }) => {
+    const externalRequests: string[] = [];
+    page.on('request', (req) => {
+      const url = req.url();
+      if (
+        !url.startsWith('http://127.0.0.1') &&
+        !url.startsWith('blob:') &&
+        !url.startsWith('data:')
+      ) {
+        if (!url.startsWith('https://fonts.')) {
+          externalRequests.push(url);
+        }
+      }
+    });
+
+    await page.goto('/cv-maker/');
+    await expect(page.locator('h1')).toContainText('CV Maker');
+    await expect(page.getByTestId('cv-template-card')).toHaveCount(30);
+
+    // Step 1: Select Zurich Timeline template
+    await page.getByTestId('cv-template-card').filter({ hasText: 'Zurich Timeline' }).click();
+    await page
+      .getByRole('button', { name: /Next: Choose Profession/i })
+      .first()
+      .click();
+
+    // Step 2: Select Data Analyst profession to verify auto-fill
+    await page
+      .getByTestId('cv-profession-card')
+      .filter({ hasText: 'Data Analyst & BI Specialist' })
+      .click();
+    await page.getByRole('button', { name: /Next: Personal/i }).click();
+
+    // Step 3: Edit full name
+    await page.getByLabel('Full Name').fill('Samir Hasan');
+    await page.getByRole('button', { name: /Next: Summary/i }).click();
+
+    // Step 4: Verify profession auto-filled summary is present
+    const summaryBox = page.getByLabel('Summary Statement');
+    await expect(summaryBox).toHaveValue(/SQL|Python|statistical/i);
+    await page.getByRole('button', { name: /Next: Experience/i }).click();
+
+    // Step 5 -> Step 6: Education step, add second school/degree
+    await page.getByRole('button', { name: /Next: Education/i }).click();
+    await expect(page.getByTestId('cv-education-card')).toHaveCount(1);
+    await page.getByRole('button', { name: '+ Add School / Degree' }).click();
+    await expect(page.getByTestId('cv-education-card')).toHaveCount(2);
+
+    // Step 6 -> Step 7 -> Step 8: Preview & Download PDF
+    await page.getByRole('button', { name: /Next: Skills/i }).click();
+    await page.getByRole('button', { name: /Next: Preview & PDF/i }).click();
+    await expect(page.getByTestId('cv-live-preview')).toContainText('Samir Hasan');
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download CV as PDF' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('samir-hasan-cv.pdf');
+
+    const outputBytes = await readDownloadBuffer(download);
+    expect(outputBytes.subarray(0, 5).toString('ascii')).toBe('%PDF-');
+    const loaded = await PDFDocument.load(outputBytes);
+    expect(loaded.getPageCount()).toBeGreaterThanOrEqual(1);
+    expect(externalRequests).toEqual([]);
   });
 });

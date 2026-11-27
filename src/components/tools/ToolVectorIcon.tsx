@@ -29,6 +29,7 @@ const TONE_CLASSES: Record<ToolVisualKind, string> = {
   resize: 'bg-indigo-600/10 text-indigo-600 border-indigo-200/80',
   merge: 'bg-orange-500/10 text-orange-600 border-orange-200/80',
   split: 'bg-rose-500/10 text-rose-600 border-rose-200/80',
+  cv: 'bg-teal-600/10 text-teal-700 border-teal-200/80',
   image: 'bg-sky-500/10 text-sky-600 border-sky-200/80',
   pdf: 'bg-emerald-600/10 text-emerald-600 border-emerald-200/80',
 };
@@ -139,6 +140,26 @@ export default function ToolVectorIcon({ kind, size = 'md' }: ToolVectorIconProp
               strokeLinecap="round"
               strokeLinejoin="round"
               d="M12 4v16m-7-8h4m6 0h4M7 8l-3 4 3 4m10-8l3 4-3 4"
+            />
+          </>
+        )}
+        {kind === 'cv' && (
+          <>
+            <rect
+              x="4"
+              y="3"
+              width="16"
+              height="18"
+              rx="3"
+              fill="currentColor"
+              fillOpacity="0.14"
+              stroke="none"
+            />
+            <circle cx="9.5" cy="8.5" r="2" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6.5 13.5h6M6.5 16.5h9M14 8.5h3.5M14 11h3.5M6 3h12a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z"
             />
           </>
         )}

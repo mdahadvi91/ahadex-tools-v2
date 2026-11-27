@@ -10,3 +10,4 @@
 - [Free PDF Compressor - Optimize PDF Size in Your Browser](https://ahadex.online/pdf-compressor/): Optimize and shrink PDF files locally in your browser. Strip metadata and compress object streams with no server upload or signup.
 - [Free Merge PDF - Combine Multiple PDF Files in Your Browser](https://ahadex.online/merge-pdf/): Combine multiple PDF documents in any order directly in your browser. Reorder pages, preview page counts, and download locally.
 - [Free Split PDF - Extract Pages & Split PDFs in Your Browser](https://ahadex.online/split-pdf/): Extract specific PDF page ranges or burst pages into separate PDFs directly in your browser. Zero uploads, zero signup, instant save.
+- [Free CV Maker - Build & Export Custom PDF Resumes in Browser](https://ahadex.online/cv-maker/): Build a tailored resume from 30 unique templates and profession presets in your browser. Edit step by step and download PDF locally with zero upload.

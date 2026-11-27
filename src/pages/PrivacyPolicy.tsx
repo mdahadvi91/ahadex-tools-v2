@@ -66,6 +66,22 @@ export default function PrivacyPolicy() {
           </p>
           <ul className="list-disc space-y-1.5 pl-5">
             <li>
+              <strong>Microsoft Clarity (consent-gated):</strong> When you grant optional analytics
+              consent, Microsoft Clarity collects aggregate usability metrics (such as page views,
+              scroll depth, and interaction heatmaps) to help improve site navigation and tool
+              ergonomics. Clarity does not inspect local file buffers or processed output bytes.
+              Learn more in the{' '}
+              <a
+                href="https://privacy.microsoft.com/privacystatement"
+                className="text-slate-900 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Microsoft Privacy Statement
+              </a>
+              .
+            </li>
+            <li>
               <strong>Google Analytics (optional, consent-gated):</strong> When enabled and
               consented to, records aggregate tool usage counts without filenames or file contents (
               <a
@@ -141,9 +157,9 @@ export default function PrivacyPolicy() {
           </h2>
           <p>
             Essential preference storage uses local browser storage rather than tracking cookies. If
-            optional analytics or advertising is enabled and you opt in, Google services may set
-            cookies subject to their own policies. You can review or update your choices anytime
-            using the{' '}
+            optional analytics or advertising is enabled and you opt in, Microsoft Clarity or Google
+            services may set cookies subject to their own policies. You can review or update your
+            choices anytime using the{' '}
             <button
               type="button"
               onClick={() => openConsentPreferences()}

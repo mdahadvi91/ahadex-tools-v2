@@ -5,9 +5,9 @@
 
 import type { AppRoute } from '../router/route-types';
 
-export type DisplayToolCategory = 'image' | 'pdf' | 'utility';
+export type DisplayToolCategory = 'image' | 'pdf' | 'document' | 'utility';
 
-export type ToolVisualKind = 'compress' | 'resize' | 'merge' | 'split' | 'image' | 'pdf';
+export type ToolVisualKind = 'compress' | 'resize' | 'merge' | 'split' | 'cv' | 'image' | 'pdf';
 
 export function getShortToolName(title: string): string {
   const withoutSuffix = title.split(' - ')[0] ?? title;
@@ -17,6 +17,13 @@ export function getShortToolName(title: string): string {
 export function detectToolCategory(route: AppRoute): DisplayToolCategory {
   const pathLower = route.path.toLowerCase();
   const titleLower = route.meta.title.toLowerCase();
+  if (
+    pathLower.includes('cv-') ||
+    titleLower.includes('cv maker') ||
+    titleLower.includes('resume')
+  ) {
+    return 'document';
+  }
   if (
     pathLower.includes('pdf') ||
     pathLower.includes('merge-') ||
@@ -38,6 +45,13 @@ export function detectToolCategory(route: AppRoute): DisplayToolCategory {
 
 export function detectToolVisualKind(route: AppRoute): ToolVisualKind {
   const combined = `${route.path} ${route.meta.title}`.toLowerCase();
+  if (
+    combined.includes('cv-maker') ||
+    combined.includes('cv maker') ||
+    combined.includes('resume')
+  ) {
+    return 'cv';
+  }
   if (combined.includes('merge')) return 'merge';
   if (combined.includes('split')) return 'split';
   if (combined.includes('resiz')) return 'resize';
@@ -53,6 +67,8 @@ export function getCategoryLabel(category: DisplayToolCategory): string {
       return 'Image Tool';
     case 'pdf':
       return 'PDF Tool';
+    case 'document':
+      return 'CV & Document';
     default:
       return 'Browser Utility';
   }

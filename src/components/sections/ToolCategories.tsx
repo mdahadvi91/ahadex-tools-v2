@@ -3,7 +3,7 @@ import { detectToolCategory, getShortToolName } from '../../lib/tool-display';
 import { toolRoutes } from '../../router/route-registry';
 
 interface CategoryDefinition {
-  readonly key: 'image' | 'pdf';
+  readonly key: 'image' | 'pdf' | 'document';
   readonly title: string;
   readonly description: string;
 }
@@ -19,6 +19,12 @@ const CATEGORIES: readonly CategoryDefinition[] = [
     key: 'pdf',
     title: 'PDF Document Utilities',
     description: 'Compress, merge, and split PDF documents locally without uploading to servers.',
+  },
+  {
+    key: 'document',
+    title: 'CV & Resume Builders',
+    description:
+      'Create tailored, multi-template PDF resumes step by step directly in your browser.',
   },
 ];
 
@@ -41,7 +47,7 @@ export default function ToolCategories() {
         </p>
       </div>
 
-      <div className="mt-6 grid gap-5 md:grid-cols-2">
+      <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {populatedCategories.map((cat) => (
           <div key={cat.key} className="rounded-xl border border-[#e6e2d8] bg-[#f4f1ea]/70 p-6">
             <div className="flex items-baseline justify-between gap-2">

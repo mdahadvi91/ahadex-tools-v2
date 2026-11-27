@@ -13,6 +13,7 @@ export default function MobileNavigation({ open, onClose }: MobileNavigationProp
 
   const imageTools = toolRoutes.filter((r) => detectToolCategory(r) === 'image');
   const pdfTools = toolRoutes.filter((r) => detectToolCategory(r) === 'pdf');
+  const documentTools = toolRoutes.filter((r) => detectToolCategory(r) === 'document');
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `block rounded-lg px-3 py-2.5 text-sm font-medium ${
@@ -70,6 +71,24 @@ export default function MobileNavigation({ open, onClose }: MobileNavigationProp
           <p className="px-2 text-xs font-semibold text-slate-600">PDF Tools</p>
           <div className="mt-2 flex flex-col gap-1">
             {pdfTools.map((route) => (
+              <Link
+                key={route.path}
+                to={route.path}
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 hover:text-brand-600"
+              >
+                <ToolVectorIcon kind={detectToolVisualKind(route)} size="xs" />
+                <span>{getShortToolName(route.meta.title)}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+      {documentTools.length > 0 && (
+        <div className="mt-4 border-t border-slate-200 pt-3">
+          <p className="px-2 text-xs font-semibold text-slate-600">CV &amp; Documents</p>
+          <div className="mt-2 flex flex-col gap-1">
+            {documentTools.map((route) => (
               <Link
                 key={route.path}
                 to={route.path}

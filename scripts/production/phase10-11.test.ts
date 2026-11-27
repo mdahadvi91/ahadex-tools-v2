@@ -127,6 +127,7 @@ describe('Phase 11 Cloudflare Pages deployment config validation', () => {
         '/pdf-compressor/',
         '/merge-pdf/',
         '/split-pdf/',
+        '/cv-maker/',
       ]),
       'utf8',
     );

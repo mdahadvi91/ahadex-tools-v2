@@ -1,0 +1,13 @@
+/**
+ * Scoped styles for the CV Maker tool.
+ * All selectors are prefixed with .cv-maker- to keep tools strictly isolated.
+ */
+
+.cv-maker-paper {
+  aspect-ratio: 210 / 297;
+  container-type: inline-size;
+}
+
+.cv-maker-thumb-paper {
+  aspect-ratio: 210 / 297;
+}

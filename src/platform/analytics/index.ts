@@ -18,7 +18,7 @@ export interface AnalyticsPayload {
 
 export function canTrackAnalytics(): boolean {
   const env = getEnvironment();
-  return env.gaMeasurementId !== null && hasAnalyticsConsent();
+  return (env.gaMeasurementId !== null || env.clarityProjectId !== null) && hasAnalyticsConsent();
 }
 
 export function trackEvent(eventName: AnalyticsEventName, payload: AnalyticsPayload = {}): void {
@@ -33,11 +33,16 @@ export function trackEvent(eventName: AnalyticsEventName, payload: AnalyticsPayl
   const win = window as unknown as {
     gtag?: (...args: unknown[]) => void;
     dataLayer?: unknown[];
+    clarity?: (...args: unknown[]) => void;
   };
 
   if (typeof win.gtag === 'function') {
     win.gtag('event', eventName, payload);
   } else if (Array.isArray(win.dataLayer)) {
     win.dataLayer.push({ event: eventName, ...payload });
+  }
+
+  if (typeof win.clarity === 'function') {
+    win.clarity('event', eventName);
   }
 }

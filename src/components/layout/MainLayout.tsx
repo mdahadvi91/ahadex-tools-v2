@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import ClarityManager from '../analytics/ClarityManager';
 import AdSenseManager from '../monetization/AdSenseManager';
 import ToastContainer from '../ui/Toast';
 import CookieConsentBanner from './CookieConsentBanner';
@@ -25,6 +26,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <Footer />
       <ToastContainer />
       <CookieConsentBanner />
+      <ClarityManager />
       <AdSenseManager />
     </div>
   );

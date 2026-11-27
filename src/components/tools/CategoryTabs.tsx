@@ -1,4 +1,4 @@
-export type ToolCategory = 'all' | 'image' | 'pdf';
+export type ToolCategory = 'all' | 'image' | 'pdf' | 'document';
 
 interface CategoryTab {
   key: ToolCategory;
@@ -9,6 +9,7 @@ const TABS: CategoryTab[] = [
   { key: 'all', label: 'All Tools' },
   { key: 'image', label: 'Image Tools' },
   { key: 'pdf', label: 'PDF Tools' },
+  { key: 'document', label: 'CV & Document' },
 ];
 
 interface CategoryTabsProps {

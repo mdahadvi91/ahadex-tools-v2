@@ -4,10 +4,10 @@ import { injectPrerenderedDocument } from './generate-prerender';
 import { routeToDistHtmlPath, runRouteValidation } from '../validation/validate-routes';
 
 describe('Phase 6 discovery and route validation', () => {
-  it('discovers all 5 live tools and 7 static pages (12 routes total)', async () => {
+  it('discovers all 6 live tools and 7 static pages (13 routes total)', async () => {
     const snapshot = await collectDiscoverySnapshot();
-    expect(snapshot.liveToolsCount).toBe(5);
-    expect(snapshot.routesCount).toBeGreaterThanOrEqual(12);
+    expect(snapshot.liveToolsCount).toBe(6);
+    expect(snapshot.routesCount).toBeGreaterThanOrEqual(13);
     expect(snapshot.routes.map((r) => r.path)).toEqual(
       expect.arrayContaining([
         '/',
@@ -18,6 +18,7 @@ describe('Phase 6 discovery and route validation', () => {
         '/pdf-compressor/',
         '/merge-pdf/',
         '/split-pdf/',
+        '/cv-maker/',
       ]),
     );
   });

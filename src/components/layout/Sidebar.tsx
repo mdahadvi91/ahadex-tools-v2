@@ -21,6 +21,7 @@ const SECTION_LINKS: readonly SidebarSectionLink[] = [
 export default function Sidebar() {
   const imageTools = toolRoutes.filter((r) => detectToolCategory(r) === 'image');
   const pdfTools = toolRoutes.filter((r) => detectToolCategory(r) === 'pdf');
+  const documentTools = toolRoutes.filter((r) => detectToolCategory(r) === 'document');
 
   return (
     <aside aria-label="Tools and page sections sidebar" className="hidden w-64 shrink-0 lg:block">
@@ -53,6 +54,27 @@ export default function Sidebar() {
             </h2>
             <ul className="mt-2 space-y-1">
               {pdfTools.map((route) => (
+                <li key={route.path}>
+                  <Link
+                    to={route.path}
+                    className="group flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-[#faf8f5] hover:text-brand-600"
+                  >
+                    <ToolVectorIcon kind={detectToolVisualKind(route)} size="xs" />
+                    <span className="truncate">{getShortToolName(route.meta.title)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {documentTools.length > 0 && (
+          <div className="border-t border-[#e6e2d8] pt-4">
+            <h2 className="px-2 text-xs font-semibold tracking-wide text-slate-600">
+              CV &amp; Documents
+            </h2>
+            <ul className="mt-2 space-y-1">
+              {documentTools.map((route) => (
                 <li key={route.path}>
                   <Link
                     to={route.path}

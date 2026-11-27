@@ -155,8 +155,8 @@ export default function CookieConsentBanner() {
                       Optional Analytics
                     </span>
                     <span className="mt-0.5 block text-xs leading-relaxed text-slate-700">
-                      Aggregate tool usage counts only when Google Analytics is configured and
-                      enabled.
+                      Aggregate usage and UX metrics via Microsoft Clarity or Google Analytics only
+                      when configured and permitted—never filenames or file contents.
                     </span>
                   </span>
                 </label>

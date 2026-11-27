@@ -14,6 +14,7 @@ const ROUTES = [
   '/pdf-compressor/',
   '/merge-pdf/',
   '/split-pdf/',
+  '/cv-maker/',
 ] as const;
 
 test.describe('WCAG 2.2 A/AA accessibility', () => {

@@ -63,10 +63,22 @@ export default function CookiePolicy() {
             2. Optional Analytics Cookies (Disabled by Default)
           </h3>
           <p>
-            Google Analytics is only active if a Measurement ID is configured in the deployment
-            environment and you grant analytics consent. When enabled, it collects aggregate tool
-            interaction metrics without filenames or file contents. You can opt out via our
-            preference panel or the{' '}
+            Microsoft Clarity and optional Google Analytics remain disabled until you grant
+            analytics consent. When you opt in, Microsoft Clarity may set first-party analytical
+            cookies (such as <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">_clck</code>{' '}
+            and <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">_clsk</code>) to measure
+            aggregate navigation and interface usability without reading file contents or filenames.
+            When Google Analytics is also configured, it records aggregate tool interaction counts.
+            You can revoke consent anytime via our preference panel, review the{' '}
+            <a
+              href="https://privacy.microsoft.com/privacystatement"
+              className="text-slate-900 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Microsoft Privacy Statement
+            </a>
+            , or use the{' '}
             <a
               href="https://tools.google.com/dlpage/gaoptout"
               className="text-slate-900 underline"
