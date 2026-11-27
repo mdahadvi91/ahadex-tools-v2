@@ -31,23 +31,22 @@ export default function AllToolsSection() {
   };
 
   return (
-    <section id="tools" className="scroll-mt-24 border-t border-slate-200 pt-12">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900">
+    <section id="tools" className="scroll-mt-24">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <div className="flex flex-wrap items-baseline justify-center gap-2">
+          <h2 className="font-display text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
             All Tools
           </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            Search or filter privacy-first browser tools ({filteredRoutes.length} of{' '}
-            <span className="tabular-nums">{toolRoutes.length}</span> shown)
-          </p>
+          <span className="text-xs font-medium text-slate-600 tabular-nums">
+            ({filteredRoutes.length} of {toolRoutes.length})
+          </span>
         </div>
 
         <CategoryTabs active={category} onChange={setCategory} />
-      </div>
 
-      <div className="mt-5">
-        <ToolSearch value={query} onChange={setQuery} />
+        <div className="w-full max-w-lg">
+          <ToolSearch value={query} onChange={setQuery} />
+        </div>
       </div>
 
       <div className="mt-6">

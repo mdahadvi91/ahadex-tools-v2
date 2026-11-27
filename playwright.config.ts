@@ -13,9 +13,13 @@ function resolveChromiumExecutable(): string | undefined {
   if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
     return process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
   }
-  const defaultPath = chromium.executablePath();
-  if (fs.existsSync(defaultPath)) {
-    return undefined;
+  try {
+    const defaultPath = chromium.executablePath();
+    if (fs.existsSync(defaultPath)) {
+      return undefined;
+    }
+  } catch {
+    // Playwright throws on unsupported platforms like Termux/Android.
   }
   if (fs.existsSync(CONTAINER_SHELL_PATH)) {
     return CONTAINER_SHELL_PATH;

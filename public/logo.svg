@@ -1,6 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 40" width="180" height="40" role="img" aria-label="AHADEX Tools">
-  <rect x="2" y="4" width="32" height="32" rx="8" fill="#0f172a" />
-  <path d="M18 10L26 28H22.2L20.4 23.6H15.6L13.8 28H10L18 10ZM16.8 20.5H19.2L18 17.3L16.8 20.5Z" fill="#38bdf8" />
-  <text x="42" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#0f172a">AHADEX</text>
-  <text x="122" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="500" fill="#64748b">Tools</text>
+  <defs>
+    <linearGradient id="ahadexLogoGrad" x1="2" y1="4" x2="34" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="4" width="32" height="32" rx="8" fill="url(#ahadexLogoGrad)" />
+  <path d="M18 10L26 28H22.2L20.4 23.6H15.6L13.8 28H10L18 10ZM16.8 20.5H19.2L18 17.3L16.8 20.5Z" fill="#ffffff" />
+  <text x="42" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="800" fill="#0f172a">AHADEX</text>
+  <text x="122" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#475569">Tools</text>
 </svg>

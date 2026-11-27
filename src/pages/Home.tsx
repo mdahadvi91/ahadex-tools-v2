@@ -69,13 +69,13 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
       <HeroSection />
-      <div className="mx-auto flex max-w-7xl items-start gap-10 px-4 py-12 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-start gap-10 px-4 py-8 sm:px-6 sm:py-10">
         <Sidebar />
-        <div className="min-w-0 flex-1 space-y-12">
-          <PopularTools />
+        <div className="min-w-0 flex-1 space-y-10 sm:space-y-12">
           <AllToolsSection />
-          <ToolCategories />
           <AdSlot slot="home-mid" />
+          <PopularTools />
+          <ToolCategories />
           <HowItWorks />
           <BenefitsSection />
           <SEOArticle />

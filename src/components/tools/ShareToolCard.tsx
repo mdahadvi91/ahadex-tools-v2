@@ -76,7 +76,7 @@ export default function ShareToolCard({ title, path, summary }: ShareToolCardPro
   return (
     <section
       aria-label={`Share ${title}`}
-      className="rounded-xl border border-slate-200 bg-slate-50/70 p-5"
+      className="rounded-xl border border-[#e6e2d8] bg-[#f4f1ea]/80 p-5"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -94,7 +94,7 @@ export default function ShareToolCard({ title, path, summary }: ShareToolCardPro
             <button
               type="button"
               onClick={handleNativeShare}
-              className="inline-flex h-9 items-center justify-center rounded-lg bg-brand-600 px-3.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 transition-colors hover:bg-brand-700"
+              className="inline-flex h-9 items-center justify-center rounded-lg bg-brand-600 px-3.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 transition-all duration-150 hover:bg-brand-700 active:scale-[0.98]"
             >
               Share
             </button>
@@ -103,7 +103,7 @@ export default function ShareToolCard({ title, path, summary }: ShareToolCardPro
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3.5 text-xs font-semibold text-slate-800 whitespace-nowrap shrink-0 transition-colors hover:bg-slate-100"
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-[#d5cfc2] bg-white px-3.5 text-xs font-semibold text-slate-800 whitespace-nowrap shrink-0 transition-all duration-150 hover:bg-[#faf8f5] active:scale-[0.98]"
           >
             {copied ? 'Link Copied' : 'Copy Link'}
           </button>
@@ -115,7 +115,7 @@ export default function ShareToolCard({ title, path, summary }: ShareToolCardPro
               target="_blank"
               rel="noopener noreferrer"
               aria-label={channel.ariaLabel}
-              className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 whitespace-nowrap shrink-0 transition-colors hover:border-slate-300 hover:text-brand-700"
+              className="inline-flex h-9 items-center justify-center rounded-lg border border-[#e6e2d8] bg-white px-3 text-xs font-medium text-slate-700 whitespace-nowrap shrink-0 transition-all duration-150 hover:border-brand-300 hover:text-brand-700 active:scale-[0.98]"
             >
               {channel.label}
             </a>

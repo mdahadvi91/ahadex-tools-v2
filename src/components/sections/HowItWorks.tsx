@@ -32,7 +32,7 @@ const STEPS: readonly Step[] = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="scroll-mt-24 border-t border-slate-200 pt-12">
+    <section id="how-it-works" className="scroll-mt-24 border-t border-[#e6e2d8] pt-12">
       <div>
         <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900">
           How It Works
@@ -44,7 +44,10 @@ export default function HowItWorks() {
 
       <ol className="mt-6 grid gap-4 sm:grid-cols-2">
         {STEPS.map((step) => (
-          <li key={step.number} className="rounded-xl border border-slate-200 bg-white p-5">
+          <li
+            key={step.number}
+            className="ahadex-card rounded-xl border border-[#e6e2d8] bg-white p-5"
+          >
             <span className="font-mono text-xs font-semibold text-brand-600 tabular-nums">
               {step.number}.
             </span>

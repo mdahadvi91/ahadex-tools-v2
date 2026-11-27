@@ -8,7 +8,7 @@ export default function Disclaimer() {
         <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           Disclaimer
         </h1>
-        <p className="mt-2 text-xs text-slate-500">Last updated: November 2026</p>
+        <p className="mt-2 text-xs text-slate-600">Last updated: November 2026</p>
 
         <div className="mt-8 space-y-4 text-sm leading-relaxed text-slate-700">
           <h2 className="mt-8 font-display text-xl font-semibold text-slate-900">

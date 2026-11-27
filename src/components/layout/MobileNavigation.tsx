@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
-import { getShortToolName } from '../../lib/tool-display';
+import { detectToolCategory, detectToolVisualKind, getShortToolName } from '../../lib/tool-display';
 import { toolRoutes } from '../../router/route-registry';
+import ToolVectorIcon from '../tools/ToolVectorIcon';
 
 interface MobileNavigationProps {
   open: boolean;
@@ -10,8 +11,11 @@ interface MobileNavigationProps {
 export default function MobileNavigation({ open, onClose }: MobileNavigationProps) {
   if (!open) return null;
 
+  const imageTools = toolRoutes.filter((r) => detectToolCategory(r) === 'image');
+  const pdfTools = toolRoutes.filter((r) => detectToolCategory(r) === 'pdf');
+
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `block rounded-md px-3 py-2.5 text-sm font-medium ${
+    `block rounded-lg px-3 py-2.5 text-sm font-medium ${
       isActive
         ? 'bg-brand-50 text-brand-700'
         : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
@@ -23,14 +27,14 @@ export default function MobileNavigation({ open, onClose }: MobileNavigationProp
       aria-label="Mobile navigation"
       className="border-t border-slate-200 bg-white px-4 py-4 md:hidden"
     >
-      <div className="flex flex-col gap-1">
+      <div className="grid grid-cols-2 gap-1.5">
         <NavLink to="/" end className={navLinkClass} onClick={onClose}>
           Home
         </NavLink>
         <a
           href="/#tools"
           onClick={onClose}
-          className="block rounded-md px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+          className="block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900"
         >
           All Tools
         </a>
@@ -42,18 +46,38 @@ export default function MobileNavigation({ open, onClose }: MobileNavigationProp
         </NavLink>
       </div>
 
-      {toolRoutes.length > 0 && (
+      {imageTools.length > 0 && (
         <div className="mt-4 border-t border-slate-200 pt-3">
-          <p className="px-3 text-xs font-semibold text-slate-500">Available Tools</p>
-          <div className="mt-1.5 flex flex-col gap-1">
-            {toolRoutes.map((route) => (
+          <p className="px-2 text-xs font-semibold text-slate-600">Image Tools</p>
+          <div className="mt-2 flex flex-col gap-1">
+            {imageTools.map((route) => (
               <Link
                 key={route.path}
                 to={route.path}
                 onClick={onClose}
-                className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                className="flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 hover:text-brand-600"
               >
-                {getShortToolName(route.meta.title)}
+                <ToolVectorIcon kind={detectToolVisualKind(route)} size="xs" />
+                <span>{getShortToolName(route.meta.title)}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {pdfTools.length > 0 && (
+        <div className="mt-4 border-t border-slate-200 pt-3">
+          <p className="px-2 text-xs font-semibold text-slate-600">PDF Tools</p>
+          <div className="mt-2 flex flex-col gap-1">
+            {pdfTools.map((route) => (
+              <Link
+                key={route.path}
+                to={route.path}
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 hover:text-brand-600"
+              >
+                <ToolVectorIcon kind={detectToolVisualKind(route)} size="xs" />
+                <span>{getShortToolName(route.meta.title)}</span>
               </Link>
             ))}
           </div>

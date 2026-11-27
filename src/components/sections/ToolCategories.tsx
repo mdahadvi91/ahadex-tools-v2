@@ -31,7 +31,7 @@ export default function ToolCategories() {
   if (populatedCategories.length === 0) return null;
 
   return (
-    <section id="categories" className="scroll-mt-24 border-t border-slate-200 pt-12">
+    <section id="categories" className="scroll-mt-24 border-t border-[#e6e2d8] pt-12">
       <div>
         <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900">
           Browse by Category
@@ -43,23 +43,26 @@ export default function ToolCategories() {
 
       <div className="mt-6 grid gap-5 md:grid-cols-2">
         {populatedCategories.map((cat) => (
-          <div key={cat.key} className="rounded-xl border border-slate-200 bg-slate-50/50 p-6">
+          <div key={cat.key} className="rounded-xl border border-[#e6e2d8] bg-[#f4f1ea]/70 p-6">
             <div className="flex items-baseline justify-between gap-2">
               <h3 className="font-display text-lg font-semibold text-slate-900">{cat.title}</h3>
-              <span className="text-xs font-medium text-slate-500 tabular-nums">
+              <span className="text-xs font-medium text-slate-600 tabular-nums">
                 {cat.tools.length} {cat.tools.length === 1 ? 'tool' : 'tools'}
               </span>
             </div>
             <p className="mt-1.5 text-xs leading-relaxed text-slate-600">{cat.description}</p>
-            <ul className="mt-4 divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
+            <ul className="mt-4 divide-y divide-[#e6e2d8] rounded-lg border border-[#e6e2d8] bg-white">
               {cat.tools.map((tool) => (
                 <li key={tool.path}>
                   <Link
                     to={tool.path}
-                    className="flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 hover:text-brand-600"
+                    className="group flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-800 transition-colors hover:bg-[#faf8f5] hover:text-brand-600"
                   >
                     <span>{getShortToolName(tool.meta.title)}</span>
-                    <span className="text-slate-400" aria-hidden="true">
+                    <span
+                      className="text-slate-600 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-brand-600"
+                      aria-hidden="true"
+                    >
                       →
                     </span>
                   </Link>

@@ -173,7 +173,7 @@ export default function Tool() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-[#e6e2d8] bg-white p-6 shadow-xs">
         <Dropzone
           accept="application/pdf,.pdf"
           multiple
@@ -202,12 +202,12 @@ export default function Tool() {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-slate-900">
-                        <span className="mr-2 font-mono text-xs text-slate-500">
+                        <span className="mr-2 font-mono text-xs text-slate-600">
                           {String(idx + 1).padStart(2, '0')}.
                         </span>
                         {item.file.name}
                       </p>
-                      <p className="text-xs text-slate-500">{formatBytes(item.file.size)}</p>
+                      <p className="text-xs text-slate-600">{formatBytes(item.file.size)}</p>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Button

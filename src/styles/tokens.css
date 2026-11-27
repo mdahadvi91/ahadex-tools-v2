@@ -16,16 +16,17 @@
   --color-brand-600: #1d4ed8;
   --color-brand-700: #1e40af;
 
-  --color-surface-canvas: #ffffff;
-  --color-surface-subtle: #f8fafc;
-  --color-surface-muted: #f1f5f9;
+  --color-surface-canvas: #faf8f5;
+  --color-surface-card: #ffffff;
+  --color-surface-subtle: #f4f1ea;
+  --color-surface-muted: #ece8de;
 
-  --color-ink-primary: #0f172a;
-  --color-ink-secondary: #334155;
-  --color-ink-muted: #64748b;
+  --color-ink-primary: #14171f;
+  --color-ink-secondary: #373c47;
+  --color-ink-muted: #5c6370;
 
-  --color-border-hairline: #e2e8f0;
-  --color-border-strong: #cbd5e1;
+  --color-border-hairline: #e6e2d8;
+  --color-border-strong: #d5cfc2;
 
   --color-status-success: #15803d;
   --color-status-warning: #b45309;

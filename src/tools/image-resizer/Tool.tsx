@@ -178,7 +178,7 @@ export default function Tool() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-[#e6e2d8] bg-white p-6 shadow-xs">
         <Dropzone
           accept={ACCEPT}
           multiple
@@ -196,9 +196,9 @@ export default function Tool() {
         {files.length > 0 && (
           <div className="mt-6 space-y-6">
             <div>
-              <h3 className="mb-2 text-sm font-semibold text-gray-900">
+              <h2 className="mb-2 text-sm font-semibold text-gray-900">
                 Selected files ({files.length})
-              </h3>
+              </h2>
               <FileList files={fileItems} onRemove={removeFile} />
             </div>
 
@@ -396,8 +396,8 @@ export default function Tool() {
 
         {results.length > 0 && (
           <div className="mt-8">
-            <h3 className="mb-3 text-sm font-semibold text-gray-900">Results</h3>
-            <ul className="divide-y divide-gray-200 rounded-md border border-gray-200">
+            <h2 className="mb-3 text-sm font-semibold text-gray-900">Results</h2>
+            <ul className="divide-y divide-[#e6e2d8] rounded-md border border-[#e6e2d8]">
               {results.map((item) => (
                 <li
                   key={item.id}
@@ -405,7 +405,7 @@ export default function Tool() {
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-gray-900">{item.outputName}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-slate-600">
                       {item.originalDims.width}x{item.originalDims.height} to{' '}
                       {item.outputDims.width}x{item.outputDims.height} -{' '}
                       {formatBytes(item.outputSize)}

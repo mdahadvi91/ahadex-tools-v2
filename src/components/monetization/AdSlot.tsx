@@ -47,8 +47,8 @@ export default function AdSlot({ slot }: AdSlotProps) {
       data-ad-slot-position={slot}
       className="mx-auto my-6 max-w-4xl px-4 sm:px-6"
     >
-      <div className="min-h-[100px] rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-center">
-        <p className="mb-2 text-[11px] font-medium tracking-wide text-slate-500">Advertisement</p>
+      <div className="min-h-[100px] rounded-xl border border-[#e6e2d8] bg-[#f4f1ea]/60 p-3 text-center">
+        <p className="mb-2 text-[11px] font-medium tracking-wide text-slate-600">Advertisement</p>
         <ins
           className="adsbygoogle block min-h-[90px] w-full"
           data-ad-client={eligibility.publisherId}

@@ -38,6 +38,36 @@
   }
 }
 
+@keyframes ahadexRise {
+  from {
+    opacity: 0.94;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.ahadex-enter {
+  animation: ahadexRise 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ahadex-card {
+  transition:
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 180ms ease-out;
+}
+
+.ahadex-card:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+.ahadex-card:active {
+  transform: translate3d(0, 0, 0);
+}
+
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }

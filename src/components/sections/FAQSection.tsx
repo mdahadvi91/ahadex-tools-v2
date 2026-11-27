@@ -51,7 +51,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section id="faq" className="scroll-mt-24 border-t border-slate-200 pt-12">
+    <section id="faq" className="scroll-mt-24 border-t border-[#e6e2d8] pt-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
@@ -69,12 +69,12 @@ export default function FAQSection() {
         {FAQS.map((faq) => (
           <details
             key={faq.question}
-            className="group rounded-xl border border-slate-200 bg-white px-5 py-4"
+            className="group rounded-xl border border-[#e6e2d8] bg-white px-5 py-4 transition-colors hover:border-brand-300"
           >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-slate-900 hover:text-brand-600">
               <span>{faq.question}</span>
               <span
-                className="text-slate-400 transition-transform group-open:rotate-180"
+                className="text-slate-600 transition-transform group-open:rotate-180"
                 aria-hidden="true"
               >
                 ▾

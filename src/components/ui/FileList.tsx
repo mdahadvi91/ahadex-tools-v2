@@ -21,12 +21,12 @@ export default function FileList({ files, onRemove, renderExtra }: FileListProps
   }
 
   return (
-    <ul className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
+    <ul className="divide-y divide-[#e6e2d8] rounded-lg border border-[#e6e2d8] bg-white">
       {files.map((item) => (
         <li key={item.id} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium text-slate-900">{item.name}</p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-600">
               {formatBytes(item.size)}
               {item.meta ? ` · ${item.meta}` : ''}
               {item.status ? ` · ${item.status}` : ''}

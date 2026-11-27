@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36" role="img" aria-label="AHADEX Tools icon">
+  <defs>
+    <linearGradient id="ahadexMarkGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="34" height="34" rx="9" fill="url(#ahadexMarkGrad)" />
+  <path d="M23.5 1V7.5C23.5 8.88 24.62 10 26 10H35" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-opacity="0.55" />
+  <path d="M18 8.5L26.5 27.5H22.5L20.6 23H15.4L13.5 27.5H9.5L18 8.5ZM16.6 19.6H19.4L18 15.8L16.6 19.6Z" fill="#ffffff" />
+</svg>

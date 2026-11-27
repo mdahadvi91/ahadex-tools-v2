@@ -86,6 +86,23 @@ export async function generateDeploymentArtifacts(
       writeTextFile(distHeaders, readTextFile(publicHeaders));
       distSynced.push(path.relative(process.cwd(), distHeaders));
     }
+
+    const rootBingAuth = resolveFromRoot('BingSiteAuth.xml');
+    const publicBingAuth = path.join(publicDir, 'BingSiteAuth.xml');
+    const bingSource = fileExists(rootBingAuth)
+      ? rootBingAuth
+      : fileExists(publicBingAuth)
+        ? publicBingAuth
+        : null;
+    if (bingSource) {
+      const bingXml = readTextFile(bingSource);
+      if (bingSource === rootBingAuth) {
+        writeTextFile(publicBingAuth, bingXml);
+      }
+      const distBingAuth = path.join(distDir, 'BingSiteAuth.xml');
+      writeTextFile(distBingAuth, bingXml);
+      distSynced.push(path.relative(process.cwd(), distBingAuth));
+    }
   }
 
   return { redirectsPath, distSynced };

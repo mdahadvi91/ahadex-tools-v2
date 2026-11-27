@@ -157,7 +157,7 @@ export default function Tool() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-[#e6e2d8] bg-white p-6 shadow-xs">
         <Dropzone
           accept="application/pdf,.pdf"
           multiple

@@ -13,21 +13,21 @@ export default function Header() {
     }`;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-[#e6e2d8] bg-[#faf8f5]/95 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-8 px-4 sm:px-6">
         <Link
           to="/"
-          className="flex shrink-0 items-center gap-2.5 whitespace-nowrap text-slate-900 no-underline"
+          className="group flex shrink-0 items-center gap-2.5 whitespace-nowrap text-slate-900 no-underline"
         >
           <img
-            src="/logo.svg"
+            src="/logo-mark.svg"
             alt="AHADEX Tools logo"
-            width={28}
-            height={28}
-            className="h-7 w-7 shrink-0 object-contain"
+            width={32}
+            height={32}
+            className="h-8 w-8 shrink-0 object-contain transition-transform duration-150 group-hover:scale-105"
           />
-          <span className="font-display text-lg font-bold tracking-tight text-slate-900">
-            AHADEX Tools
+          <span className="font-display text-lg font-extrabold tracking-tight text-slate-900">
+            AHADEX <span className="font-semibold text-slate-600">Tools</span>
           </span>
         </Link>
 
@@ -58,7 +58,7 @@ export default function Header() {
         <div className="flex shrink-0 items-center gap-3">
           <a
             href="/#tools"
-            className="hidden whitespace-nowrap shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 md:inline-flex"
+            className="hidden whitespace-nowrap shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-150 hover:bg-brand-700 active:scale-[0.98] md:inline-flex"
           >
             Browse Tools
           </a>
@@ -69,7 +69,7 @@ export default function Header() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
             aria-label="Toggle navigation menu"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 md:hidden"
           >
             <svg
               className="h-6 w-6"

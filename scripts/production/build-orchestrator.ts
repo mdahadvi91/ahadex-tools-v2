@@ -84,10 +84,26 @@ function readCoverageSummary(): CoverageSummaryMetrics | null {
   }
 }
 
+function isTermuxOrAndroid(): boolean {
+  return (
+    process.platform === 'android' ||
+    Boolean(process.env.TERMUX_VERSION) ||
+    (process.env.PREFIX ?? '').includes('com.termux')
+  );
+}
+
+function safeChromiumExecutablePath(): string | undefined {
+  try {
+    return chromium.executablePath();
+  } catch {
+    return undefined;
+  }
+}
+
 function hasPlaywrightChromium(): boolean {
   const candidates = [
     process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
-    chromium.executablePath(),
+    safeChromiumExecutablePath(),
     '/ms-playwright/chrome-headless-shell-linux64/chrome-headless-shell',
   ].filter((value): value is string => Boolean(value));
 
@@ -96,16 +112,19 @@ function hasPlaywrightChromium(): boolean {
 
 function runPlaywrightGate(): ValidationReport {
   const isCloudflarePages = process.env.CF_PAGES === '1';
+  const isTermux = isTermuxOrAndroid();
   const skipE2E = process.env.SKIP_E2E === '1';
   const requireE2E = process.env.REQUIRE_E2E === '1';
-  const chromiumInstalled = hasPlaywrightChromium();
+  const chromiumInstalled = !isTermux && hasPlaywrightChromium();
 
-  if (isCloudflarePages || skipE2E || !chromiumInstalled) {
+  if (isCloudflarePages || isTermux || skipE2E || !chromiumInstalled) {
     const reason = isCloudflarePages
       ? 'Skipped in Cloudflare Pages build container (CF_PAGES=1); verified in GitHub Actions CI.'
-      : skipE2E
-        ? 'Skipped explicitly via SKIP_E2E=1.'
-        : 'Playwright Chromium binary not found locally; run `npx playwright install --with-deps chromium`.';
+      : isTermux
+        ? 'Skipped in Termux/Android environment (Playwright Chromium requires glibc Linux; verified in GitHub Actions CI).'
+        : skipE2E
+          ? 'Skipped explicitly via SKIP_E2E=1.'
+          : 'Playwright Chromium binary not found locally; run `npx playwright install --with-deps chromium`.';
 
     if (requireE2E) {
       throw new Error(`Playwright E2E gate required (REQUIRE_E2E=1) but unavailable: ${reason}`);

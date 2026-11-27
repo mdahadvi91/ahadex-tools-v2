@@ -16,7 +16,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-slate-200 bg-slate-50 text-slate-600">
+    <footer className="border-t border-[#e6e2d8] bg-[#f4f1ea] text-slate-600">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
@@ -73,7 +73,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-slate-200 pt-6 text-xs text-slate-500 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-[#e6e2d8] pt-6 text-xs text-slate-600 sm:flex-row">
           <p>© {year} AHADEX Tools. All rights reserved.</p>
           <p>Client-side processing · Zero server file storage</p>
         </div>

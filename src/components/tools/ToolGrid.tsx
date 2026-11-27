@@ -32,7 +32,7 @@ export default function ToolGrid({
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3">
       {routes.map((route) => (
         <ToolCard key={route.path} route={route} variant={variant} />
       ))}

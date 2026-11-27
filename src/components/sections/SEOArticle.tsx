@@ -1,6 +1,6 @@
 export default function SEOArticle() {
   return (
-    <section id="guide" className="scroll-mt-24 border-t border-slate-200 pt-12">
+    <section id="guide" className="scroll-mt-24 border-t border-[#e6e2d8] pt-12">
       <article className="max-w-3xl space-y-5">
         <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900">
           Free Online File Tools That Respect Your Privacy

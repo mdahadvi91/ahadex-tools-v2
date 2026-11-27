@@ -11,7 +11,7 @@ export default function ToolSearch({
 }: ToolSearchProps) {
   return (
     <div className="relative w-full">
-      <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+      <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-600">
         <svg
           className="h-4 w-4"
           fill="none"
@@ -33,14 +33,14 @@ export default function ToolSearch({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label="Search tools"
-        className="h-11 w-full rounded-lg border border-slate-300 bg-white pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/15"
+        className="h-11 w-full rounded-lg border border-[#d5cfc2] bg-white pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-500 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/15"
       />
       {value && (
         <button
           type="button"
           onClick={() => onChange('')}
           aria-label="Clear search"
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-700"
+          className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-600 hover:text-slate-900"
         >
           <svg
             className="h-4 w-4"

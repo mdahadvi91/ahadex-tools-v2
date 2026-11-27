@@ -88,10 +88,10 @@ export default function Dropzone({
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
-        className={`flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
+        className={`group flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-10 text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
           dragging
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+            ? 'scale-[1.01] border-brand-500 bg-brand-50/70 shadow-sm'
+            : 'border-[#d5cfc2] bg-[#faf8f5] hover:border-brand-400 hover:bg-white'
         } ${disabled ? 'cursor-not-allowed opacity-60' : ''} ${className}`}
       >
         <svg
@@ -101,6 +101,7 @@ export default function Dropzone({
           fill="none"
           aria-hidden="true"
           focusable="false"
+          className="text-brand-600 transition-transform duration-200 group-hover:-translate-y-0.5"
         >
           <path
             d="M12 16V4m0 0L7 9m5-5l5 5M4 20h16"
@@ -116,7 +117,7 @@ export default function Dropzone({
         </span>
 
         {hint && (
-          <span id={hintId} className="text-xs text-gray-500">
+          <span id={hintId} className="text-xs text-slate-600">
             {hint}
           </span>
         )}

@@ -1,10 +1,5 @@
 import { Link } from 'react-router-dom';
-import {
-  detectToolCategory,
-  detectToolVisualKind,
-  getCategoryLabel,
-  getShortToolName,
-} from '../../lib/tool-display';
+import { detectToolVisualKind, getShortToolName } from '../../lib/tool-display';
 import type { AppRoute } from '../../router/route-types';
 import ToolVectorIcon from './ToolVectorIcon';
 
@@ -16,36 +11,28 @@ interface ToolCardProps {
 export default function ToolCard({ route, variant = 'default' }: ToolCardProps) {
   const isCompact = variant === 'compact';
   const shortTitle = getShortToolName(route.meta.title);
-  const category = detectToolCategory(route);
   const visualKind = detectToolVisualKind(route);
 
   return (
     <Link
       to={route.path}
-      className={`group flex flex-col rounded-xl border border-slate-200 bg-white transition-all hover:border-brand-600 hover:shadow-md ${
-        isCompact ? 'p-4' : 'p-5'
+      className={`ahadex-card group flex min-w-0 flex-col rounded-xl border border-[#e6e2d8] bg-white shadow-xs hover:border-brand-300 hover:shadow-md ${
+        isCompact ? 'p-3.5 sm:p-4' : 'p-4 sm:p-6'
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <ToolVectorIcon kind={visualKind} size={isCompact ? 'sm' : 'md'} />
-        <span className="text-xs font-medium text-slate-500">{getCategoryLabel(category)}</span>
-      </div>
+      <ToolVectorIcon kind={visualKind} size={isCompact ? 'sm' : 'md'} />
 
       <h3
-        className={`mt-4 font-display font-semibold leading-snug text-slate-900 group-hover:text-brand-600 ${
-          isCompact ? 'text-sm' : 'text-base'
+        className={`mt-3.5 font-display font-bold leading-snug text-slate-900 transition-colors group-hover:text-brand-600 ${
+          isCompact ? 'text-sm' : 'text-sm sm:text-base'
         }`}
       >
         {shortTitle}
       </h3>
 
-      <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-600">
+      <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-slate-600 sm:text-[13px]">
         {route.meta.description}
       </p>
-
-      <span className="mt-auto inline-flex items-center gap-1 pt-4 text-xs font-semibold text-brand-600 group-hover:underline">
-        Open Tool <span aria-hidden="true">→</span>
-      </span>
     </Link>
   );
 }

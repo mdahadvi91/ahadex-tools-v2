@@ -10,7 +10,7 @@ export default function CookiePolicy() {
         <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           Cookie &amp; Storage Policy
         </h1>
-        <p className="mt-2 text-xs text-slate-500">Last updated: November 2026</p>
+        <p className="mt-2 text-xs text-slate-600">Last updated: November 2026</p>
 
         <div className="mt-8 space-y-4 text-sm leading-relaxed text-slate-700">
           <p>
@@ -18,7 +18,7 @@ export default function CookiePolicy() {
             you can review or change your privacy preferences at any time.
           </p>
 
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="rounded-lg border border-[#e6e2d8] bg-white p-4">
             <p className="text-sm font-semibold text-slate-900">Manage Your Preferences</p>
             <p className="mt-1 text-xs leading-relaxed text-slate-700">
               Essential consent storage stays active so your choices are remembered. Optional

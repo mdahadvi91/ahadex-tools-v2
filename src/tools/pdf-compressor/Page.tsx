@@ -23,7 +23,7 @@ export default function Page() {
   const jsonLd = buildSchema(origin);
 
   return (
-    <div className="bg-white">
+    <div className="bg-[#faf8f5]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

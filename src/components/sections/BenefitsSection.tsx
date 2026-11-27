@@ -39,7 +39,7 @@ const ICON_PATHS: Record<Benefit['icon'], string> = {
 
 export default function BenefitsSection() {
   return (
-    <section id="benefits" className="scroll-mt-24 border-t border-slate-200 pt-12">
+    <section id="benefits" className="scroll-mt-24 border-t border-[#e6e2d8] pt-12">
       <div>
         <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900">
           Why Choose AHADEX Tools?
@@ -53,7 +53,7 @@ export default function BenefitsSection() {
         {BENEFITS.map((benefit) => (
           <div
             key={benefit.title}
-            className="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-5"
+            className="ahadex-card flex items-start gap-4 rounded-xl border border-[#e6e2d8] bg-white p-5"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
               <svg
