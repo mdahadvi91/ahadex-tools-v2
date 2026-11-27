@@ -68,6 +68,18 @@ export async function runRobotsAndLlmsValidation(
         message: `robots.txt must include exact line "${expectedSitemapDirective}".`,
       });
     }
+
+    for (const agent of ['Googlebot', 'Bingbot', 'Yandex', 'OAI-SearchBot', 'PerplexityBot']) {
+      checkedCount++;
+      if (!robots.includes(`User-agent: ${agent}`)) {
+        issues.push({
+          code: 'ROBOTS_MISSING_EXPLICIT_AGENT',
+          severity: 'warning',
+          target: robotsPath,
+          message: `robots.txt should explicitly welcome User-agent: ${agent}.`,
+        });
+      }
+    }
   }
 
   checkedCount++;
@@ -108,6 +120,23 @@ export async function runRobotsAndLlmsValidation(
           target: tool.canonicalUrl,
           message: `Live tool ${tool.canonicalUrl} is missing from llms.txt.`,
         });
+      }
+    }
+
+    const llmsFullPath = path.join(path.dirname(llmsPath), 'llms-full.txt');
+    checkedCount++;
+    if (fileExists(llmsFullPath)) {
+      const llmsFull = readTextFile(llmsFullPath);
+      for (const tool of liveTools) {
+        checkedCount++;
+        if (!llmsFull.includes(tool.canonicalUrl)) {
+          issues.push({
+            code: 'LLMS_FULL_MISSING_TOOL',
+            severity: 'critical',
+            target: llmsFullPath,
+            message: `Live tool ${tool.canonicalUrl} is missing from llms-full.txt.`,
+          });
+        }
       }
     }
   }

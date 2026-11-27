@@ -77,17 +77,29 @@ export function injectPrerenderedDocument(
     .replace(/<meta\s+property="og:[^"]*"[\s\S]*?\/>\s*/gi, '')
     .replace(/<meta\s+name="twitter:[^"]*"[\s\S]*?\/>\s*/gi, '');
 
+  const bingToken = (process.env.VITE_BING_SITE_VERIFICATION ?? '').trim();
+  const yandexToken = (process.env.VITE_YANDEX_SITE_VERIFICATION ?? '').trim();
+
   const headTags = [
     `<title>${safeTitle}</title>`,
     `    <meta name="description" content="${safeDescAttr}" />`,
     `    <meta name="robots" content="${safeRobots}" />`,
     `    <link rel="canonical" href="${safeCanonical}" />`,
+    ...(bingToken
+      ? [`    <meta name="msvalidate.01" content="${escapeHtmlAttr(bingToken)}" />`]
+      : []),
+    ...(yandexToken
+      ? [`    <meta name="yandex-verification" content="${escapeHtmlAttr(yandexToken)}" />`]
+      : []),
     `    <meta property="og:type" content="${safeOgType}" />`,
+    `    <meta property="og:locale" content="en_US" />`,
     `    <meta property="og:site_name" content="${escapeHtmlAttr(SITE_CONFIG.name)}" />`,
     `    <meta property="og:url" content="${safeCanonical}" />`,
     `    <meta property="og:title" content="${safeTitleAttr}" />`,
     `    <meta property="og:description" content="${safeDescAttr}" />`,
     `    <meta property="og:image" content="${safeOgImage}" />`,
+    `    <meta property="og:image:width" content="1200" />`,
+    `    <meta property="og:image:height" content="630" />`,
     `    <meta property="og:image:alt" content="${safeOgAlt}" />`,
     `    <meta name="twitter:card" content="summary_large_image" />`,
     `    <meta name="twitter:title" content="${safeTitleAttr}" />`,
@@ -144,6 +156,120 @@ async function resolveRouteHeadMetadata(
     ogType: 'website',
     ogImage: defaultOgImage,
     ogImageAlt: `${SITE_CONFIG.name} — ${route.title}`,
+  };
+}
+
+interface ToolContentModuleShape {
+  HERO?: { h1?: string; tagline?: string };
+  DIRECT_ANSWER?: string;
+  HOW_IT_WORKS?: ReadonlyArray<{ title: string; body: string }>;
+  TECHNICAL_LIMITS?: readonly string[];
+  FAQ?: ReadonlyArray<{ question: string; answer: string }>;
+}
+
+interface ToolKeywordsModuleShape {
+  KEYWORDS?: {
+    primary?: string;
+    secondary?: readonly string[];
+  };
+}
+
+async function generateLlmsDocuments(
+  routes: readonly DiscoveredRoute[],
+  toolDirectories: ReadonlyMap<string, string>,
+): Promise<{ llmsTxt: string; llmsFullTxt: string }> {
+  const liveToolRoutes = routes.filter((r) => r.kind === 'tool' && r.indexable);
+  const infoRoutes = routes.filter((r) => r.kind !== 'tool' && r.indexable);
+
+  const llmsLines = [
+    `# ${SITE_CONFIG.name}`,
+    '',
+    `> ${SITE_CONFIG.tagline}. Every image and PDF utility runs 100% locally inside the user's browser using JavaScript, Canvas/WebCodecs, Web Workers, and pdf-lib — zero files are uploaded or stored on remote servers.`,
+    '',
+    `- Website: ${SITE_CONFIG.origin}/`,
+    `- Full Reference for AI Assistants: ${SITE_CONFIG.origin}/llms-full.txt`,
+    `- Sitemap: ${SITE_CONFIG.origin}/sitemap.xml`,
+    `- Contact: ${SITE_CONFIG.contactEmail}`,
+    '',
+    '## Key Privacy & Pricing Facts',
+    '- Cost: 100% free with no signup, no account wall, no usage caps, and no watermarks.',
+    '- Architecture: Client-side static web app hosted on Cloudflare Pages; file bytes never leave browser memory.',
+    '',
+    '## Available Browser Tools',
+    ...liveToolRoutes.map((r) => `- [${r.title}](${r.canonicalUrl}): ${r.description}`),
+    '',
+    '## Trust, Policy & Information Pages',
+    ...infoRoutes
+      .filter((r) => r.path !== '/')
+      .map((r) => `- [${r.title}](${r.canonicalUrl}): ${r.description}`),
+    '',
+  ];
+
+  const fullLines: string[] = [
+    `# ${SITE_CONFIG.name} — Complete AI Knowledge Reference`,
+    '',
+    `> ${SITE_CONFIG.tagline}. All tools run strictly on-device in browser memory with 0 bytes of user files uploaded to external servers.`,
+    '',
+    `- Canonical Origin: ${SITE_CONFIG.origin}/`,
+    `- Concise Index: ${SITE_CONFIG.origin}/llms.txt`,
+    `- XML Sitemap: ${SITE_CONFIG.origin}/sitemap.xml`,
+    '',
+  ];
+
+  for (const route of liveToolRoutes) {
+    const dir = toolDirectories.get(route.slug);
+    let contentMod: ToolContentModuleShape = {};
+    let kwMod: ToolKeywordsModuleShape = {};
+    if (dir) {
+      const contentPath = path.join(dir, 'content.ts');
+      const kwPath = path.join(dir, 'keywords.ts');
+      if (fileExists(contentPath)) {
+        contentMod = (await import(pathToFileURL(contentPath).href)) as ToolContentModuleShape;
+      }
+      if (fileExists(kwPath)) {
+        kwMod = (await import(pathToFileURL(kwPath).href)) as ToolKeywordsModuleShape;
+      }
+    }
+
+    fullLines.push(`## ${contentMod.HERO?.h1 ?? route.title}`);
+    fullLines.push(`- URL: ${route.canonicalUrl}`);
+    if (kwMod.KEYWORDS?.primary) {
+      fullLines.push(`- Primary Topic: ${kwMod.KEYWORDS.primary}`);
+    }
+    if (contentMod.DIRECT_ANSWER) {
+      fullLines.push(`- Summary: ${contentMod.DIRECT_ANSWER}`);
+    } else {
+      fullLines.push(`- Summary: ${route.description}`);
+    }
+
+    if (contentMod.HOW_IT_WORKS && contentMod.HOW_IT_WORKS.length > 0) {
+      fullLines.push('- Workflow:');
+      contentMod.HOW_IT_WORKS.forEach((step, idx) => {
+        fullLines.push(`  ${idx + 1}. ${step.title}: ${step.body}`);
+      });
+    }
+
+    if (contentMod.TECHNICAL_LIMITS && contentMod.TECHNICAL_LIMITS.length > 0) {
+      fullLines.push('- Supported Limits & Constraints:');
+      for (const limit of contentMod.TECHNICAL_LIMITS) {
+        fullLines.push(`  - ${limit}`);
+      }
+    }
+
+    if (contentMod.FAQ && contentMod.FAQ.length > 0) {
+      fullLines.push('- Frequently Asked Questions:');
+      for (const faq of contentMod.FAQ.slice(0, 5)) {
+        fullLines.push(`  - Q: ${faq.question}`);
+        fullLines.push(`    A: ${faq.answer}`);
+      }
+    }
+
+    fullLines.push('');
+  }
+
+  return {
+    llmsTxt: llmsLines.join('\n'),
+    llmsFullTxt: fullLines.join('\n'),
   };
 }
 
@@ -211,28 +337,18 @@ export async function generatePrerenderedSite(
     canonicalUrl: `${SITE_CONFIG.origin}/404.html`,
     robotsContent: 'noindex, nofollow',
     ogType: 'website',
-    ogImage: `${SITE_CONFIG.origin}/hridoyvi.png`,
+    ogImage: `${SITE_CONFIG.origin}/og/default.png`,
     ogImageAlt: `${SITE_CONFIG.name} 404 Not Found`,
   });
   writeTextFile(path.join(distDir, '404.html'), notFoundHtml);
   outputFiles.push('404.html');
 
-  // Keep llms.txt cleanly updated during prerendering as well.
-  const liveToolRoutes = routes.filter((r) => r.kind === 'tool');
-  const llmsLines = [
-    `# ${SITE_CONFIG.name}`,
-    '',
-    `> ${SITE_CONFIG.tagline}. Files are processed locally in your browser without uploading to external servers.`,
-    '',
-    `- Site: ${SITE_CONFIG.origin}/`,
-    '',
-    '## Available Tools',
-    ...liveToolRoutes.map((r) => `- [${r.title}](${r.canonicalUrl}): ${r.description}`),
-    '',
-  ];
-  const llmsContent = llmsLines.join('\n');
-  writeTextFile(path.join(distDir, 'llms.txt'), llmsContent);
-  writeTextFile(resolveFromRoot('public', 'llms.txt'), llmsContent);
+  // Keep llms.txt and llms-full.txt cleanly updated during prerendering for AI answer engines.
+  const { llmsTxt, llmsFullTxt } = await generateLlmsDocuments(routes, toolDirectories);
+  writeTextFile(path.join(distDir, 'llms.txt'), llmsTxt);
+  writeTextFile(resolveFromRoot('public', 'llms.txt'), llmsTxt);
+  writeTextFile(path.join(distDir, 'llms-full.txt'), llmsFullTxt);
+  writeTextFile(resolveFromRoot('public', 'llms-full.txt'), llmsFullTxt);
 
   return {
     generatedAt: new Date().toISOString(),

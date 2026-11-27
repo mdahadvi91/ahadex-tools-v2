@@ -1,0 +1,24 @@
+{
+  "name": "AHADEX Tools",
+  "short_name": "AHADEX",
+  "description": "Free, privacy-first browser utilities to compress images, resize photos, and compress, merge, or split PDFs with zero server uploads.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "categories": ["utilities", "productivity", "photo"],
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

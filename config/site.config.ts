@@ -17,6 +17,7 @@ export const SITE_CONFIG = {
   defaultLocale: 'en',
   contactEmail: 'contact@ahadex.online',
   repository: 'https://github.com/mdahadvi91/ahadex-tools-v2',
+  indexNowKey: '8f4c2e19a7b34d6e9012f5a8c3d7e4b1',
 } as const;
 
 import { STATIC_PAGE_ROUTES, type StaticPageRouteConfig } from '../src/config/static-routes';

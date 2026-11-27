@@ -33,6 +33,7 @@
     "validate:assets": "tsx scripts/images/validate-assets.ts",
     "sitemap:generate": "tsx scripts/tasks/sitemap.ts --generate",
     "deployment:generate": "tsx scripts/tasks/deployment.ts --generate",
+    "indexnow:submit": "tsx scripts/tasks/indexnow.ts",
     "check:deployment": "tsx scripts/tasks/deployment.ts",
     "validate:pre": "tsx scripts/production/prebuild-validation.ts",
     "validate:post": "tsx scripts/production/final-validation.ts",
