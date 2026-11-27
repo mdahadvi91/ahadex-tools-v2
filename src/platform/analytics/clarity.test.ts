@@ -46,7 +46,7 @@ describe('Microsoft Clarity consent-gated integration', () => {
     const script = scripts[0] as HTMLScriptElement;
     expect(script.async).toBe(true);
     expect(script.getAttribute(CLARITY_SCRIPT_ATTR)).toBe('zkc26mkuvb');
-    expect(script.src).toBe('https://www.clarity.ms/tag/zkc26mkuvb?ref=bwt');
+    expect(script.src).toBe('https://www.clarity.ms/tag/zkc26mkuvb');
     expect(typeof window.clarity).toBe('function');
   });
 

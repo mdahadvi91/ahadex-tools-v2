@@ -147,7 +147,7 @@ test.describe('Homepage, search, and mobile responsiveness', () => {
     await expect(page.locator('script[data-ahadex-clarity="zkc26mkuvb"]')).toHaveCount(1);
     await expect(page.locator('script[data-ahadex-clarity="zkc26mkuvb"]')).toHaveAttribute(
       'src',
-      'https://www.clarity.ms/tag/zkc26mkuvb?ref=bwt',
+      'https://www.clarity.ms/tag/zkc26mkuvb',
     );
 
     // Persists after reload

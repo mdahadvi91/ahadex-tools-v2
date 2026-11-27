@@ -1,8 +1,8 @@
 /**
  * Consent-gated Microsoft Clarity script loader & consent signaling helper.
  *
- * Mirrors Microsoft's official Bing Webmaster Tools Clarity snippet:
- *   https://www.clarity.ms/tag/<projectId>?ref=bwt
+ * Mirrors Microsoft's official Clarity snippet:
+ *   https://www.clarity.ms/tag/<projectId>
  * while guaranteeing zero network calls unless the visitor has granted
  * analytics consent.
  */
@@ -68,7 +68,7 @@ export function ensureClarityScriptLoaded(): boolean {
 
   const script = document.createElement('script');
   script.async = true;
-  script.src = `https://www.clarity.ms/tag/${encodeURIComponent(projectId)}?ref=bwt`;
+  script.src = `https://www.clarity.ms/tag/${encodeURIComponent(projectId)}`;
   script.setAttribute(CLARITY_SCRIPT_ATTR, projectId);
   document.head.appendChild(script);
   return true;
